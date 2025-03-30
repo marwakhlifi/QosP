@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #eeeaf2 0%, #2575fc 100%);
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem;
+            border-radius: 25px;
+            margin-bottom: 50px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1.5rem;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            color: #2575fc;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            margin: 20px auto;
+            width: 60%;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #540cee;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            transition: background 0.3s ease;
+            margin: 20px 10px;
+        }
+        button:hover {
+            background: #2575fc;
+            transform: scale(1.05);
+        }
+        .hidden {
+            display: none;
+        }
+        input, select {
+            margin-bottom: 20px;
+            width: 80%;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+        }
+        .alert {
+            margin: 20px auto;
+            width: 80%;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .alert-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .alert-error {
+            background-color: #dc3545;
+            color: white;
+        }
+        table {
+            margin: 20px auto;
+            width: 90%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid white;
+            text-align: center;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+            color: black;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .edit-btn:hover {
+            background-color: #e0a800;
+        }
+        #togglePasswordBtn {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+    #togglePasswordBtn:hover {
+        background-color: #218838;
+    }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <a href="/">Home</a>
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+</div>
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h1>Admin Panel</h1>
+    <button onclick="toggleUserForm()">Add User</button>
+    <div id="userForm" class="hidden">
+        <form method="POST" action="{{ url_for('add_user') }}">
+            <input type="text" name="username" placeholder="Username" required><br>
+            <input type="password" name="password" placeholder="Password" required><br>
+            <button type="submit">Add User</button>
+        </form>
+    </div>
+
+    <button onclick="toggleDeviceForm()">Add Device</button>
+    <div id="deviceForm" class="hidden">
+        <form method="POST" action="{{ url_for('add_device') }}">
+            <input type="text" name="mac" placeholder="MAC Address" required><br>
+            <input type="text" name="ip" placeholder="Management Address" required><br>
+            <button type="submit">Add Device</button>
+        </form>
+    </div>
+
+    <button onclick="toggleUsers()">View Users</button>
+    <div id="userTable" class="hidden">
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Admin</th>
+                    
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr data-username="{{ user.username }}">
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.password }}</td>
+                   
+                    <td>{{ user.is_admin }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_user', username=user.username) }}" style="display:inline;">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                        <button onclick="toggleEditUserForm('{{ user.username }}')" class="edit-btn">Edit</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <button onclick="toggleDevices()">View Devices</button>
+    <div id="deviceTable" class="hidden">
+        <table>
+            <thead>
+                <tr>
+                    <th>MAC Address</th>
+                    <th>IP Address</th>
+                    
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                <tr data-mac="{{ device.mac }}">
+                    <td>{{ device.mac }}</td>
+                    <td>{{ device.ip }}</td>
+                   
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_device', mac=device.mac) }}" style="display:inline;">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                        <button onclick="toggleEditDeviceForm('{{ device.mac }}')" class="edit-btn">Edit</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Formulaire d'édition des utilisateurs -->
+    <div id="editUserForm" class="hidden">
+        <form method="POST" action="{{ url_for('edit_user') }}">
+            <input type="hidden" name="original_username" id="original_username">
+            <input type="text" name="username" id="edit_username" placeholder="Username" required><br>
+            <input type="password" name="password" id="edit_password" placeholder="Password" required><br>
+            <button type="button" onclick="togglePasswordVisibility('edit_password', 'togglePasswordBtn')" id="togglePasswordBtn">Show Password</button><br>
+        <button type="submit">Save Changes</button>
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
+    <!-- Formulaire d'édition des dispositifs -->
+    <div id="editDeviceForm" class="hidden">
+        <form method="POST" action="{{ url_for('edit_device') }}">
+            <input type="hidden" name="original_mac" id="original_mac">
+            <input type="text" name="mac" id="edit_mac" placeholder="MAC Address" required><br>
+            <input type="text" name="ip" id="edit_ip" placeholder="Management Address" required><br>
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
+    <a href="{{ url_for('admin_logout') }}">
+        <button>Logout</button>
+    </a>
+</div>
+
+<script>
+    function togglePasswordVisibility(passwordFieldId, toggleButtonId) {
+        const passwordField = document.getElementById(passwordFieldId);
+        const toggleButton = document.getElementById(toggleButtonId);
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleButton.textContent = "Hide Password";
+        } else {
+            passwordField.type = "password";
+            toggleButton.textContent = "Show Password";
+        }
+    }
+
+    function toggleUserForm() {
+        document.getElementById("userForm").classList.toggle("hidden");
+    }
+    function toggleDeviceForm() {
+        document.getElementById("deviceForm").classList.toggle("hidden");
+    }
+    function toggleUsers() {
+        document.getElementById("userTable").classList.toggle("hidden");
+    }
+    function toggleDevices() {
+        document.getElementById("deviceTable").classList.toggle("hidden");
+    }
+
+    function toggleEditUserForm(username) {
+        const userForm = document.getElementById("editUserForm");
+        const originalUsername = document.getElementById("original_username");
+        const editUsername = document.getElementById("edit_username");
+        const editPassword = document.getElementById("edit_password");
+
+        // Remplir le formulaire avec les données de l'utilisateur
+        const userRow = document.querySelector(`tr[data-username="${username}"]`);
+        originalUsername.value = username;
+        editUsername.value = userRow.querySelector("td:nth-child(1)").textContent;
+        editPassword.value = userRow.querySelector("td:nth-child(2)").textContent;
+
+        userForm.classList.toggle("hidden");
+    }
+
+    function toggleEditDeviceForm(mac) {
+        const deviceForm = document.getElementById("editDeviceForm");
+        const originalMac = document.getElementById("original_mac");
+        const editMac = document.getElementById("edit_mac");
+        const editIp = document.getElementById("edit_ip");
+
+        // Remplir le formulaire avec les données du dispositif
+        const deviceRow = document.querySelector(`tr[data-mac="${mac}"]`);
+        originalMac.value = mac;
+        editMac.value = deviceRow.querySelector("td:nth-child(1)").textContent;
+        editIp.value = deviceRow.querySelector("td:nth-child(2)").textContent;
+
+        deviceForm.classList.toggle("hidden");
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

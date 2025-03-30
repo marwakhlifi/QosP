@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qos TRacer - Welcome</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #eeeaf2 0%, #2575fc 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+        .welcome-box {
+            padding: 40px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            width: 70%; /* Smaller width */
+            max-width: 500px; /* Adjust maximum width */
+            margin: auto;
+        }
+        h1 {
+            font-size: 3rem; /* Smaller title */
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        p {
+            font-size: 1.1rem; 
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        .btn-main {
+            background-color: #5c5862;
+            color: white;
+            font-size: 1.2rem;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: bold;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-main:hover {
+            background-color: #2575fc;
+            transform: scale(1.05);
+        }
+        .catchy-line {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            font-weight: bold;
+            color: #f4f4f4;
+            text-transform: uppercase;
+        }
+        .btn-main:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Welcome Section -->
+    <div class="welcome-box">
+        <h1>Welcome to Qos TRacer</h1>
+        <p class="catchy-line">Optimize and test your network like a pro. Ready to take control?</p>
+        <p>Discover how customizable DSCP/TOS values and simulated TCP/UDP traffic can help you monitor and improve your network's Quality of Service.</p>
+        <a href="/login" class="btn-main">Login</a> <!-- Updated href to point to login.html -->
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

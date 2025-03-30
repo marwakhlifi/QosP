@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QoS Test Results - 2 Clients</title>
+    <link rel="stylesheet" href="../static/style3.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #eeeaf2 0%, #2575fc 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #000000 0%, #323841 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;  /* Augmenter la largeur maximale */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .results-container {
+            display: flex;
+            justify-content: space-between;  /* Afficher les résultats côte à côte */
+            gap: 20px;  /* Espace entre les deux résultats */
+            margin-bottom: 20px;
+        }
+
+        .result {
+            background-color: #f7f7f7;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            text-align: left;
+            flex: 1;  /* Les deux résultats prennent la même largeur */
+        }
+
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>QoS Test Results - 2 Clients</h1>
+    <div class="container">
+        <!-- Displaying the textual results side by side -->
+        {% if session.get('iperf_results') %}
+            <div class="results-container">
+                {% for result in session['iperf_results'] %}
+                    <div class="result">
+                        <h2>{{ result['client'] }}</h2>
+                        <p>{{ result['result'] | safe }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No results to display.</p>
+        {% endif %}
+
+        <!-- Button to show the graph -->
+        <button class="btn" onclick="showGraph()">Show Visualization</button>
+
+        <!-- Button to hide the graph -->
+        <button class="btn" onclick="hideGraph()" style="display: none;">Hide Visualization</button>
+
+        <!-- Graph display -->
+        <canvas id="iperfGraph" width="800" height="400"></canvas>
+        <div class="button-container">
+            <!-- Left Button -->
+            <button class="btn btn-secondary" onclick="window.history.back()">Back to Test Setup</button>
+    
+            <!-- Middle Button -->
+            <form action="/get_debug_info" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-primary">Get HGW Debug Info</button>
+            </form>
+        </div>  
+    </div>
+
+    <script>
+        function showGraph() {
+            const graph = document.getElementById('iperfGraph');
+            const showButton = document.querySelector('.btn:nth-of-type(1)');
+            const hideButton = document.querySelector('.btn:nth-of-type(2)');
+
+            // Show the graph and hide the 'Show Visualization' button
+            graph.style.display = 'block';
+            showButton.style.display = 'none';
+            hideButton.style.display = 'inline-block';  // Show the 'Hide Visualization' button
+
+            // Fetch and display the graph data
+            fetch('/generate_graph_data_two_clients')
+                .then(response => response.json())
+                .then(data => {
+                    const intervals = data.intervals[0];  // Utiliser les intervalles du premier client
+                    const bandwidths1 = data.bandwidths[0];  // Bandwidth du client 1
+                    const bandwidths2 = data.bandwidths[1];  // Bandwidth du client 2
+
+                    const ctx = document.getElementById('iperfGraph').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: intervals,  // Utiliser les intervalles de temps
+                            datasets: [
+                                {
+                                    label: 'Client 1',
+                                    data: bandwidths1,  // Bandwidth du client 1
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    fill: true,
+                                    tension: 0.1
+                                },
+                                {
+                                    label: 'Client 2',
+                                    data: bandwidths2,  // Bandwidth du client 2
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    fill: true,
+                                    tension: 0.1
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                            return tooltipItem.raw.toFixed(2) + ' Mbits/sec';
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Interval (seconds)'
+                                    }
+                                },
+                                y: {
+                                    type: 'logarithmic',  // Utiliser une échelle logarithmique
+                                    title: {
+                                        display: true,
+                                        text: 'Bandwidth (Mbits/sec)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching graph data:', error));
+        }
+
+        function hideGraph() {
+            const graph = document.getElementById('iperfGraph');
+            const showButton = document.querySelector('.btn:nth-of-type(1)');
+            const hideButton = document.querySelector('.btn:nth-of-type(2)');
+
+            // Hide the graph and show the 'Show Visualization' button again
+            graph.style.display = 'none';
+            showButton.style.display = 'inline-block';
+            hideButton.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

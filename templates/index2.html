@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QoS Test Setup</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #eeeaf2 0%, #2575fc 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #007bff; /* Custom Blue for navbar */
+        }
+
+        .navbar .navbar-brand {
+            color: white !important;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .navbar .navbar-brand:hover {
+            color: #0056b3 !important;
+        }
+
+        /* Title Styles */
+        h1 {
+            font-size: 2.5rem;
+            color: #2c3e50; /* Darker blue for the title */
+            margin-top: 40px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: #555;
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 40px;
+        }
+
+        .form-container {
+            background-color: white; /* White background for the form */
+            color: black;  /* Black text color */
+            border-radius: 10px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 1rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #007bff; /* Custom Blue for the button */
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+
+        .optional-input {
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">QoSTracer</a>
+    </nav>
+
+    <!-- Title -->
+    <h1>Quality of Service Test Setup</h1>
+
+    <!-- Description -->
+    <div class="description">
+        Please enter the details to set up and test the Quality of Service for your client and server.
+        Customize your settings for the test, including protocol, direction, and more...
+    </div>
+
+    <!-- Form Container -->
+    <div class="form-container">
+        <form id="iperfForm">
+            <div class="form-section">
+                <label for="serverIp">Server IP:</label>
+                <input type="text" id="serverIp" name="serverIp" required placeholder="Enter the server IP">
+            </div>
+
+            <div class="form-section">
+                <label for="clientIp">Client IP:</label>
+                <input type="text" id="clientIp" name="clientIp" required placeholder="Enter the client IP">
+            </div>
+
+            <div class="form-section">
+                <label for="port">Port:</label>
+                <input type="text" id="port" name="port" value="5201" placeholder="Default port: 5201">
+            </div>
+
+            <div class="form-section">
+                <label for="dscp">DSCP (TOS):</label>
+                <select id="dscp" name="dscp">
+                    <option value="184">VO (RTP) - 184</option>
+                    <option value="136">VO (SIP) - 136</option>
+                    <option value="104">VI - 104</option>
+                    <option value="40">VI - 40</option>
+                    <option value="0">BE (data) - 0</option>
+                    <option value="32">BK - 32</option>
+                </select>
+            </div>
+
+            <div class="form-section">
+                <label for="protocol">Protocol:</label>
+                <select id="protocol" name="protocol">
+                    <option value="tcp">TCP</option>
+                    <option value="udp">UDP</option>
+                </select>
+            </div>
+
+            <div class="form-section">
+                <label for="direction">Direction:</label>
+                <select id="direction" name="direction">
+                    <option value="uplink">Uplink</option>
+                    <option value="downlink">Downlink</option>
+                </select>
+            </div>
+
+            <!-- Optional Duration -->
+            <div class="form-section">
+                <label for="setDuration">
+                    <input type="checkbox" id="setDuration" name="setDuration"> Set Duration (seconds)
+                </label>
+                <div id="durationInput" class="optional-input">
+                    <label for="duration">Duration (seconds):</label>
+                    <input type="number" id="duration" name="duration" placeholder="Enter duration">
+                </div>
+            </div>
+
+            <!-- Optional Data Size -->
+            <div class="form-section">
+                <label for="setDataSize">
+                    <input type="checkbox" id="setDataSize" name="setDataSize"> Set Data Size
+                </label>
+                <div id="dataSizeInput" class="optional-input">
+                    <label for="dataSize">Data Size:</label>
+                    <input type="number" id="dataSize" name="dataSize" placeholder="Enter data size">
+                    
+                    <label for="dataUnit">Unit:</label>
+                    <select id="dataUnit" name="dataUnit">
+                        <option value="MB">MB</option>
+                        <option value="GB">GB</option>
+                        <option value="KB">KB</option>
+                        <option value="TB">TB</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit">Start Test</button>
+        </form>
+    </div>
+
+    <script>
+        // Toggle duration input visibility
+        $('#setDuration').on('change', function() {
+            $('#durationInput').toggle(this.checked);
+        });
+
+        // Toggle data size input visibility
+        $('#setDataSize').on('change', function() {
+            $('#dataSizeInput').toggle(this.checked);
+        });
+
+        $('#iperfForm').on('submit', function(e) {
+            e.preventDefault();
+
+            var formData = {
+                serverIp: $('#serverIp').val(),
+                clientIp: $('#clientIp').val(),
+                port: $('#port').val(),
+                dscp: $('#dscp').val(),
+                direction: $("input[name='direction']:checked").val(),
+                duration: $('#duration').val(),
+                dataSize: $('#dataSize').val(),
+                dataUnit: $('#dataUnit').val()
+            };
+
+            // Validation for optional fields
+            if ($('#setDuration').prop('checked') && !formData.duration) {
+                alert('Please enter a valid duration!');
+                return;
+            }
+
+            if ($('#setDataSize').prop('checked') && (!formData.dataSize || !formData.dataUnit)) {
+                alert('Please enter valid data size and unit!');
+                return;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/run_iperf',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    if (response.status === 'success') {
+                        window.location.href = response.redirect_url;
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + xhr.responseText);
+                }
+            });
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

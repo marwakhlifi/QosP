@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPerf Results - 3 Clients</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar {
+            background-color: #007bff;
+        }
+        
+        .navbar-brand {
+            color: white !important;
+            font-weight: bold;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .result-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 30px;
+        }
+        
+        .client-result {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .back-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">QoSTracer</a>
+    </nav>
+
+    <div class="container">
+        <h1>iPerf Test Results - 3 Clients</h1>
+        
+        <!-- Chart Section -->
+        <div class="chart-container">
+            <canvas id="bandwidthChart"></canvas>
+        </div>
+        
+        <!-- Results Display -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="client-result">
+                    <h3>Client 1</h3>
+                    <div id="client1Result" class="result-content"></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="client-result">
+                    <h3>Client 2</h3>
+                    <div id="client2Result" class="result-content"></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="client-result">
+                    <h3>Client 3</h3>
+                    <div id="client3Result" class="result-content"></div>
+                </div>
+            </div>
+        </div>
+        <div class="button-container">
+            <!-- Left Button -->
+            <button class="btn btn-secondary" onclick="window.history.back()">Back to Test Setup</button>
+    
+            <!-- Middle Button -->
+            <form action="/get_debug_info" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-primary">Get HGW Debug Info</button>
+            </form>
+        </div>   
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Get the results from the session
+            const results = JSON.parse('{{ results | tojson | safe }}');
+            
+            // Display raw results
+            if (results && results.length >= 3) {
+                $('#client1Result').html(results[0].result);
+                $('#client2Result').html(results[1].result);
+                $('#client3Result').html(results[2].result);
+            }
+            
+            // Fetch graph data
+            $.getJSON("/generate_graph_data_three_clients", function(data) {
+                if (data.status === "error") {
+                    console.error(data.message);
+                    return;
+                }
+                
+                // Prepare datasets for Chart.js
+                const datasets = [
+                    {
+                        label: 'Client 1',
+                        data: data.bandwidths[0],
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        tension: 0.1,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Client 2',
+                        data: data.bandwidths[1],
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.1,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Client 3',
+                        data: data.bandwidths[2],
+                        borderColor: 'rgb(255, 206, 86)',
+                        backgroundColor: 'rgba(255, 206, 86, 0.1)',
+                        tension: 0.1,
+                        borderWidth: 2
+                    }
+                ];
+                
+                // Create the chart
+                const ctx = document.getElementById('bandwidthChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.intervals[0] || [],
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Bandwidth (Mbits/sec)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Time Interval (seconds)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.parsed.y.toFixed(2)} Mbits/sec`;
+                                    }
+                                }
+                            },
+                            legend: {
+                                position: 'top',
+                            }
+                        }
+                    }
+                });
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error loading graph data:", textStatus, errorThrown);
+            });
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
