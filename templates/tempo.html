@@ -3,188 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QoS Automation Platform</title>
+    <title>QoS Automation Test</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            font-family: 'Arial', sans-serif;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
             padding: 20px;
         }
-
         .container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            max-width: 1000px;
-            width: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 900px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
-
         h1 {
-            color: #fff;
-            text-align: center;
+            color: #0d6efd;
             margin-bottom: 30px;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            text-align: center;
         }
-
         .form-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .form-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .form-group {
-            flex: 1;
-        }
-
-        label {
-            color: #e0e0e0;
-            font-weight: 500;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        input, select, button {
-            width: 100%;
-            padding: 12px 15px;
-            margin-top: 8px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(0, 0, 0, 0.2);
-            color: #fff;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #4a9eff;
-            box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.2);
-        }
-
-        input[type="checkbox"] {
-            width: auto;
-            margin-right: 10px;
-        }
-
-        button {
-            background: linear-gradient(135deg, #4a9eff, #2d7dd2);
-            border: none;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 20px;
-            padding: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        button:hover {
-            background: linear-gradient(135deg, #3a8ce8, #1c6dbb);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .form-section {
-            margin-bottom: 15px;
-            background: rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-        }
-
-        .optional-input {
-            display: none;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed rgba(255, 255, 255, 0.2);
-        }
-
-        .form-container input[type="date"],
-        .form-container input[type="time"],
-        .form-container input[type="email"] {
-            background: rgba(0, 0, 0, 0.2);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .form-group input, .form-group select {
-            background-color: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-        }
-
-        .test-status {
-            margin-top: 30px;
+            background: #f8f9fa;
             padding: 20px;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.2);
-            display: none;
-        }
-
-        .test-status h3 {
-            color: #4a9eff;
-            margin-bottom: 15px;
-        }
-
-        .progress {
-            height: 10px;
-            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
             margin-bottom: 20px;
         }
-
-        .progress-bar {
-            background: linear-gradient(90deg, #4a9eff, #2d7dd2);
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
         }
-
-        .btn-schedule {
-            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+            margin: 0 10px 15px;
         }
-
-        .btn-schedule:hover {
-            background: linear-gradient(135deg, #e85a5a, #ff7b7b);
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
         }
-
-        @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .container {
-                padding: 20px;
-            }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto 0;
+        }
+        button:hover {
+            background-color: #0b5ed7;
+        }
+        .optional-input {
+            display: none;
+            margin-top: 10px;
+        }
+        #clientIpContainer {
+            margin-top: 15px;
+        }
+        .test-status {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .progress {
+            height: 20px;
+            margin: 15px 0;
         }
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1><i class="fas fa-tachometer-alt me-2"></i>QoS Automation Test</h1>
 
-        <!-- First Form: Test Date, Test Time, Email -->
-        <form id="testDetailsForm">
+        <form id="testForm" method="POST">
             <div class="form-container">
                 <div class="form-row">
                     <div class="form-group">
@@ -202,12 +105,7 @@
                         <input type="email" id="email" name="email" required placeholder="your.email@example.com">
                     </div>
                 </div>
-            </div>
-        </form>
 
-        <!-- Second Form: QoS Test Details -->
-        <div class="form-container">
-            <form id="iperfForm">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="serverIp"><i class="fas fa-server me-2"></i>Server IP:</label>
@@ -215,20 +113,28 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="clientIp"><i class="fas fa-laptop me-2"></i>Client IP:</label>
-                        <input type="text" id="clientIp" name="clientIp" required placeholder="192.168.1.101">
+                        <label for="numClients"><i class="fas fa-users me-2"></i>Number of Clients:</label>
+                        <select id="numClients" name="numClients" required>
+                            <option value="1">1 Client</option>
+                            <option value="2">2 Clients</option>
+                            <option value="3">3 Clients</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label for="port"><i class="fas fa-plug me-2"></i>Port:</label>
-                        <input type="text" id="port" name="port" value="5201" placeholder="Default: 5201">
+                        <input type="text" id="port" name="port" value="5201" required placeholder="Default: 5201">
                     </div>
+                </div>
+
+                <div id="clientIpContainer" class="form-section">
+                    <!-- Client IPs will be added here dynamically -->
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="dscp"><i class="fas fa-tags me-2"></i>DSCP (TOS):</label>
-                        <select id="dscp" name="dscp">
+                        <select id="dscp" name="dscp" required>
                             <option value="184">VO (RTP) - 184</option>
                             <option value="136">VO (SIP) - 136</option>
                             <option value="104">VI - 104</option>
@@ -240,17 +146,16 @@
 
                     <div class="form-group">
                         <label for="protocol"><i class="fas fa-network-wired me-2"></i>Protocol:</label>
-                        <select id="protocol" name="protocol">
+                        <select id="protocol" name="protocol" required>
                             <option value="TCP">TCP</option>
                             <option value="UDP">UDP</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Additional Form Options: Test Duration & Data Size -->
                 <div class="form-group">
                     <label for="testDuration"><i class="fas fa-clock me-2"></i>Test Duration (Optional):</label>
-                    <input type="checkbox" id="testDurationCheckbox"> Enable Test Duration
+                    <input type="checkbox" id="testDurationCheckbox" name="testDurationCheckbox"> Enable Test Duration
                     <div class="optional-input" id="testDurationInput">
                         <input type="number" id="testDuration" name="testDuration" placeholder="Enter duration in seconds">
                     </div>
@@ -258,9 +163,9 @@
 
                 <div class="form-group">
                     <label for="dataSize"><i class="fas fa-hdd me-2"></i>Data Size (Optional):</label>
-                    <input type="checkbox" id="dataSizeCheckbox"> Enable Data Size
+                    <input type="checkbox" id="dataSizeCheckbox" name="dataSizeCheckbox"> Enable Data Size
                     <div class="optional-input" id="dataSizeInput">
-                        <input type="number" id="dataSize" name="dataSize" placeholder="Enter size in MB">
+                        <input type="number" id="dataSize" name="dataSize" placeholder="Enter size">
                         <select id="dataUnit" name="dataUnit">
                             <option value="MB">MB</option>
                             <option value="GB">GB</option>
@@ -269,28 +174,86 @@
                     </div>
                 </div>
 
-                <button type="submit">Schedule Test</button>
-            </form>
-        </div>
-
-        <!-- Test Status -->
-        <div class="test-status" id="testStatus">
-            <h3>Test in Progress...</h3>
-            <div class="progress">
-                <div class="progress-bar" style="width: 0%"></div>
+                <button type="submit" id="submitBtn">Schedule Test</button>
             </div>
-            <button class="btn-schedule">Schedule Test</button>
+        </form>
+
+        <div class="test-status" id="testStatus">
+            <h3 id="statusMessage">Test in Progress...</h3>
+            <div class="progress">
+                <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Show/hide optional inputs based on checkbox selection
-        document.getElementById('testDurationCheckbox').addEventListener('change', function() {
-            document.getElementById('testDurationInput').style.display = this.checked ? 'block' : 'none';
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Client IP inputs management
+            const numClientsSelect = document.getElementById('numClients');
+            const clientIpContainer = document.getElementById('clientIpContainer');
 
-        document.getElementById('dataSizeCheckbox').addEventListener('change', function() {
-            document.getElementById('dataSizeInput').style.display = this.checked ? 'block' : 'none';
+            function updateClientInputs() {
+                const numClients = parseInt(numClientsSelect.value);
+                clientIpContainer.innerHTML = '';
+
+                for (let i = 1; i <= numClients; i++) {
+                    const clientDiv = document.createElement('div');
+                    clientDiv.className = 'form-group';
+                    clientDiv.innerHTML = `
+                        <label><i class="fas fa-laptop me-2"></i>Client IP ${i}:</label>
+                        <input type="text" name="clientIp${i}" required placeholder="192.168.1.10${i}">
+                    `;
+                    clientIpContainer.appendChild(clientDiv);
+                }
+            }
+
+            numClientsSelect.addEventListener('change', updateClientInputs);
+            updateClientInputs();
+
+            // Optional fields toggling
+            document.getElementById('testDurationCheckbox').addEventListener('change', function() {
+                document.getElementById('testDurationInput').style.display = this.checked ? 'block' : 'none';
+                document.getElementById('testDuration').required = this.checked;
+            });
+
+            document.getElementById('dataSizeCheckbox').addEventListener('change', function() {
+                document.getElementById('dataSizeInput').style.display = this.checked ? 'block' : 'none';
+                document.getElementById('dataSize').required = this.checked;
+            });
+
+            // Form submission
+            document.getElementById('testForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Scheduling...';
+                
+                const formData = new FormData(this);
+                
+                try {
+                    const response = await fetch('/schedule-test', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        document.getElementById('statusMessage').textContent = result.message;
+                        document.getElementById('testStatus').style.display = 'block';
+                        document.getElementById('progressBar').style.width = '100%';
+                    } else {
+                        alert(`Error: ${result.error}`);
+                    }
+                } catch (error) {
+                    alert('Failed to schedule test. Please check console for details.');
+                    console.error('Error:', error);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Schedule Test';
+                }
+            });
         });
     </script>
 

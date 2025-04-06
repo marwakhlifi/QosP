@@ -4,71 +4,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IPv6 SSH Connectivity Test</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Same styling as original - keeping it unchanged */
         body {
+            background: linear-gradient(135deg, #eeeaf2 0%, #2575fc 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
             font-family: Arial, sans-serif;
-            background-color: #000000;
+            margin: 0;
+            padding-top: 80px;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem;
+            border-radius: 25px;
+            width: 90%;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            position: fixed;
+            top: 0;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1.5rem;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .navbar a:hover {
+            color: #337cfa;
+            text-decoration: underline;
+        }
+
+        .main-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            gap: 40px;
+            padding-top: 100px;
         }
-        .navbar {
-            background-color: #007bff !important; /* Blue navbar */
-        }
-        .navbar .navbar-brand, 
-        .navbar .nav-link {
-            color: white !important;
-        }
-        .navbar .nav-link:hover {
-            color: #dbeafe !important; /* Light blue hover effect */
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            margin-top: 80px; /* Push the form down below navbar */
-        }
-        .form-group {
-            margin-bottom: 15px;
+
+        .form-container {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            width: 100%;
+            max-width: 1200px;
             text-align: left;
         }
-        label {
-            font-weight: bold;
-            display: block;
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            flex-wrap: wrap;
         }
+
+        .client-form, .server-form {
+            flex: 1;
+            min-width: 250px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        label {
+            margin-bottom: 10px;
+            display: block;
+            font-weight: bold;
+        }
+
         input {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
         }
-        .btn-submit {
-            background-color: #3498db;
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #00a6ff;
             color: white;
             border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        .btn-submit:hover {
-            background-color: #2980b9;
-        }
-        .result-box {
-            margin-top: 15px;
+            border-radius: 20px;
             font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
-        h1 {
-            color: #3498db;
+
+        button:hover {
+            background-color: #004d95;
+            transform: scale(1.05);
+        }
+
+        .add-client-btn {
+            background-color: #30fc257f;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: auto;
+        }
+
+        .add-client-btn:hover {
+            background-color: #12c423;
+        }
+
+        .remove-client-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-client-btn:hover {
+            background-color: #cc0000;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-container input {
+            padding-right: 40px;
+        }
+
+        .password-toggle-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #2574fc;
+        }
+
+        .password-toggle-icon:hover {
+            color: #004d95;
         }
     </style>
 </head>
@@ -78,96 +174,261 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">QoSTracer</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showHistory()">Previous Test</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Features</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            IP Address
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="navigateToIPv4()">IPv4</a></li>
+                            <li><a class="dropdown-item" href="#">IPv6</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <!-- IPv6 SSH Connectivity Form -->
-    <div class="container">
-        <h1>Test IPv6 SSH Connectivity</h1>
-        <p>Please enter the details to test SSH connectivity using IPv6.</p>
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Form Container -->
+        <div class="form-container">
+            <form id="ssh-form">
+                <div class="form-row">
+                    <!-- Server Form -->
+                    <div class="server-form">
+                        <h3>QoS Server Credentials (IPv6)</h3>
+                        <div class="form-group">
+                            <label for="server-ip">QoS Server IPv6 Address</label>
+                            <input type="text" id="server-ip" placeholder="Enter QoS Server IPv6 (e.g., 2001:0db8:85a3:0000:0000:8a2e:0370:7334)">
+                        </div>
 
-        <form id="ssh-form">
-            <div class="form-group">
-                <label for="server-ip">QoS Server IPv6 Address</label>
-                <input type="text" id="server-ip" placeholder="Enter IPv6 (e.g., 2001:db8::1)">
-            </div>
+                        <div class="form-group">
+                            <label for="server-username">SSH Username</label>
+                            <input type="text" id="server-username" placeholder="Enter SSH username for QoS Server">
+                        </div>
 
-            <div class="form-group">
-                <label for="server-username">SSH Username</label>
-                <input type="text" id="server-username" placeholder="Enter SSH username for QoS Server">
-            </div>
+                        <div class="form-group password-container">
+                            <label for="server-password">SSH Password</label>
+                            <input type="password" id="server-password" placeholder="Enter SSH password for QoS Server">
+                            <i class="fas fa-eye password-toggle-icon" onclick="togglePasswordVisibility('server-password', this)"></i>
+                        </div>
+                    </div>
 
-            <div class="form-group">
-                <label for="server-password">SSH Password</label>
-                <input type="password" id="server-password" placeholder="Enter SSH password for QoS Server">
-            </div>
+                    <!-- Default Client Form -->
+                    <div class="client-form">
+                        <h3>Client Credentials (IPv6)</h3>
+                        <div class="form-group">
+                            <label for="client-ip">Client IPv6 Address</label>
+                            <input type="text" class="client-ip" placeholder="Enter Client IPv6 (e.g., 2001:0db8:85a3:0000:0000:8a2e:0370:7335)">
+                        </div>
 
-            <div class="form-group">
-                <label for="client-ip">Client IPv6 Address</label>
-                <input type="text" id="client-ip" placeholder="Enter IPv6 (e.g., 2001:db8::2)">
-            </div>
+                        <div class="form-group">
+                            <label for="client-username">SSH Username</label>
+                            <input type="text" class="client-username" placeholder="Enter SSH username for Client">
+                        </div>
 
-            <div class="form-group">
-                <label for="client-username">SSH Username</label>
-                <input type="text" id="client-username" placeholder="Enter SSH username for Client">
-            </div>
+                        <div class="form-group password-container">
+                            <label for="client-password">SSH Password</label>
+                            <input type="password" class="client-password" placeholder="Enter SSH password for Client">
+                            <i class="fas fa-eye password-toggle-icon" onclick="togglePasswordVisibility(this.parentElement.querySelector('.client-password'), this)"></i>
+                        </div>
+                    </div>
 
-            <div class="form-group">
-                <label for="client-password">SSH Password</label>
-                <input type="password" id="client-password" placeholder="Enter SSH password for Client">
-            </div>
+                    <!-- Add Client Button -->
+                    <button type="button" class="add-client-btn" onclick="addClientForm()">Add Another Client</button>
+                </div>
 
-            <button type="button" class="btn-submit" onclick="testSSH()">Submit Configuration</button>
-        </form>
+                <!-- Submit Button -->
+                <button type="button" onclick="testSSH()">Submit Configuration</button>
+            </form>
 
-        <div id="result" class="result-box"></div>
+            <div id="result" class="result-box"></div>
+        </div>
     </div>
 
     <!-- Bootstrap JS & Dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function testSSH() {
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        
+        // Auto-fill QoS Server IPv6 Address from URL
+        const serverIpFromUrl = getQueryParam('ip');
+        if (serverIpFromUrl) {
+            document.getElementById('server-ip').value = serverIpFromUrl;
+        }
+        
+        function addClientForm() {
+            const formRow = document.querySelector(".form-row");
+            const clientForms = document.querySelectorAll(".client-form");
+            const clientCount = clientForms.length + 1;
+    
+            if (clientCount > 3) {
+                alert("Maximum of 3 clients allowed");
+                return;
+            }
+    
+            const clientForm = document.createElement("div");
+            clientForm.classList.add("client-form");
+            clientForm.innerHTML = `
+                <h3>Client ${clientCount} Credentials (IPv6)</h3>
+                <div class="form-group">
+                    <label for="client-ip">Client IPv6 Address</label>
+                    <input type="text" class="client-ip" placeholder="Enter Client IPv6 (e.g., 2001:0db8:85a3:0000:0000:8a2e:0370:7335)">
+                </div>
+    
+                <div class="form-group">
+                    <label for="client-username">SSH Username</label>
+                    <input type="text" class="client-username" placeholder="Enter SSH username for Client">
+                </div>
+    
+                <div class="form-group password-container">
+                    <label for="client-password">SSH Password</label>
+                    <input type="password" class="client-password" placeholder="Enter SSH password for Client">
+                    <i class="fas fa-eye password-toggle-icon" onclick="togglePasswordVisibility(this.parentElement.querySelector('.client-password'), this)"></i>
+                </div>
+    
+                <button type="button" class="remove-client-btn" onclick="removeClientForm(this)">×</button>
+            `;
+    
+            formRow.insertBefore(clientForm, document.querySelector(".add-client-btn"));
+        }
+    
+        function removeClientForm(button) {
+            const clientForms = document.querySelectorAll(".client-form");
+            if (clientForms.length > 1) {
+                button.parentElement.remove();
+                document.querySelectorAll(".client-form h3").forEach((h3, index) => {
+                    h3.textContent = `Client ${index + 1} Credentials (IPv6)`;
+                });
+            } else {
+                alert("You must have at least one client");
+            }
+        }
+    
+        function togglePasswordVisibility(passwordField, icon) {
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    
+        async function testSSH() {
             const serverIp = document.getElementById("server-ip").value;
             const serverUsername = document.getElementById("server-username").value;
             const serverPassword = document.getElementById("server-password").value;
-            const clientIp = document.getElementById("client-ip").value;
-            const clientUsername = document.getElementById("client-username").value;
-            const clientPassword = document.getElementById("client-password").value;
-
-            if (!serverIp || !serverUsername || !serverPassword || !clientIp || !clientUsername || !clientPassword) {
-                document.getElementById("result").innerText = "❌ Please enter all credentials!";
-                document.getElementById("result").style.color = "red";
+            const resultElement = document.getElementById("result");
+    
+            if (!serverIp || !serverUsername || !serverPassword) {
+                resultElement.innerText = "❌ Please fill all fields for QoS Server!";
+                resultElement.style.color = "red";
                 return;
             }
-
-            fetch('/test_ssh_ipv6', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    server_ip: serverIp,
-                    server_username: serverUsername,
-                    server_password: serverPassword,
-                    client_ip: clientIp,
-                    username: clientUsername,
-                    password: clientPassword
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("result").innerText = data.message;
-                document.getElementById("result").style.color = data.status === "success" ? "green" : "red";
-
-                if (data.status === "success") {
-                    window.location.href = "/index12";
+    
+            const clientForms = document.querySelectorAll(".client-form");
+            const clients = Array.from(clientForms).map((form, index) => {
+                return {
+                    client_ip: form.querySelector(".client-ip").value,
+                    username: form.querySelector(".client-username").value,
+                    password: form.querySelector(".client-password").value,
+                    client_number: index + 1
+                };
+            }).filter(client => client.client_ip && client.username && client.password);
+    
+            if (clients.length === 0) {
+                resultElement.innerText = "❌ Please configure at least one client!";
+                resultElement.style.color = "red";
+                return;
+            }
+    
+            try {
+                const response = await fetch('/test_ssh', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        server_ip: serverIp,
+                        server_username: serverUsername,
+                        server_password: serverPassword,
+                        clients: clients
+                    })
+                });
+    
+                const data = await response.json();
+    
+                if (data.status === "error") {
+                    let errorMessage = "❌ SSH Connection Errors:";
+                    if (data.server_error) {
+                        errorMessage += "\n- QoS Server: " + data.server_error;
+                    }
+                    if (data.failed_clients && data.failed_clients.length > 0) {
+                        data.failed_clients.forEach(clientError => {
+                            errorMessage += `\n- Client ${clientError.client_number}: ${clientError.error || "Connection failed"}`;
+                        });
+                    }
+                    resultElement.innerText = errorMessage;
+                    resultElement.style.color = "red";
+                    resultElement.style.whiteSpace = "pre-line";
+                } else {
+                    resultElement.innerText = "✅ " + data.message;
+                    resultElement.style.color = "green";
+    
+                    const historyEntry = {
+                        serverIp,
+                        serverUsername,
+                        clients,
+                        date: new Date().toLocaleString(),
+                        status: "success"
+                    };
+    
+                    let history = JSON.parse(localStorage.getItem("sshHistory")) || [];
+                    history.push(historyEntry);
+                    localStorage.setItem("sshHistory", JSON.stringify(history));
+    
+                    const clientCount = clients.length;
+                    let redirectUrl;
+                    if (clientCount === 1) {
+                        redirectUrl = "/index2";
+                    } else if (clientCount === 2) {
+                        redirectUrl = "/index22";
+                    } else if (clientCount === 3) {
+                        redirectUrl = "/index222";
+                    } else {
+                        redirectUrl = "/index2";
+                    }
+                    window.location.href = `${redirectUrl}?ip=${encodeURIComponent(serverIp)}`;
                 }
-            })
-            .catch(error => {
-                document.getElementById("result").innerText = "❌ Error: " + error;
-                document.getElementById("result").style.color = "red";
-            });
+            } catch (error) {
+                resultElement.innerText = "❌ SSH Test Error: " + error.message;
+                resultElement.style.color = "red";
+                console.error("Error:", error);
+            }
+        }
+    
+        function navigateToIPv4() {
+            window.location.href = "/index"; // Assuming this is the IPv4 page
         }
     </script>
 </body>

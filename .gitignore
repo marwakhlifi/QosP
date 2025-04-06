@@ -1,0 +1,5 @@
+
+# Environment files
+.env
+*.key
+__pycache__/

@@ -50,13 +50,3 @@ def test_ssh():
                 failed_tests.append(f"Client {i + 1}")
         return jsonify({"status": "error", "message": f"❌ SSH Connection Failed for: {', '.join(failed_tests)}!"})
 
-@ssh_bp.route('/get_debug_info', methods=['POST'])
-def get_debug_info():
-    hgw_ip = "192.168.1.1"
-    command = f"ssh admin@{hgw_ip} getDebugInformation -A"
-    try:
-        result = subprocess.check_output(command, shell=True)
-        return f"<pre>{result.decode()}</pre>"
-    except subprocess.CalledProcessError as e:
-        return f"Error executing command: {e}"
-    
