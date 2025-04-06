@@ -9,9 +9,14 @@ import threading
 import re
 import queue
 import smtplib
+import matplotlib
+matplotlib.use('Agg')  # Use Agg backend for non-GUI rendering
+import tempfile
+
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
+from email.mime.image import MIMEImage
+import matplotlib.pyplot as plt  # Importing the plotting library
 
 # Initialize scheduler
 scheduler = BackgroundScheduler()
@@ -62,6 +67,33 @@ def parse_iperf_output(output):
         "raw_output": output
     }
 
+def plot_bandwidth_graph(bandwidths, intervals, job_id):
+    """Plot bandwidth graph from parsed iPerf results"""
+    try:
+        # Create a temporary directory if it doesn't exist
+        temp_dir = os.path.join(tempfile.gettempdir(), 'iperf_graphs')
+        if not os.path.exists(temp_dir):
+            os.makedirs(temp_dir)
+        
+        # Plot bandwidth over time
+        plt.figure(figsize=(10, 6))
+        plt.plot(intervals, bandwidths, marker='o', linestyle='-', color='b')
+        plt.xlabel('Interval (seconds)')
+        plt.ylabel('Bandwidth (Mbps)')
+        plt.title(f"iPerf Test Bandwidth Results for Job {job_id}")
+        plt.grid(True)
+        plt.tight_layout()
+        
+        # Save the plot as an image
+        plot_filename = f"{job_id}_bandwidth_plot.png"
+        plot_path = os.path.join(temp_dir, plot_filename)
+        plt.savefig(plot_path)
+        plt.close()  # Close the plot to avoid memory issues
+        return plot_path
+    except Exception as e:
+        current_app.logger.error(f"Error generating graph: {str(e)}")
+        return None
+
 def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, duration, data_size, unit):
     """Execute iPerf test for all client IPs"""
     try:
@@ -96,12 +128,18 @@ def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, dura
                 "metrics": parsed_results
             })
 
-        # Update DB with results
+        # Generate the graph for bandwidth
+        intervals = results[0]['metrics']['intervals']
+        bandwidths = results[0]['metrics']['bandwidths']
+        graph_path = plot_bandwidth_graph(bandwidths, intervals, job_id)
+
+        # Update DB with results and graph path
         mongo.db.iperf_jobs.update_one(
             {'job_id': job_id},
             {'$set': {
                 'status': 'completed',
                 'results': results,
+                'graph_path': graph_path,
                 'completion_time': datetime.now()
             }}
         )
@@ -114,7 +152,7 @@ def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, dura
             body += f"Client IP: {result['client_ip']}\n"
             body += f"Raw Output:\n{result['raw_output']}\n\n"
 
-        send_email(subject, body, user_email)
+        send_email(subject, body, user_email, graph_path)
 
         return True, results
         
@@ -126,8 +164,8 @@ def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, dura
         )
         return False, str(e)
 
-def send_email(subject, body, to_email):
-    """Send email with test results"""
+def send_email(subject, body, to_email, image_path=None):
+    """Send email with test results and optional image attachment"""
     try:
         # Sender and receiver email addresses
         sender_email = "maroukhlifi15@gmail.com"
@@ -141,6 +179,13 @@ def send_email(subject, body, to_email):
 
         # Attach the body with the msg
         msg.attach(MIMEText(body, 'plain'))
+
+        # Attach the image if provided
+        if image_path and os.path.exists(image_path):
+            with open(image_path, 'rb') as img_file:
+                img = MIMEImage(img_file.read())
+                img.add_header('Content-Disposition', 'attachment', filename=os.path.basename(image_path))
+                msg.attach(img)
 
         # Set up the server (Gmail SMTP server)
         server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -241,3 +286,4 @@ def execute_iperf_test_wrapper(app, job_id, server_ip, client_ips, port, dscp, p
             current_app.logger.info(f"iPerf test completed successfully for job {job_id}")
         else:
             current_app.logger.error(f"iPerf test failed for job {job_id}: {results}")
+            
