@@ -8,6 +8,10 @@ import logging
 import threading
 import re
 import queue
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 
 # Initialize scheduler
 scheduler = BackgroundScheduler()
@@ -68,9 +72,8 @@ def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, dura
         iperf_path = current_app.config.get('IPERF_PATH', r'C:\Users\marou\Downloads\iperf3\iperf-3.1.3-win64\iperf3.exe')
         
         for ip in client_ips:
-            cmd = [iperf_path, '-c', server_ip, '-p', str(port), '-S', str(dscp)]
+            cmd = [iperf_path, '-c', server_ip, '-p', str(port), '-S', str(dscp)]            
 
-            
             if protocol.upper() == 'UDP':
                 cmd.append('-u')
                 cmd.extend(['-b', '100M'])  # Default bandwidth for UDP
@@ -103,6 +106,16 @@ def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, dura
             }}
         )
         
+        # Send email to the user with the test results
+        user_email = mongo.db.iperf_jobs.find_one({'job_id': job_id})['email']  # Get user's email from DB
+        subject = f"iPerf Test Results for Job {job_id}"
+        body = f"Test results for iPerf test job {job_id}:\n\n"
+        for result in results:
+            body += f"Client IP: {result['client_ip']}\n"
+            body += f"Raw Output:\n{result['raw_output']}\n\n"
+
+        send_email(subject, body, user_email)
+
         return True, results
         
     except Exception as e:
@@ -112,6 +125,36 @@ def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, dura
             {'$set': {'status': 'failed', 'error': str(e)}}
         )
         return False, str(e)
+
+def send_email(subject, body, to_email):
+    """Send email with test results"""
+    try:
+        # Sender and receiver email addresses
+        sender_email = "maroukhlifi15@gmail.com"
+        receiver_email = to_email
+
+        # Set up the MIME
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = receiver_email
+        msg['Subject'] = subject
+
+        # Attach the body with the msg
+        msg.attach(MIMEText(body, 'plain'))
+
+        # Set up the server (Gmail SMTP server)
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()  # Enable security
+        server.login(sender_email, 'zjekskhpzzfneqwz')  # App password
+
+        # Send email
+        text = msg.as_string()
+        server.sendmail(sender_email, receiver_email, text)
+        server.quit()
+
+        logging.info(f"Email sent successfully to {to_email}")
+    except Exception as e:
+        logging.error(f"Failed to send email: {str(e)}")
 
 @bp.route('/tempo')
 def tempo():
@@ -198,21 +241,3 @@ def execute_iperf_test_wrapper(app, job_id, server_ip, client_ips, port, dscp, p
             current_app.logger.info(f"iPerf test completed successfully for job {job_id}")
         else:
             current_app.logger.error(f"iPerf test failed for job {job_id}: {results}")
-
-@bp.route('/test-status/<job_id>', methods=['GET'])
-def test_status(job_id):
-    """Check status of a scheduled test"""
-    job = mongo.db.iperf_jobs.find_one({'job_id': job_id}, {'_id': 0})
-    if not job:
-        return jsonify({'error': 'Job not found'}), 404
-    
-    # Check if the job is still in scheduler
-    scheduled_job = scheduler.get_job(job_id)
-    if scheduled_job:
-        return jsonify({
-            'status': 'scheduled',
-            'scheduled_time': job['scheduled_time'].isoformat(),
-            'details': job
-        })
-    
-    return jsonify(job)
