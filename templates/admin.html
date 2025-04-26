@@ -7,41 +7,53 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #eeeaf2 0%, #2575fc 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: rgba(25, 27, 49, 1);
             color: white;
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 0;
             padding: 0;
         }
+    
         .navbar {
             background: rgba(0, 0, 0, 0.7);
             padding: 1rem;
             border-radius: 25px;
             margin-bottom: 50px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(138, 14, 176, 0.5);
         }
+    
         .navbar a {
             color: white;
             text-decoration: none;
             margin: 0 1.5rem;
             font-weight: bold;
         }
+    
         .navbar a:hover {
-            color: #2575fc;
+            color: #7e20e3;
         }
+    
         .container {
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(17, 2, 19, 0.6);
             border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 30px rgba(37, 1, 50, 0.7);
             margin: 20px auto;
             width: 60%;
+            max-height: 90vh;
+            overflow-y: auto;
         }
+    
         h1 {
             font-size: 3rem;
             margin-bottom: 20px;
         }
+    
         button {
             background: #540cee;
             color: white;
@@ -50,14 +62,18 @@
             border-radius: 20px;
             transition: background 0.3s ease;
             margin: 20px 10px;
+            cursor: pointer;
         }
+    
         button:hover {
             background: #2575fc;
             transform: scale(1.05);
         }
+    
         .hidden {
             display: none;
         }
+    
         input, select {
             margin-bottom: 20px;
             width: 80%;
@@ -66,31 +82,26 @@
             border-radius: 10px;
             outline: none;
         }
-        .alert {
+    
+        #userTable, #deviceTable {
+            max-height: 400px;
+            overflow-y: auto;
             margin: 20px auto;
-            width: 80%;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
+            width: 90%;
         }
-        .alert-success {
-            background-color: #28a745;
-            color: white;
-        }
-        .alert-error {
-            background-color: #dc3545;
-            color: white;
-        }
+    
         table {
             margin: 20px auto;
             width: 90%;
             border-collapse: collapse;
         }
+    
         th, td {
             padding: 10px;
             border: 1px solid white;
             text-align: center;
         }
+    
         .delete-btn {
             background-color: #dc3545;
             color: white;
@@ -99,9 +110,11 @@
             border-radius: 5px;
             cursor: pointer;
         }
+    
         .delete-btn:hover {
             background-color: #c82333;
         }
+    
         .edit-btn {
             background-color: #ffc107;
             color: black;
@@ -110,46 +123,84 @@
             border-radius: 5px;
             cursor: pointer;
         }
+    
         .edit-btn:hover {
             background-color: #e0a800;
         }
+    
         #togglePasswordBtn {
-        background-color: #28a745;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-left: 10px;
-    }
-    #togglePasswordBtn:hover {
-        background-color: #218838;
-    }
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    
+        #togglePasswordBtn:hover {
+            background-color: #218838;
+        }
+    
+        /* ALERTES PERSONNALISÉES - Bootstrap compatible */
+        .alert {
+            margin: 20px auto;
+            width: 80%;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+    
+        .alert-success {
+            background-color: #28a745 !important;
+            color: white !important;
+            border-left: 5px solid #1e7e34;
+        }
+    
+        .alert-error,
+        .alert-danger {
+            background-color: #dc3545 !important;
+            color: white !important;
+            border-left: 5px solid #bd2130;
+        }
+    
+        .alert-warning {
+            background-color: #ffc107 !important;
+            color: black !important;
+            border-left: 5px solid #d39e00;
+        }
+    
+        .alert-info {
+            background-color: #17a2b8 !important;
+            color: white !important;
+            border-left: 5px solid #117a8b;
+        }
+    
+        .btn-close {
+            filter: invert(1);
+        }
     </style>
+    
 </head>
 <body>
-<div class="navbar">
-    <a href="/">Home</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#contact">Contact</a>
-</div>
+
 
 <div class="container">
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message[0] if message[0] else 'info' }} alert-dismissible fade show" role="alert">
+                {{ message[1] if message[1] else message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
     <h1>Admin Panel</h1>
     <button onclick="toggleUserForm()">Add User</button>
     <div id="userForm" class="hidden">
-        <form method="POST" action="{{ url_for('add_user') }}">
+        <form method="POST" action="{{ url_for('auth.add_user') }}">
             <input type="text" name="username" placeholder="Username" required><br>
             <input type="password" name="password" placeholder="Password" required><br>
             <button type="submit">Add User</button>
@@ -158,7 +209,7 @@
 
     <button onclick="toggleDeviceForm()">Add Device</button>
     <div id="deviceForm" class="hidden">
-        <form method="POST" action="{{ url_for('add_device') }}">
+        <form method="POST" action="{{ url_for('auth.add_device') }}">
             <input type="text" name="mac" placeholder="MAC Address" required><br>
             <input type="text" name="ip" placeholder="Management Address" required><br>
             <button type="submit">Add Device</button>
@@ -185,7 +236,7 @@
                    
                     <td>{{ user.is_admin }}</td>
                     <td>
-                        <form method="POST" action="{{ url_for('delete_user', username=user.username) }}" style="display:inline;">
+                        <form method="POST" action="{{ url_for('auth.delete_user', username=user.username) }}" style="display:inline;">
                             <button type="submit" class="delete-btn">Delete</button>
                         </form>
                         <button onclick="toggleEditUserForm('{{ user.username }}')" class="edit-btn">Edit</button>
@@ -214,7 +265,7 @@
                     <td>{{ device.ip }}</td>
                    
                     <td>
-                        <form method="POST" action="{{ url_for('delete_device', mac=device.mac) }}" style="display:inline;">
+                        <form method="POST" action="{{ url_for('auth.delete_device', mac=device.mac) }}" style="display:inline;">
                             <button type="submit" class="delete-btn">Delete</button>
                         </form>
                         <button onclick="toggleEditDeviceForm('{{ device.mac }}')" class="edit-btn">Edit</button>
@@ -227,7 +278,7 @@
 
     <!-- Formulaire d'édition des utilisateurs -->
     <div id="editUserForm" class="hidden">
-        <form method="POST" action="{{ url_for('edit_user') }}">
+        <form method="POST" action="{{ url_for('auth.edit_user') }}">
             <input type="hidden" name="original_username" id="original_username">
             <input type="text" name="username" id="edit_username" placeholder="Username" required><br>
             <input type="password" name="password" id="edit_password" placeholder="Password" required><br>
@@ -239,7 +290,7 @@
 
     <!-- Formulaire d'édition des dispositifs -->
     <div id="editDeviceForm" class="hidden">
-        <form method="POST" action="{{ url_for('edit_device') }}">
+        <form method="POST" action="{{ url_for('auth.edit_device') }}">
             <input type="hidden" name="original_mac" id="original_mac">
             <input type="text" name="mac" id="edit_mac" placeholder="MAC Address" required><br>
             <input type="text" name="ip" id="edit_ip" placeholder="Management Address" required><br>
@@ -247,7 +298,7 @@
         </form>
     </div>
 
-    <a href="{{ url_for('admin_logout') }}">
+    <a href="{{ url_for('auth.admin_logout') }}">
         <button>Logout</button>
     </a>
 </div>

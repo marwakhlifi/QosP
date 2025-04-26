@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Network Tools - Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-light: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      --bg-dark: linear-gradient(135deg, #0f172a, #1e293b);
+      --card-light: #ffffffdd;
+      --card-dark: #1e293bcc;
+      --text-light: #1f2937;
+      --text-dark: #e5e7eb;
+      --blue: #2563eb;
+      --hover-shadow-light: rgba(37, 99, 235, 0.3);
+      --hover-shadow-dark: rgba(148, 163, 184, 0.2);
+    }
+
+    body {
+      background: var(--bg-light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-light);
+      min-height: 100vh;
+      transition: all 0.5s ease;
+    }
+
+    body.dark-mode {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    h1 {
+      text-align: center;
+      margin: 50px 0;
+      font-weight: bold;
+      color: var(--blue);
+    }
+
+    .card {
+      background: var(--card-light);
+      border: none;
+      border-radius: 20px;
+      padding: 25px;
+      transition: all 0.4s ease;
+      color: var(--text-light);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 12px 30px var(--hover-shadow-light);
+    }
+
+    body.dark-mode .card {
+      background: var(--card-dark);
+      color: var(--text-dark);
+      box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
+    }
+
+    body.dark-mode .card:hover {
+      box-shadow: 0 12px 30px var(--hover-shadow-dark);
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    .card-text {
+      color: inherit;
+    }
+
+    .btn-custom {
+      background: linear-gradient(90deg, #3b82f6, #6366f1);
+      border: none;
+      color: white;
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: background 0.3s ease-in-out;
+    }
+
+    .btn-custom:hover {
+      background: linear-gradient(90deg, #2563eb, #4f46e5);
+    }
+
+    .icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+      color: #3b82f6;
+    }
+
+    @media (max-width: 768px) {
+      .card {
+        margin-bottom: 20px;
+      }
+    }
+
+    /* Toggle Switch iOS Style */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 55px;
+      height: 30px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #2563eb;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(25px);
+    }
+
+    .mode-label {
+      font-weight: bold;
+      color: var(--text-light);
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .mode-label {
+      color: var(--text-dark);
+    }
+    /* Visual Indicators */
+.visual-indicator {
+  margin: 15px 0;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.status-dot.connected {
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.status-dot.warning {
+  background-color: #f59e0b;
+  box-shadow: 0 0 8px #f59e0b;
+}
+
+.status-dot.error {
+  background-color: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+}
+
+.bandwidth-meter {
+  background-color: #e5e7eb;
+  border-radius: 10px;
+  height: 10px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+body.dark-mode .bandwidth-meter {
+  background-color: #374151;
+}
+
+.meter-bar {
+  background: linear-gradient(90deg, #3b82f6, #6366f1);
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+.bandwidth-meter span {
+  font-size: 0.8rem;
+  display: block;
+  text-align: center;
+}
+  </style>
+</head>
+<body>
+  <!-- Toggle Theme Switch -->
+  <div class="theme-toggle">
+    <span class="mode-label" id="modeLabel">Light Mode</span>
+    <label class="switch">
+      <input type="checkbox" id="themeSwitch">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="container">
+    <h1><i class="fas fa-network-wired"></i> Network Tools Dashboard</h1>
+    <div class="row justify-content-center">
+      <!-- Ping Card -->
+      
+      <div class="row justify-content-center">
+        <!-- QoS Test (iperf) Card - MOVED TO FIRST POSITION -->
+        <div class="col-md-4 mb-4">
+          <div class="card text-center">
+            <div class="icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 20V14M12 20V10M20 20V4" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 14L7 11M12 10L9 7M20 4L17 7M4 14L1 11M12 10L15 7M20 4L23 7" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h5 class="card-title">QoS Test </h5>
+            <p class="card-text">Measure network quality, bandwidth, and performance metrics.</p>
+            <div class="visual-indicator mb-3">
+              <div class="bandwidth-meter">
+                <div class="meter-bar" style="width: 75%"></div>
+                <span>75% Bandwidth</span>
+              </div>
+            </div>
+            <a href="{{ url_for('qos.qostype') }}" class="btn btn-custom">Go to QoS Test</a>
+          </div>
+        </div>
+                <!-- SSH Test Card -->
+                <div class="col-md-4 mb-4">
+                  <div class="card text-center">
+                    <div class="icon">
+                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 17V7C4 5.89543 4.89543 5 6 5H18C19.1046 5 20 5.89543 20 7V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17Z" stroke="#3b82f6" stroke-width="2"/>
+                        <path d="M8 12H16" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="12" cy="12" r="1" fill="#3b82f6"/>
+                        <circle cx="8" cy="12" r="1" fill="#3b82f6"/>
+                        <circle cx="16" cy="12" r="1" fill="#3b82f6"/>
+                      </svg>
+                    </div>
+                    <h5 class="card-title">SSH Test</h5>
+                    <p class="card-text">Test SSH connectivity to remote servers with secure shell protocol.</p>
+                    <div class="visual-indicator mb-3">
+                      <div class="connection-status">
+                        <div class="status-dot connected"></div>
+                        <span>Secure Connection</span>
+                      </div>
+                    </div>
+                    <a href="{{ url_for('iperf.index') }}" class="btn btn-custom">Go to SSH Test</a>
+                  </div>
+                </div>
+                <!-- Telnet Test Card -->
+                <div class="col-md-4 mb-4">
+                  <div class="card text-center">
+                    <div class="icon">
+                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 17V7C4 5.89543 4.89543 5 6 5H18C19.1046 5 20 5.89543 20 7V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17Z" stroke="#3b82f6" stroke-width="2"/>
+                        <path d="M8 12H16" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M12 9V15" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <h5 class="card-title">Telnet Test</h5>
+                    <p class="card-text">Check Telnet connectivity to network devices and legacy systems.</p>
+                    <div class="visual-indicator mb-3">
+                      <div class="connection-status">
+                        <div class="status-dot warning"></div>
+                        <span>Unencrypted Protocol</span>
+                      </div>
+                    </div>
+                      <a href="{{ url_for('telnet.telnet_test_page') }}" class="btn btn-custom">Go to Telnet Test</a>
+                  </div>
+                </div>
+                
+        <!-- Other Tools Card -->
+<div class="col-md-4 mb-4">
+  <div class="card text-center">
+    <div class="icon">
+      <i class="fas fa-toolbox"></i> <!-- Logo for "Other Tools" -->
+    </div>
+    <h5 class="card-title">Other Tools</h5>
+    <p class="card-text">
+      Access additional network tools such as Ping, Traceroute, and Nslookup for comprehensive network diagnostics.
+    </p>
+    <a href="{{ url_for('nslookup.other_page') }}" class="btn btn-custom">Go to Other Tools</a>
+  </div>
+</div>
+
+</div>
+    </div>
+  </div>
+
+
+  <!-- JS for Theme Switching -->
+  <script>
+    const switchInput = document.getElementById('themeSwitch');
+    const body = document.body;
+    const modeLabel = document.getElementById('modeLabel');
+
+    switchInput.addEventListener('change', () => {
+      body.classList.toggle('dark-mode');
+      modeLabel.textContent = body.classList.contains('dark-mode') ? 'Dark Mode' : 'Light Mode';
+    });
+  </script>
+
+  <!-- Bootstrap JS & FontAwesome -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+</body>
+</html>

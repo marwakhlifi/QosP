@@ -6,6 +6,9 @@ import queue
 import os
 import json
 import re
+import ipaddress
+import time
+
 
 # Global queue to store iPerf results
 iperf_result_queue = queue.Queue()
@@ -35,19 +38,61 @@ def index222():
 @iperf_bp.route('/index3')
 def index3():
     result = session.get("iperf_result", "No results available.")
+    telnet_result = session.get("telnet_result", "No telnet results available.")
     device_id = "ID_DU_DISPOSITIF"
     return render_template('index3.html', result=result, device_id=device_id)
 
 @iperf_bp.route('/index33')
 def index33():
     results = session.get("iperf_results", [])
+    telnet_result = session.get("telnet_result", "No telnet results available.")
+    
     return render_template('index33.html', results=results)
 
 @iperf_bp.route('/index333')
 def index333():
     results = session.get("iperf_results", [])
+    telnet_result = session.get("telnet_result", "No telnet results available.")
     return render_template('index333.html', results=results)
 
+
+def run_telnet_command(host="192.168.1.1", command="wlctl -i wl0 pktq_stats"):
+    try:
+        # Create a temporary script file
+        script_content = f"""
+open {host}
+root
+sah
+{command}
+exit
+"""
+        script_path = "telnet_script.txt"
+        with open(script_path, "w", encoding='utf-8') as f:
+            f.write(script_content)
+        
+        # Run telnet with the script
+        result = subprocess.run(
+            ["telnet", "-f", script_path],
+            capture_output=True,
+            text=True,
+            encoding='utf-8',
+            timeout=15,
+            shell=True  # Required for Windows
+        )
+        
+        # Clean up
+        os.remove(script_path)
+        
+        if result.returncode != 0:
+            return f"Error: {result.stderr}"
+        return result.stdout
+        
+    except subprocess.TimeoutExpired:
+        return "Telnet command timed out"
+    except Exception as e:
+        return f"Telnet error: {str(e)}"
+    
+    
 def run_iperf_command(cmd, result_queue):
     try:
         process = subprocess.run(cmd, capture_output=True, text=True)
@@ -84,7 +129,18 @@ def run_iperf():
     if not os.path.exists(iperf_path):
         return jsonify({"status": "error", "message": f"iperf3 executable not found at {iperf_path}"}), 500
 
-    cmd = [iperf_path, "-c", server_ip, "-p", port, "-S", dscp_tos]
+    # Check if IP is IPv6
+    def is_ipv6(ip):
+        try:
+            return isinstance(ipaddress.ip_address(ip), ipaddress.IPv6Address)
+        except ValueError:
+            return False
+
+    cmd = [iperf_path]
+    if is_ipv6(server_ip) or is_ipv6(client_ip):
+        cmd.append("-6")
+    cmd.extend(["-c", server_ip, "-p", port, "-S", dscp_tos])
+    
     if direction == "downlink":
         cmd.append("-R")
     if protocol == "udp":
@@ -99,8 +155,13 @@ def run_iperf():
     thread.start()
     thread.join()
     result = iperf_result_queue.get()
+    telnet_result = run_telnet_command()
     session["iperf_result"] = result
+    session["telnet_result"] = telnet_result
     return jsonify({"status": "success", "redirect_url": url_for('iperf.index3')})
+
+
+
 
 @iperf_bp.route('/run_iperf_two_clients', methods=['POST'])
 def run_iperf_two_clients():
@@ -138,8 +199,17 @@ def run_iperf_two_clients():
     if not os.path.exists(iperf_path):
         return jsonify({"status": "error", "message": f"iperf3 executable not found at {iperf_path}"}), 500
 
+    def is_ipv6(ip):
+        try:
+            return isinstance(ipaddress.ip_address(ip), ipaddress.IPv6Address)
+        except ValueError:
+            return False
+
     def build_iperf_command(client_ip, port, dscp_tos, protocol, direction, taille, duration):
-        cmd = [iperf_path, "-c", server_ip, "-p", port, "-S", dscp_tos]
+        cmd = [iperf_path]
+        if is_ipv6(server_ip) or is_ipv6(client_ip):
+            cmd.append("-6")
+        cmd.extend(["-c", server_ip, "-p", port, "-S", dscp_tos])
         if direction == "downlink":
             cmd.append("-R")
         if protocol == "udp":
@@ -151,24 +221,36 @@ def run_iperf_two_clients():
         cmd.extend(["-i", "1"])
         return cmd
 
-    results = []
-    cmd1 = build_iperf_command(client_ip1, port1, dscp_tos1, protocol1, direction1, taille1, duration1)
-    print(f"Running command for client 1: {' '.join(cmd1)}")
-    thread1 = threading.Thread(target=run_iperf_command, args=(cmd1, iperf_result_queue))
-    thread1.start()
-    thread1.join()
-    result1 = iperf_result_queue.get()
-    results.append({"client": "client1", "result": result1.replace('\n', '<br>')})
+    result_queue1 = queue.Queue()
+    result_queue2 = queue.Queue()
 
+    cmd1 = build_iperf_command(client_ip1, port1, dscp_tos1, protocol1, direction1, taille1, duration1)
     cmd2 = build_iperf_command(client_ip2, port2, dscp_tos2, protocol2, direction2, taille2, duration2)
+
+    print(f"Running command for client 1: {' '.join(cmd1)}")
     print(f"Running command for client 2: {' '.join(cmd2)}")
-    thread2 = threading.Thread(target=run_iperf_command, args=(cmd2, iperf_result_queue))
+
+    thread1 = threading.Thread(target=run_iperf_command, args=(cmd1, result_queue1))
+    thread2 = threading.Thread(target=run_iperf_command, args=(cmd2, result_queue2))
+    
+    thread1.start()
     thread2.start()
+
+    thread1.join()
     thread2.join()
-    result2 = iperf_result_queue.get()
-    results.append({"client": "client2", "result": result2.replace('\n', '<br>')})
+
+    # Récupérer les résultats
+    result1 = result_queue1.get()
+    result2 = result_queue2.get()
+    telnet_result = run_telnet_command()
+
+    results = [
+        {"client": "client1", "result": result1.replace('\n', '<br>')},
+        {"client": "client2", "result": result2.replace('\n', '<br>')}
+    ]
 
     session["iperf_results"] = results
+    session["telnet_result"] = telnet_result
     return jsonify({"status": "success", "redirect_url": url_for('iperf.index33')})
 
 @iperf_bp.route('/run_iperf_three_clients', methods=['POST'])
@@ -218,8 +300,18 @@ def run_iperf_three_clients():
     if not os.path.exists(iperf_path):
         return jsonify({"status": "error", "message": f"iperf3 executable not found at {iperf_path}"}), 500
 
+    # Check if IP is IPv6
+    def is_ipv6(ip):
+        try:
+            return isinstance(ipaddress.ip_address(ip), ipaddress.IPv6Address)
+        except ValueError:
+            return False
+
     def build_iperf_command(client_ip, port, dscp_tos, protocol, direction, taille, duration):
-        cmd = [iperf_path, "-c", server_ip, "-p", port, "-S", dscp_tos]
+        cmd = [iperf_path]
+        if is_ipv6(server_ip) or is_ipv6(client_ip):
+            cmd.append("-6")
+        cmd.extend(["-c", server_ip, "-p", port, "-S", dscp_tos])
         if direction == "downlink":
             cmd.append("-R")
         if protocol == "udp":
@@ -231,32 +323,43 @@ def run_iperf_three_clients():
         cmd.extend(["-i", "1"])
         return cmd
 
-    results = []
+    result_queue1 = queue.Queue()
+    result_queue2 = queue.Queue()
+    result_queue3 = queue.Queue()
+
     cmd1 = build_iperf_command(client_ip1, port1, dscp_tos1, protocol1, direction1, taille1, duration1)
-    print(f"Running command for client 1: {' '.join(cmd1)}")
-    thread1 = threading.Thread(target=run_iperf_command, args=(cmd1, iperf_result_queue))
-    thread1.start()
-    thread1.join()
-    result1 = iperf_result_queue.get()
-    results.append({"client": "client1", "result": result1.replace('\n', '<br>')})
-
     cmd2 = build_iperf_command(client_ip2, port2, dscp_tos2, protocol2, direction2, taille2, duration2)
-    print(f"Running command for client 2: {' '.join(cmd2)}")
-    thread2 = threading.Thread(target=run_iperf_command, args=(cmd2, iperf_result_queue))
-    thread2.start()
-    thread2.join()
-    result2 = iperf_result_queue.get()
-    results.append({"client": "client2", "result": result2.replace('\n', '<br>')})
-
     cmd3 = build_iperf_command(client_ip3, port3, dscp_tos3, protocol3, direction3, taille3, duration3)
+
+    print(f"Running command for client 1: {' '.join(cmd1)}")
+    print(f"Running command for client 2: {' '.join(cmd2)}")
     print(f"Running command for client 3: {' '.join(cmd3)}")
-    thread3 = threading.Thread(target=run_iperf_command, args=(cmd3, iperf_result_queue))
+
+    thread1 = threading.Thread(target=run_iperf_command, args=(cmd1, result_queue1))
+    thread2 = threading.Thread(target=run_iperf_command, args=(cmd2, result_queue2))
+    thread3 = threading.Thread(target=run_iperf_command, args=(cmd3, result_queue3))
+    
+    thread1.start()
+    thread2.start()
     thread3.start()
+
+    thread1.join()
+    thread2.join()
     thread3.join()
-    result3 = iperf_result_queue.get()
-    results.append({"client": "client3", "result": result3.replace('\n', '<br>')})
+
+    result1 = result_queue1.get()
+    result2 = result_queue2.get()
+    result3 = result_queue3.get()
+    telnet_result = run_telnet_command()
+
+    results = [
+        {"client": "client1", "result": result1.replace('\n', '<br>')},
+        {"client": "client2", "result": result2.replace('\n', '<br>')},
+        {"client": "client3", "result": result3.replace('\n', '<br>')}
+    ]
 
     session["iperf_results"] = results
+    session["telnet_result"] = telnet_result
     return jsonify({"status": "success", "redirect_url": url_for('iperf.index333')})
 
 def parse_iperf_output(output):
@@ -331,3 +434,10 @@ def generate_graph_data_three_clients():
         return jsonify({"status": "error", "message": "No data available"}), 400
     graph_data = parse_iperf_output_multi(outputs)
     return jsonify(json.loads(graph_data))
+
+
+
+@iperf_bp.route('/clientscount')
+def count():
+    return render_template('clientscount.html')
+

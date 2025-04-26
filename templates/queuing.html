@@ -1,0 +1,368 @@
+<div class="card">
+    <h2 class="card-title"><i class="fas fa-stream card-icon"></i> Queuing/Scheduling Test</h2>
+    <p class="card-text">Verify traffic prioritization by sending simultaneous VO, VI, BK, and BE flows.</p>
+
+    <!-- Run Test Button -->
+
+
+    <div class="test-config">
+        <div class="config-section">
+            <h3><i class="fas fa-server"></i> Server Configuration</h3>
+            <div class="form-group">
+                <label>Server IP:</label>
+                <input type="text" class="form-control" placeholder="Enter the server IP Address" >
+                <label>Client IP:</label>
+                <input type="text" class="form-control" placeholder="192.168.1.X" >
+            </div>
+            <div class="form-group">
+                <label>Test Duration (seconds):</label>
+                <input type="number" class="form-control" value="30" min="10" max="300">
+            </div>
+        </div>
+
+        <div class="traffic-flows">
+            <h3><i class="fas fa-network-wired"></i> Traffic Flows Configuration</h3>
+            <!-- Flow 1 - VO -->
+            <div class="flow-card" data-type="VO">
+                <div class="flow-header">
+                    <span class="flow-badge" style="background: #3b82f6;">VO</span>
+                    <h4>Voice Traffic (EF)</h4>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Port:</label>
+                        <input type="number" class="form-control" value="5001">
+                    </div>
+                    <div class="form-group">
+                        <label>DSCP Value:</label>
+                        <select class="form-control dscp-select">
+                            <option value="184" selected>EF (46) - TOS: 0xB8</option>
+                            <option value="136">AF41 (34) - TOS: 0x88</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>protocol :</label>
+                        <select class="form-control protocol">
+                            <option value="TCP" selected>TCP</option>
+                            <option value="UDP">UDP</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- Flow 2 - VI -->
+            <div class="flow-card" data-type="VI">
+                <div class="flow-header">
+                    <span class="flow-badge" style="background: #8b5cf6;">VI</span>
+                    <h4>Video Traffic (AF41)</h4>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Port:</label>
+                        <input type="number" class="form-control" value="5002">
+                    </div>
+                    <div class="form-group">
+                        <label>DSCP Value:</label>
+                        <select class="form-control dscp-select">
+                            <option value="136" selected>AF41 (34) - TOS: 0x88</option>
+                            <option value="104">AF31 (26) - TOS: 0x68</option>
+                            <option value="40">AF11 (10) - TOS: 0x28</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                            <label>protocol :</label>
+                            <select class="form-control protocol">
+                                <option value="TCP" selected>TCP</option>
+                                <option value="UDP">UDP</option>
+                            </select>
+                        </div>
+                </div>
+            </div>
+            <!-- Flow 3 - BK -->
+            <div class="flow-card" data-type="BK">
+                <div class="flow-header">
+                    <span class="flow-badge" style="background: #64748b;">BK</span>
+                    <h4>Background Traffic</h4>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Port:</label>
+                        <input type="number" class="form-control" value="5003">
+                    </div>
+                    <div class="form-group">
+                        <label>DSCP Value:</label>
+                        <select class="form-control dscp-select">
+                            <option value="32" selected>CS1 (8) - TOS: 0x20</option>
+                            <option value="0">CS0 (0) - TOS: 0x00</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>protocol :</label>
+                        <select class="form-control protocol">
+                            <option value="TCP" selected>TCP</option>
+                            <option value="UDP">UDP</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- Flow 4 - BE -->
+            <div class="flow-card" data-type="BE">
+                <div class="flow-header">
+                    <span class="flow-badge" style="background: #94a3b8;">BE</span>
+                    <h4>Best Effort Traffic</h4>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Port:</label>
+                        <input type="number" class="form-control" value="5004">
+                    </div>
+                    <div class="form-group">
+                        <label>DSCP Value:</label>
+                        <select class="form-control dscp-select">
+                            <option value="0" selected>CS0 (0) - TOS: 0x00</option>
+                            <option value="32">CS1 (8) - TOS: 0x20</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>protocol :</label>
+                        <select class="form-control protocol">
+                            <option value="TCP" selected>TCP</option>
+                            <option value="UDP">UDP</option>
+                        </select>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="test-results" style="display: none;">
+        <h3><i class="fas fa-chart-bar"></i> Test Results</h3>
+        <div class="results-grid">
+            <!-- Will be populated dynamically -->
+        </div>
+    </div>
+    <div class="test-actions">
+        <button class="btn btn-run" id="run-test-btn"><i class="fas fa-play"></i> Run Queuing Test</button>
+    </div>
+</div>
+
+<style>
+/* General Styles */
+.card {
+    background: var(--card-light);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+body.dark-mode .card {
+    background: var(--card-dark);
+}
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: var(--blue);
+}
+.card-text {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Test Actions */
+.test-actions {
+    text-align: center;
+    margin: 20px 0;
+}
+.btn-run {
+    background: linear-gradient(90deg, #10b981, #34d399);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+}
+.btn-run:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
+}
+
+/* Config Section */
+.config-section {
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+.config-section h3 {
+    margin-top: 0;
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Traffic Flows */
+.traffic-flows {
+    display: grid;
+    gap: 15px;
+}
+.flow-card {
+    background: var(--card-light);
+    border-radius: 10px;
+    padding: 15px;
+    border-left: 4px solid var(--blue);
+    transition: all 0.3s ease;
+}
+body.dark-mode .flow-card {
+    background: var(--card-dark);
+}
+.flow-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px var(--hover-shadow-light);
+}
+body.dark-mode .flow-card:hover {
+    box-shadow: 0 5px 15px var(--hover-shadow-dark);
+}
+.flow-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.flow-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+.form-group {
+    margin-bottom: 10px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background: var(--card-light);
+    color: var(--text-light);
+}
+body.dark-mode .form-control {
+    border-color: #374151;
+    background: var(--card-dark);
+    color: var(--text-dark);
+}
+
+/* Results Section */
+.test-results {
+    margin-top: 30px;
+    animation: fadeIn 0.5s ease;
+}
+.results-grid {
+    display: grid;
+    gap: 15px;
+}
+.result-card {
+    background: var(--card-light);
+    border-radius: 10px;
+    padding: 15px;
+    border-left: 4px solid var(--green);
+    transition: all 0.3s ease;
+}
+body.dark-mode .result-card {
+    background: var(--card-dark);
+}
+.result-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px var(--hover-shadow-light);
+}
+body.dark-mode .result-card:hover {
+    box-shadow: 0 5px 15px var(--hover-shadow-dark);
+}
+.result-metric {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+.result-metric span {
+    font-weight: bold;
+    color: var(--blue);
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Run test button functionality
+    document.getElementById('run-test-btn').addEventListener('click', function() {
+        const serverIp = document.querySelector('.test-config input[type="text"]').value;
+        const clientIp = document.querySelectorAll('.test-config input[type="text"]')[1].value;
+        const duration = document.querySelector('.test-config input[type="number"]').value;
+
+        // Collect flow configurations
+        const flows = {};
+        document.querySelectorAll('.flow-card').forEach(flowCard => {
+            const type = flowCard.dataset.type;
+            flows[type] = {
+                port: flowCard.querySelector('input[type="number"]').value,
+                dscp: flowCard.querySelector('.dscp-select').value,
+                protocol: flowCard.querySelector('.protocol').value
+            };
+        });
+
+        // Show loading state
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running Test...';
+        this.disabled = true;
+
+        // Send data to server
+        fetch('/run_queuing_test', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                serverIp: serverIp,
+                clientIp: clientIp,
+                duration: duration,
+                ...flows
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                window.location.href = data.redirect_url;
+            } else {
+                alert('Error: ' + data.message);
+                this.innerHTML = '<i class="fas fa-play"></i> Run Queuing Test';
+                this.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while running the test');
+            this.innerHTML = '<i class="fas fa-play"></i> Run Queuing Test';
+            this.disabled = false;
+        });
+    });
+});
+</script>

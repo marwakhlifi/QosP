@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QoS Testing Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      :root {
+        --bg-light: linear-gradient(135deg, #f5f7fa, #e4e8f0);
+        --bg-dark: linear-gradient(135deg, #0f172a, #1e293b);
+        --card-light: #ffffffdd;
+        --card-dark: #1e293bcc;
+        --text-light: #1f2937;
+        --text-dark: #e5e7eb;
+        --blue: #2563eb;
+        --purple: #7c3aed;
+        --green: #10b981;
+        --orange: #f59e0b;
+        --hover-shadow-light: rgba(37, 99, 235, 0.3);
+        --hover-shadow-dark: rgba(148, 163, 184, 0.2);
+      }
+
+      body {
+        background: var(--bg-light);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        color: var(--text-light);
+        min-height: 100vh;
+        transition: all 0.5s ease;
+        margin: 0;
+        padding: 0;
+      }
+
+      body.dark-mode {
+        background: var(--bg-dark);
+        color: var(--text-dark);
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        padding-top: 20px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        background: linear-gradient(90deg, var(--blue), var(--purple));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+
+      .card {
+        background: var(--card-light);
+        border: none;
+        border-radius: 16px;
+        padding: 25px;
+        transition: all 0.4s ease;
+        color: var(--text-light);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--blue), var(--purple));
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px var(--hover-shadow-light);
+      }
+
+      body.dark-mode .card {
+        background: var(--card-dark);
+        color: var(--text-dark);
+        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.05);
+      }
+
+      body.dark-mode .card:hover {
+        box-shadow: 0 15px 30px var(--hover-shadow-dark);
+      }
+
+      .card-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-icon {
+        font-size: 1.5rem;
+        color: var(--blue);
+      }
+
+      .card-text {
+        color: inherit;
+        opacity: 0.9;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .btn {
+        background: linear-gradient(90deg, var(--blue), var(--purple));
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+      }
+
+      .btn i {
+        font-size: 1rem;
+      }
+
+      .test-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+      }
+
+      .test-card {
+        background: var(--card-light);
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body.dark-mode .test-card {
+        background: var(--card-dark);
+      }
+
+      .test-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px var(--hover-shadow-light);
+      }
+
+      body.dark-mode .test-card:hover {
+        box-shadow: 0 10px 20px var(--hover-shadow-dark);
+      }
+
+      .test-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        gap: 12px;
+      }
+
+      .test-icon {
+        font-size: 1.8rem;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--blue);
+      }
+
+      .test-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin: 0;
+      }
+
+      .test-desc {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-bottom: 20px;
+        flex-grow: 1;
+      }
+
+      .test-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .status-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .status-ready {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--green);
+      }
+
+      .visualization {
+        height: 120px;
+        margin: 20px 0;
+        background: rgba(59, 130, 246, 0.05);
+        border-radius: 8px;
+        display: flex;
+        align-items: flex-end;
+        padding: 10px;
+        gap: 5px;
+      }
+
+      .bar {
+        flex-grow: 1;
+        background: linear-gradient(to top, var(--blue), var(--purple));
+        border-radius: 4px 4px 0 0;
+        transition: height 0.5s ease;
+        position: relative;
+      }
+
+      .bar-label {
+        position: absolute;
+        bottom: -25px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 0.7rem;
+        color: var(--text-light);
+      }
+
+      body.dark-mode .bar-label {
+        color: var(--text-dark);
+      }
+
+      .metrics {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        font-size: 0.85rem;
+      }
+
+      .metric {
+        text-align: center;
+      }
+
+      .metric-value {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 3px;
+      }
+
+      .metric-label {
+        opacity: 0.7;
+        font-size: 0.75rem;
+      }
+
+      /* Toggle Switch */
+      .theme-toggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: var(--blue);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(24px);
+      }
+
+      .mode-icon {
+        font-size: 1.2rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .card-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 20px;
+        }
+        
+        .header-right {
+          width: 100%;
+          justify-content: space-between;
+        }
+      }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>QoSTracer</h1>
+            <div class="header-right">
+                <div class="theme-toggle">
+                    <i class="fas fa-sun mode-icon"></i>
+                    <label class="switch">
+                        <input type="checkbox" id="theme-toggle">
+                        <span class="slider"></span>
+                    </label>
+                    <i class="fas fa-moon mode-icon"></i>
+                </div>
+            </div>
+        </header>
+        
+        <h2 style="margin: 40px 0 20px; font-size: 1.5rem; font-weight: 600;">QoS Test Modules</h2>
+        
+        <div class="test-grid">
+            <div class="test-card">
+                <div class="test-header">
+                    <div class="test-icon">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <div>
+                        <h3 class="test-title">DSCP Marking</h3>
+                        <span class="status-badge status-ready">Ready</span>
+                    </div>
+                </div>
+                <p class="test-desc">Verify if DSCP field is correctly marked and recognized at L2/L3 levels.</p>
+                <div class="test-actions">
+                    
+                    <a href="{{ url_for('auth.view_devices') }}" class="btn btn-custom">Run Test</a>
+                    <i class="fas fa-ellipsis-v" style="opacity: 0.5; cursor: pointer;"></i>
+                </div>
+            </div>
+            
+            <div class="test-card">
+                <div class="test-header">
+                    <div class="test-icon">
+                        <i class="fas fa-stream"></i>
+                    </div>
+                    <div>
+                        <h3 class="test-title">Queuing/Scheduling</h3>
+                        <span class="status-badge status-ready">Ready</span>
+                    </div>
+                </div>
+                <p class="test-desc">Test priority handling of simultaneous traffic flows (VO, VI, BK, BE).</p>
+                <div class="test-actions">
+                  <a href="{{ url_for('qos.queuing') }}" class="btn btn-custom">Run Test</a>
+                    <i class="fas fa-ellipsis-v" style="opacity: 0.5; cursor: pointer;"></i>
+                </div>
+            </div>
+            
+            <div class="test-card">
+                <div class="test-header">
+                    <div class="test-icon">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <div>
+                        <h3 class="test-title">WMM Testing</h3>
+                        <span class="status-badge status-ready">Ready</span>
+                    </div>
+                </div>
+                <p class="test-desc">Verify QoS implementation in Wi-Fi frames (WMM tagging and prioritization).</p>
+                <div class="test-actions">
+                    <button class="btn"><i class="fas fa-search"></i> Run Test</button>
+                    <i class="fas fa-ellipsis-v" style="opacity: 0.5; cursor: pointer;"></i>
+                </div>
+            </div>
+            
+            <div class="test-card">
+                <div class="test-header">
+                    <div class="test-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div>
+                        <h3 class="test-title">Control Packets</h3>
+                        <span class="status-badge status-ready">Ready</span>
+                    </div>
+                </div>
+                <p class="test-desc">Measure priority of control packets (ARP, DHCP, ICMP) under load.</p>
+                <div class="test-actions">
+                    <button class="btn"><i class="fas fa-search"></i> Run Test</button>
+                    <i class="fas fa-ellipsis-v" style="opacity: 0.5; cursor: pointer;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="card-grid">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-tachometer-alt card-icon"></i> Network Overview</h2>
+                <p class="card-text">Real-time monitoring of your network QoS performance and traffic prioritization.</p>
+                
+                <div class="visualization">
+                    <div class="bar" style="height: 80%;">
+                        <span class="bar-label">VO</span>
+                    </div>
+                    <div class="bar" style="height: 65%;">
+                        <span class="bar-label">VI</span>
+                    </div>
+                    <div class="bar" style="height: 40%;">
+                        <span class="bar-label">BE</span>
+                    </div>
+                    <div class="bar" style="height: 30%;">
+                        <span class="bar-label">BK</span>
+                    </div>
+                </div>
+                
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-value">12ms</div>
+                        <div class="metric-label">Avg Latency</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">0.2%</div>
+                        <div class="metric-label">Packet Loss</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">94%</div>
+                        <div class="metric-label">QoS Accuracy</div>
+                    </div>
+                </div>
+                
+                <button class="btn"><i class="fas fa-sync-alt"></i> Refresh Data</button>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-info-circle card-icon"></i> Quick Actions</h2>
+                <p class="card-text">Run comprehensive tests or focus on specific QoS components.</p>
+                
+                <div style="display: grid; gap: 12px; margin-top: 20px;">
+                    <button class="btn" style="justify-content: center;"><i class="fas fa-play"></i> Run Full Test Suite</button>
+                    <button class="btn" style="justify-content: center; background: linear-gradient(90deg, var(--green), #34d399);">
+                        <i class="fas fa-chart-line"></i> Generate Report
+                    </button>
+                    <button class="btn" style="justify-content: center; background: linear-gradient(90deg, var(--orange), #f97316);">
+                        <i class="fas fa-cog"></i> Configuration
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        
+        // Check for saved theme preference or use preferred color scheme
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            body.classList.add('dark-mode');
+            themeToggle.checked = true;
+        }
+        
+        themeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+        
+        // Simulate dynamic data updates
+        function updateMetrics() {
+            const bars = document.querySelectorAll('.bar');
+            bars.forEach(bar => {
+                const randomHeight = Math.floor(Math.random() * 30) + 50;
+                bar.style.height = `${randomHeight}%`;
+            });
+            
+            setTimeout(updateMetrics, 3000);
+        }
+        
+        // Start the simulation
+        updateMetrics();
+    </script>
+</body>
+</html>

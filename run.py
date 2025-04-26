@@ -1,8 +1,7 @@
 # run.py
 import sys
 import os
-print("Current sys.path:", sys.path)
-print("Current working directory:", os.getcwd())
+
 
 from app import create_app
 

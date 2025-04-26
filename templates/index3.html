@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../static/style3.css"/>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* Existing styles */
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #eeeaf2 0%, #2575fc 100%);
@@ -72,6 +73,66 @@
             display: none;
         }
 
+        /* New style for the Run QoS Check button */
+        .run-qos-btn {
+            margin-top: 40px;
+            width: 100%;
+            max-width: 300px;
+        }
+        .results-container {
+            width: 100%;
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .results-table th {
+            background-color: #e9ecef;
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .results-table td {
+            padding: 8px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .results-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .results-table tr:hover {
+            background-color: #e9ecef;
+        }
+        
+        .status-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+
     </style>
 </head>
 <body>
@@ -99,28 +160,49 @@
                 <button type="submit" class="btn btn-primary">Get HGW Debug Info</button>
             </form>
         </div>  
+        <h2>HGW Packet Queue Stats</h2>
+        <div class="result" id="telnetResult">
+            {{ telnet_result }}
+        </div>
     </div>
 
-<!-- Bouton Logout -->
-<button class="btn" onclick="logout()">Logout</button>
+    <!-- Logout Button -->
+
+    <!-- New "Run QoS Check" Button -->
+    <button id="runQosCheck" class="btn btn-primary">Run QoS Check</button>
+    <div id="telnetTestResult" style="margin-top: 10px;"></div>
+
+    <!-- Placeholder for displaying the result -->
+    <div class="result" id="qosResult" style="display: none; margin-top: 20px;"></div>
+    <div id="qosResults" style="margin-top: 20px; white-space: pre-wrap; display: none;"></div>
+    <div id="qosResultsContainer" class="results-container" style="display: none;">
+
+        <h3>QoS Packet Queue Statistics</h3>
+        <div id="qosResults"></div>
+        <table id="resultsTable" class="results-table">
+            <!-- Table will be populated by JavaScript -->
+        </table>
+
+    </div>
+</div>
     <script>
         function showGraph() {
             const graph = document.getElementById('iperfGraph');
             const showButton = document.querySelector('.btn:nth-of-type(1)');
             const hideButton = document.querySelector('.btn:nth-of-type(2)');
-
+    
             // Show the graph and hide the 'Show Visualization' button
             graph.style.display = 'block';
             showButton.style.display = 'none';
             hideButton.style.display = 'inline-block';  // Show the 'Hide Visualization' button
-
+    
             // Fetch and display the graph data
             fetch('/generate_graph_data')
                 .then(response => response.json())
                 .then(data => {
                     const intervals = data.intervals;
                     const bandwidths = data.bandwidths;
-
+    
                     const ctx = document.getElementById('iperfGraph').getContext('2d');
                     new Chart(ctx, {
                         type: 'line',
@@ -168,42 +250,106 @@
                 })
                 .catch(error => console.error('Error fetching graph data:', error));
         }
-
+    
         function hideGraph() {
             const graph = document.getElementById('iperfGraph');
             const showButton = document.querySelector('.btn:nth-of-type(1)');
             const hideButton = document.querySelector('.btn:nth-of-type(2)');
-
+    
             // Hide the graph and show the 'Show Visualization' button again
             graph.style.display = 'none';
             showButton.style.display = 'inline-block';
             hideButton.style.display = 'none';
         }
-        function logout() {
-        const device_id = "ID_DU_DISPOSITIF"; // Remplacez par l'ID du dispositif actuel
-
-        // Envoyer une requête pour déverrouiller le dispositif
-        fetch('/unlock_device', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ device_id: device_id }) // Envoyer l'ID du dispositif
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Rediriger vers hello.html après avoir déverrouillé le dispositif
-                window.location.href = '/hello.html';
-            } else {
-                alert('Erreur lors du déverrouillage du dispositif.');
-            }
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            alert('Une erreur s\'est produite.');
+    
+        document.getElementById('runQosCheck').addEventListener('click', function() {
+            console.log("Run QoS Check button clicked!");
+            
+            const telnetResultDiv = document.getElementById('telnetTestResult');
+            const qosResultsContainer = document.getElementById('qosResultsContainer');
+            const qosResultsDiv = document.getElementById('qosResults');
+            const resultsTable = document.getElementById('resultsTable');
+            
+            // Clear previous results
+            telnetResultDiv.textContent = 'Testing Telnet connection...';
+            telnetResultDiv.className = 'status-message';
+            qosResultsContainer.style.display = 'none';
+            
+            // First test Telnet connection
+            fetch('/test_telnet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || `Server responded with status ${response.status}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Telnet test response:", data);
+                if (data.status === 'success') {
+                    telnetResultDiv.textContent = '✓ Telnet connection successful! Running QoS check...';
+                    telnetResultDiv.className = 'status-message success';
+                    
+                    // Show the results container
+                    qosResultsContainer.style.display = 'block';
+                    
+                    // Process and display the results
+                    if (data.output && data.output.length > 0) {
+                        // Create table headers from the first line
+                        const headers = data.output[1].split(',').map(h => h.trim());
+                        
+                        // Create table
+                        let tableHtml = '<thead><tr>';
+                        headers.forEach(header => {
+                            tableHtml += `<th>${header}</th>`;
+                        });
+                        tableHtml += '</tr></thead><tbody>';
+                        
+                        // Add data rows (skip the first two lines which are headers)
+                        for (let i = 2; i < data.output.length; i++) {
+                            const row = data.output[i];
+                            if (row.trim() === '') continue;
+                            
+                            const cells = row.split(',');
+                            tableHtml += '<tr>';
+                            cells.forEach(cell => {
+                                tableHtml += `<td>${cell.trim()}</td>`;
+                            });
+                            tableHtml += '</tr>';
+                        }
+                        
+                        tableHtml += '</tbody>';
+                        resultsTable.innerHTML = tableHtml;
+                        
+                        // Also show raw output in the div
+                        qosResultsDiv.innerHTML = '<pre>' + data.output.join('\n') + '</pre>';
+                    } else {
+                        qosResultsDiv.textContent = 'No QoS data received';
+                    }
+                    
+                    telnetResultDiv.textContent = '✓ QoS check completed successfully!';
+                } else {
+                    throw new Error(data.message || 'Telnet test failed');
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                telnetResultDiv.textContent = `✗ Error: ${error.message}`;
+                telnetResultDiv.className = 'status-message error';
+                
+                // Show the error in results container if it was opened
+                qosResultsContainer.style.display = 'block';
+                qosResultsDiv.textContent = `Error details: ${error.message}`;
+            });
         });
-    }
+
+
     </script>
 </body>
+<a href="{{ url_for('auth.logout_and_release_devices') }}" class="btn" style="margin-top: 20px;">Logout</a>
+
 </html>

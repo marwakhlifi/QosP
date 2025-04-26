@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NSLookup Tool</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-light: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      --bg-dark: linear-gradient(135deg, #0f172a, #1e293b);
+      --card-light: #ffffffdd;
+      --card-dark: #1e293bcc;
+      --text-light: #1f2937;
+      --text-dark: #e5e7eb;
+      --blue: #2563eb;
+      --hover-shadow-light: rgba(37, 99, 235, 0.3);
+      --hover-shadow-dark: rgba(148, 163, 184, 0.2);
+    }
+
+    body {
+      background: var(--bg-light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-light);
+      min-height: 100vh;
+      transition: all 0.5s ease;
+    }
+
+    body.dark-mode {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .tool-header {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .tool-header h1 {
+      font-weight: bold;
+      color: var(--blue);
+    }
+
+    .tool-card {
+      background: var(--card-light);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    body.dark-mode .tool-card {
+      background: var(--card-dark);
+      box-shadow: 0 4px 6px rgba(255, 255, 255, 0.05);
+    }
+
+    .form-label {
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #3b82f6, #6366f1);
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #2563eb, #4f46e5);
+    }
+
+    .results-card {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .record-item {
+      padding: 10px;
+      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 5px;
+    }
+
+    body.dark-mode .record-item {
+      border-bottom: 1px solid #374151;
+    }
+
+    .record-type {
+      font-weight: bold;
+      color: #3b82f6;
+    }
+
+    .record-value {
+      font-family: monospace;
+    }
+
+    .record-ttl {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    .error-message {
+      color: #ef4444;
+      font-weight: bold;
+    }
+
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .back-button {
+      margin-bottom: 20px;
+    }
+
+    /* Toggle Switch iOS Style */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 55px;
+      height: 30px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #2563eb;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(25px);
+    }
+
+    .mode-label {
+      font-weight: bold;
+      color: var(--text-light);
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .mode-label {
+      color: var(--text-dark);
+    }
+  </style>
+</head>
+<body>
+  <!-- Toggle Theme Switch -->
+  <div class="theme-toggle">
+    <span class="mode-label" id="modeLabel">Light Mode</span>
+    <label class="switch">
+      <input type="checkbox" id="themeSwitch">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="container">
+    <a href="{{ url_for('nslookup.network_tools_dashboard') }}" class="btn btn-outline-secondary back-button">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+
+    <div class="tool-header">
+      <h1><i class="fas fa-search-location"></i> NSLookup Tool</h1>
+      <p class="lead">Query DNS records for any domain</p>
+    </div>
+
+    <div class="tool-card">
+      <form id="nslookupForm">
+        <div class="mb-3">
+          <label for="domainInput" class="form-label">Domain Name</label>
+          <input type="text" class="form-control" id="domainInput" placeholder="example.com" required>
+        </div>
+        <div class="mb-3">
+          <label for="recordType" class="form-label">Record Type</label>
+          <select class="form-select" id="recordType">
+            <option value="A">A (Address)</option>
+            <option value="AAAA">AAAA (IPv6 Address)</option>
+            <option value="MX">MX (Mail Exchange)</option>
+            <option value="CNAME">CNAME (Canonical Name)</option>
+            <option value="TXT">TXT (Text)</option>
+            <option value="NS">NS (Name Server)</option>
+            <option value="SOA">SOA (Start of Authority)</option>
+            <option value="PTR">PTR (Pointer)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-search"></i> Lookup
+        </button>
+      </form>
+
+      <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>Querying DNS records...</p>
+      </div>
+
+      <div class="results-card" id="resultsCard">
+        <h4>Results for <span id="resultDomain"></span> (<span id="resultType"></span>)</h4>
+        <div id="recordsContainer"></div>
+        <div id="errorContainer" class="error-message"></div>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <h4><i class="fas fa-info-circle"></i> About NSLookup</h4>
+      <p>
+        NSLookup is a network administration command-line tool for querying the Domain Name System (DNS) 
+        to obtain domain name or IP address mapping, or other DNS records.
+      </p>
+      <h5>Common Record Types:</h5>
+      <ul>
+        <li><strong>A</strong> - Maps a domain name to an IPv4 address</li>
+        <li><strong>AAAA</strong> - Maps a domain name to an IPv6 address</li>
+        <li><strong>MX</strong> - Specifies mail exchange servers for the domain</li>
+        <li><strong>CNAME</strong> - Canonical name record (alias)</li>
+        <li><strong>TXT</strong> - Text record often used for verification or SPF</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- JS for Theme Switching -->
+  <script>
+    const switchInput = document.getElementById('themeSwitch');
+    const body = document.body;
+    const modeLabel = document.getElementById('modeLabel');
+
+    // Check for saved theme preference
+    if (localStorage.getItem('darkMode') === 'true') {
+      body.classList.add('dark-mode');
+      switchInput.checked = true;
+      modeLabel.textContent = 'Dark Mode';
+    }
+
+    switchInput.addEventListener('change', () => {
+      body.classList.toggle('dark-mode');
+      const isDarkMode = body.classList.contains('dark-mode');
+      modeLabel.textContent = isDarkMode ? 'Dark Mode' : 'Light Mode';
+      localStorage.setItem('darkMode', isDarkMode);
+    });
+  </script>
+
+  <!-- Bootstrap JS & FontAwesome -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+
+  <!-- NSLookup Script -->
+  <script>
+    document.getElementById('nslookupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const domain = document.getElementById('domainInput').value.trim();
+      const recordType = document.getElementById('recordType').value;
+      
+      // Show loading spinner
+      document.getElementById('loadingSpinner').style.display = 'block';
+      document.getElementById('resultsCard').style.display = 'none';
+      document.getElementById('errorContainer').textContent = '';
+      
+      // Perform the lookup
+      fetch("{{ url_for('nslookup.perform_nslookup') }}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          domain: domain,
+          type: recordType
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Hide loading spinner
+        document.getElementById('loadingSpinner').style.display = 'none';
+        
+        // Display results
+        document.getElementById('resultDomain').textContent = data.domain;
+        document.getElementById('resultType').textContent = data.type;
+        
+        const recordsContainer = document.getElementById('recordsContainer');
+        recordsContainer.innerHTML = '';
+        
+        if (data.error) {
+          document.getElementById('errorContainer').textContent = data.error;
+        } else if (data.records && data.records.length > 0) {
+          data.records.forEach(record => {
+            const recordElement = document.createElement('div');
+            recordElement.className = 'record-item';
+            
+            const typeElement = document.createElement('span');
+            typeElement.className = 'record-type';
+            typeElement.textContent = data.type + ': ';
+            
+            const valueElement = document.createElement('span');
+            valueElement.className = 'record-value';
+            valueElement.textContent = record.value;
+            
+            const ttlElement = document.createElement('div');
+            ttlElement.className = 'record-ttl';
+            ttlElement.textContent = 'TTL: ' + record.ttl;
+            
+            recordElement.appendChild(typeElement);
+            recordElement.appendChild(valueElement);
+            recordElement.appendChild(ttlElement);
+            
+            recordsContainer.appendChild(recordElement);
+          });
+          
+          // Show reverse DNS if available
+          if (data.reverse_dns) {
+            const reverseElement = document.createElement('div');
+            reverseElement.className = 'record-item';
+            
+            const reverseType = document.createElement('span');
+            reverseType.className = 'record-type';
+            reverseType.textContent = 'PTR: ';
+            
+            const reverseValue = document.createElement('span');
+            reverseValue.className = 'record-value';
+            reverseValue.textContent = data.reverse_dns;
+            
+            reverseElement.appendChild(reverseType);
+            reverseElement.appendChild(reverseValue);
+            recordsContainer.appendChild(reverseElement);
+          }
+        } else {
+          document.getElementById('errorContainer').textContent = 'No records found';
+        }
+        
+        // Show results card
+        document.getElementById('resultsCard').style.display = 'block';
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('loadingSpinner').style.display = 'none';
+        document.getElementById('errorContainer').textContent = 'An error occurred while performing the lookup';
+        document.getElementById('resultsCard').style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

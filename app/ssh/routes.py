@@ -5,7 +5,6 @@ import subprocess
 import os
 import json
 
-# Chemin du fichier JSON pour stocker l'historique
 HISTORY_FILE = 'ssh_history.json'
 
 def load_history():
@@ -49,4 +48,5 @@ def test_ssh():
             if not client_test:
                 failed_tests.append(f"Client {i + 1}")
         return jsonify({"status": "error", "message": f"❌ SSH Connection Failed for: {', '.join(failed_tests)}!"})
+
 

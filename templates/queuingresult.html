@@ -1,0 +1,448 @@
+<!-- app/qoscheck/templates/qoscheck/queuingresult.html -->
+<div class="card">
+    <div class="results-header">
+        <div class="header-content">
+            <i class="fas fa-tachometer-alt header-icon"></i>
+            <h2 class="card-title">QoS Queuing Test Results</h2>
+            <p class="card-subtitle">Traffic Prioritization Analysis</p>
+        </div>
+
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+        {% for result in results %}
+        <div class="summary-card traffic-{{ result.type|lower }}">
+            <div class="summary-icon">
+                {% if result.type == 'VO' %}
+                <i class="fas fa-phone-alt"></i>
+                {% elif result.type == 'VI' %}
+                <i class="fas fa-video"></i>
+                {% elif result.type == 'BK' %}
+                <i class="fas fa-cloud-download-alt"></i>
+                {% else %}
+                <i class="fas fa-globe"></i>
+                {% endif %}
+            </div>
+            <div class="summary-content">
+                <h3>{{ result.type }} Traffic</h3>
+                <div class="summary-metrics">
+                    <div class="metric">
+                        <span class="metric-value">{{ "%.2f"|format(result.metrics.throughput) }}</span>
+                        <span class="metric-label">Mbps</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">{{ "%.2f"|format(result.metrics.jitter) }}</span>
+                        <span class="metric-label">ms Jitter</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">{{ "%.1f"|format(result.metrics.packet_loss) }}</span>
+                        <span class="metric-label">% Loss</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+        <div class="chart-container">
+            <h3><i class="fas fa-chart-line"></i> Throughput per Traffic Class (Mbps)</h3>
+            <canvas id="throughputChart"></canvas>
+        </div>
+        
+        <div class="chart-container">
+            <h3><i class="fas fa-wave-square"></i> Jitter per Traffic Class (ms)</h3>
+            <canvas id="jitterChart"></canvas>
+        </div>
+        
+        <div class="chart-container">
+            <h3><i class="fas fa-exclamation-triangle"></i> Packet Loss per Traffic Class (%)</h3>
+            <canvas id="lossChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Detailed Results -->
+    <div class="detailed-results">
+        <h3><i class="fas fa-file-alt"></i> Detailed Test Results</h3>
+        
+        <div class="result-tabs">
+            <div class="tab-buttons">
+                {% for result in results %}
+                <button class="tab-btn traffic-{{ result.type|lower }}" onclick="openTab(event, '{{ result.type }}')">
+                    {{ result.type }} Traffic
+                </button>
+                {% endfor %}
+            </div>
+            
+            {% for result in results %}
+            <div id="{{ result.type }}" class="tab-content traffic-{{ result.type|lower }}">
+                <div class="result-header">
+                    <div class="connection-info">
+                        <p><span class="info-label">Client:</span> {{ result.client_ip }}</p>
+                        <p><span class="info-label">Server:</span> {{ result.server_ip }}</p>
+                        <p><span class="info-label">Port:</span> {{ result.port }}</p>
+                    </div>
+                    <div class="qos-info">
+                        <p><span class="info-label">DSCP:</span> {{ result.dscp }}</p>
+                        <p><span class="info-label">Protocol:</span> {{ result.protocol|upper }}</p>
+                        
+                    </div>
+                </div>
+                <div class="result-output">
+                    <pre>{{ result.metrics.raw_output }}</pre>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="test-actions">
+        <button class="btn btn-back" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i> Back to Test Configuration
+        </button>
+        <button class="btn btn-export">
+            <i class="fas fa-file-export"></i> Export Results
+        </button>
+    </div>
+</div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Tab functionality
+function openTab(evt, tabName) {
+    const tabContents = document.getElementsByClassName("tab-content");
+    for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].style.display = "none";
+    }
+    
+    const tabButtons = document.getElementsByClassName("tab-btn");
+    for (let i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].className = tabButtons[i].className.replace(" active", "");
+    }
+    
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+// Show first tab by default
+document.querySelector(".tab-btn").click();
+
+// Create charts
+const chartData = {{ chart_data|tojson }};
+const colors = chartData.colors;
+
+// Throughput Chart
+new Chart(document.getElementById('throughputChart'), {
+    type: 'bar',
+    data: {
+        labels: chartData.types,
+        datasets: [{
+            label: 'Throughput (Mbps)',
+            data: chartData.throughputs,
+            backgroundColor: chartData.types.map(type => colors[type]),
+            borderColor: chartData.types.map(type => colors[type]),
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Mbps'
+                }
+            }
+        }
+    }
+});
+
+// Jitter Chart
+new Chart(document.getElementById('jitterChart'), {
+    type: 'bar',
+    data: {
+        labels: chartData.types,
+        datasets: [{
+            label: 'Jitter (ms)',
+            data: chartData.jitters,
+            backgroundColor: chartData.types.map(type => colors[type]),
+            borderColor: chartData.types.map(type => colors[type]),
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Milliseconds'
+                }
+            }
+        }
+    }
+});
+
+// Packet Loss Chart
+new Chart(document.getElementById('lossChart'), {
+    type: 'bar',
+    data: {
+        labels: chartData.types,
+        datasets: [{
+            label: 'Packet Loss (%)',
+            data: chartData.packet_losses,
+            backgroundColor: chartData.types.map(type => colors[type]),
+            borderColor: chartData.types.map(type => colors[type]),
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Percentage'
+                }
+            }
+        }
+    }
+});
+</script>
+
+<style>
+/* === Base Styles === */
+.card {
+    background: var(--card-light);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+body.dark-mode .card {
+    background: var(--card-dark);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* === Header Styles === */
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+body.dark-mode .results-header {
+    border-bottom-color: #374151;
+}
+.header-content {
+    flex: 1;
+}
+.header-icon {
+    font-size: 2.5rem;
+    color: #3b82f6;
+    margin-bottom: 15px;
+}
+.card-title {
+    font-size: 2rem;
+    color: #1e293b;
+    margin: 0;
+}
+body.dark-mode .card-title {
+    color: #f8fafc;
+}
+.card-subtitle {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 5px 0 0;
+}
+.header-logo img {
+    height: 80px;
+    opacity: 0.9;
+}
+
+/* === Summary Cards === */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.summary-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+body.dark-mode .summary-card {
+    background: #1e293b;
+}
+.summary-card:hover {
+    transform: translateY(-5px);
+}
+.summary-icon {
+    font-size: 2rem;
+    margin-right: 20px;
+    color: white;
+    background: #3b82f6;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.summary-content {
+    flex: 1;
+}
+.summary-content h3 {
+    margin: 0 0 10px;
+    font-size: 1.1rem;
+}
+.summary-metrics {
+    display: flex;
+    gap: 15px;
+}
+.metric {
+    text-align: center;
+}
+.metric-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: block;
+}
+.metric-label {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    display: block;
+}
+
+/* Type-specific colors */
+.traffic-vo .summary-icon { background: #3b82f6; }
+.traffic-vi .summary-icon { background: #8b5cf6; }
+.traffic-bk .summary-icon { background: #64748b; }
+.traffic-be .summary-icon { background: #10b981; }
+
+/* === Charts Section === */
+.charts-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+.chart-container {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+body.dark-mode .chart-container {
+    background: #1e293b;
+}
+.chart-container h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    color: #3b82f6;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+body.dark-mode .chart-container h3 {
+    color: #60a5fa;
+}
+
+/* === Detailed Results === */
+.detailed-results {
+    margin-bottom: 30px;
+}
+.detailed-results h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+body.dark-mode .detailed-results h3 {
+    color: #f8fafc;
+}
+
+/* Tab styling */
+.tab-buttons {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 20px;
+}
+body.dark-mode .tab-buttons {
+    border-bottom-color: #374151;
+}
+.tab-btn {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #64748b;
+    position: relative;
+    transition: all 0.3s ease;
+}
+.tab-btn:hover {
+    color: #3b82f6;
+}
+.tab-btn.active {
+    color: #3b82f6;
+}
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #3b82f6;
+}
+.tab-content {
+    display: none;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+body.dark-mode .tab-content {
+    background: #1e293b;
+}
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e5e7eb;
+}
+body.dark-mode .result-header {
+    border-bottom-color: #374151;
+}
+.info-label {
+    font-weight: 600;
+    color: #3b82f6;
+    display: inline-block;
+    width: 60px;
+}
+.result-output pre {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    margin: 0;
+    padding: 15px;
+    background: #f8faf

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSCP Marking | Network QoS Testing</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --gradient-start: #3b82f6;
+            --gradient-end: #6366f1;
+            --dark-text: #1f2937;
+            --light-bg: #f8fafc;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            color: var(--dark-text);
+            overflow-x: hidden;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin: 40px 0;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            height: 100px;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .brand-name {
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-top: 15px;
+            letter-spacing: 1px;
+            font-size: 1.8rem;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.85);
+            border: none;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(8px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 40px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .card-title {
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            position: relative;
+            padding-bottom: 15px;
+            text-align: center;
+        }
+
+        .card-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 4px;
+        }
+
+        .config-description {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .btn-custom {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            color: white;
+            padding: 20px 30px;
+            font-weight: 600;
+            border-radius: 14px;
+            margin: 15px auto;
+            width: 100%;
+            max-width: 300px;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(90deg, #2563eb, #4f46e5);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            color: white;
+        }
+
+        .btn-custom i {
+            margin-right: 12px;
+            font-size: 1.4rem;
+        }
+
+        .btn-description {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.9);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--primary-blue);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .feature-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        footer {
+            background:#b0d5fc;
+            color: #e2e8f0;
+            padding: 30px 0;
+            margin-top: 60px;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 30px 20px;
+            }
+            
+            .card-title {
+                font-size: 1.8rem;
+            }
+            
+            .btn-custom {
+                padding: 18px 25px;
+                font-size: 1rem;
+            }
+            
+            .feature-title {
+                font-size: 1.3rem;
+            }
+            
+            .feature-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo and Brand -->
+    <div class="logo-container">
+        <img src="https://cdn-icons-png.flaticon.com/512/2285/2285533.png" alt="QoS Testing Logo" class="logo">
+    </div>
+
+    <div class="container">
+        <!-- Main Card -->
+        <div class="card">
+            <h2 class="card-title">Select Your Test Configuration</h2>
+            <p class="config-description">
+                Choose from our pre-configured test scenarios to evaluate your network performance with varying client loads.
+                Each configuration allows you to specify DSCP values for traffic prioritization and QoS analysis.
+            </p>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-md-6 text-center">
+                            <a href="{{ url_for('iperf.index2') }}" class="btn btn-custom">
+                                <i class="fas fa-link"></i> 1 Server - 1 Client
+                            </a>
+                            <p class="btn-description">
+                                Basic point-to-point performance test with single traffic stream
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <a href="{{ url_for('iperf.index22') }}" class="btn btn-custom">
+                                <i class="fas fa-project-diagram"></i> 1 Server - 2 Clients
+                            </a>
+                            <p class="btn-description">
+                                Concurrent testing with two clients for load evaluation
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <a href="{{ url_for('iperf.index222') }}" class="btn btn-custom">
+                                <i class="fas fa-network-wired"></i> 1 Server - 3 Clients
+                            </a>
+                            <p class="btn-description">
+                                High-load scenario with three simultaneous connections
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <a href="{{ url_for('auto.tempo') }}" class="btn btn-custom">
+                                
+                            <i class="far fa-calendar-alt"></i> Schedule Test
+                            </a>
+
+                            <p class="btn-description">
+                                Set up automated recurring tests for continuous monitoring
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Comprehensive Metrics</h3>
+                    <p class="feature-text">
+                        Measure bandwidth, jitter, packet loss, and other critical network performance indicators with millisecond precision.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h3 class="feature-title">DSCP Marking</h3>
+                    <p class="feature-text">
+                        Configure DSCP values (0-63) to test QoS policies and traffic prioritization across your network infrastructure.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3 class="feature-title">Advanced Configuration</h3>
+                    <p class="feature-text">
+                        Customize test duration, parallel streams, buffer sizes, and protocols (TCP/UDP) for tailored performance analysis.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Add slight animation to buttons on hover
+        document.querySelectorAll('.btn-custom').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+            });
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

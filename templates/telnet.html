@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Telnet Tool</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      color: #1f2937;
+    }
+
+    .logo {
+      max-width: 100px;
+      margin: 20px auto;
+      display: block;
+    }
+
+    .card {
+      background: #ffffffdd;
+      border: none;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .card h2 {
+      color: #2563eb;
+      margin-bottom: 25px;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-custom {
+      background: linear-gradient(90deg, #3b82f6, #6366f1);
+      border: none;
+      color: white;
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: 8px;
+      margin-top: 15px;
+      width: 100%;
+      transition: background 0.3s ease-in-out;
+    }
+
+    .btn-custom:hover {
+      background: linear-gradient(90deg, #2563eb, #4f46e5);
+    }
+
+    .result-box {
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 30px;
+      min-height: 150px;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      border-left: 5px solid #3b82f6;
+    }
+
+    .icon {
+      font-size: 40px;
+      color: #3b82f6;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container py-5">
+    <div class="container">
+      <a href="{{ url_for('nslookup.network_tools_dashboard') }}" class="btn btn-outline-secondary back-button">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+  
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="card text-center">
+          <div class="icon"><i class="fas fa-terminal"></i></div>
+          <h2>Telnet Test Tool</h2>
+          <form id="telnetForm">
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Hostname or IP Address" id="hostInput" required />
+            </div>
+            <div class="mb-3">
+              <input type="number" class="form-control" placeholder="Port (e.g. 23)" id="portInput" value="23" required />
+            </div>
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Username" id="usernameInput" required />
+            </div>
+            <div class="mb-3">
+              <input type="password" class="form-control" placeholder="Password" id="passwordInput" required />
+            </div>
+            
+            <button type="submit" class="btn btn-custom">Test Telnet Connection</button>
+          </form>
+
+          <div class="result-box text-start mt-4" id="telnetResult">
+            Telnet test results will appear here...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS + FontAwesome -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+
+  <script>
+    document.getElementById('telnetForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        runTelnetTest();
+    });
+
+    function runTelnetTest() {
+        const host = document.getElementById("hostInput").value;
+        const port = document.getElementById("portInput").value || 23;
+        const username = document.getElementById("usernameInput").value;
+        const password = document.getElementById("passwordInput").value;
+        const resultBox = document.getElementById("telnetResult");
+
+        if (!host || !username || !password) {
+            resultBox.textContent = "⚠️ Please fill all required fields (host, username, password).";
+            return;
+        }
+
+        resultBox.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Testing Telnet connection to ${host}:${port}...`;
+
+        fetch('/test_telnet', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                host: host,
+                port: port,
+                username: username,
+                password: password,
+                command: "hostname" // Default command to test connectivity
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'error') {
+                resultBox.innerHTML = `<span class="text-danger"><i class="fas fa-times-circle"></i> Connection failed: ${data.message}</span>`;
+            } else {
+                resultBox.innerHTML = `<span class="text-success"><i class="fas fa-check-circle"></i> Telnet connection successful!</span><br><br>`;
+                if (data.output && data.output.length > 0) {
+                }
+            }
+        })
+        .catch(error => {
+            resultBox.innerHTML = `<span class="text-danger"><i class="fas fa-times-circle"></i> Error: ${error.message || 'Unknown error'}</span>`;
+            console.error('Error:', error);
+        });
+    }
+  </script>
+</body>
+</html>

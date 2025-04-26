@@ -16,20 +16,17 @@ import tempfile
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
-import matplotlib.pyplot as plt  # Importing the plotting library
+import matplotlib.pyplot as plt  
 
-# Initialize scheduler
 scheduler = BackgroundScheduler()
 scheduler.start()
 from . import bp
 
-# Queue for iPerf results
 iperf_result_queue = queue.Queue()
 
 def run_iperf_command(cmd):
     """Run iPerf command and return output"""
     try:
-        # Run the iPerf command directly using subprocess.run
         result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, timeout=60)
         out = result.stdout.decode().strip()
         err = result.stderr.decode().strip()
@@ -70,7 +67,6 @@ def parse_iperf_output(output):
 def plot_bandwidth_graph(bandwidths, intervals, job_id):
     """Plot bandwidth graph from parsed iPerf results"""
     try:
-        # Create a temporary directory if it doesn't exist
         temp_dir = os.path.join(tempfile.gettempdir(), 'iperf_graphs')
         if not os.path.exists(temp_dir):
             os.makedirs(temp_dir)
@@ -84,11 +80,10 @@ def plot_bandwidth_graph(bandwidths, intervals, job_id):
         plt.grid(True)
         plt.tight_layout()
         
-        # Save the plot as an image
         plot_filename = f"{job_id}_bandwidth_plot.png"
         plot_path = os.path.join(temp_dir, plot_filename)
         plt.savefig(plot_path)
-        plt.close()  # Close the plot to avoid memory issues
+        plt.close() 
         return plot_path
     except Exception as e:
         current_app.logger.error(f"Error generating graph: {str(e)}")
@@ -100,7 +95,6 @@ def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, dura
         current_app.logger.info(f"Starting iPerf test for job {job_id}")
         results = []
         
-        # Path to iPerf executable (adjust as needed)
         iperf_path = current_app.config.get('IPERF_PATH', r'C:\Users\marou\Downloads\iperf3\iperf-3.1.3-win64\iperf3.exe')
         
         for ip in client_ips:
@@ -112,7 +106,7 @@ def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, dura
             if duration:
                 cmd.extend(['-t', str(duration)])
             if data_size:
-                size = f"{data_size}{unit[0]}"  # Take first letter (MB -> M, GB -> G)
+                size = f"{data_size}{unit[0]}"  
                 cmd.extend(['-n', size])
             
             current_app.logger.info(f"Executing: {' '.join(cmd)}")
@@ -120,7 +114,6 @@ def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, dura
             result_text = run_iperf_command(cmd)
             current_app.logger.info(f"Results for {ip}:\n{result_text}")
             
-            # Parse the output
             parsed_results = parse_iperf_output(result_text)
             results.append({
                 "client_ip": ip,
@@ -128,12 +121,10 @@ def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, dura
                 "metrics": parsed_results
             })
 
-        # Generate the graph for bandwidth
         intervals = results[0]['metrics']['intervals']
         bandwidths = results[0]['metrics']['bandwidths']
         graph_path = plot_bandwidth_graph(bandwidths, intervals, job_id)
 
-        # Update DB with results and graph path
         mongo.db.iperf_jobs.update_one(
             {'job_id': job_id},
             {'$set': {
@@ -144,8 +135,7 @@ def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, dura
             }}
         )
         
-        # Send email to the user with the test results
-        user_email = mongo.db.iperf_jobs.find_one({'job_id': job_id})['email']  # Get user's email from DB
+        user_email = mongo.db.iperf_jobs.find_one({'job_id': job_id})['email']  
         subject = f"iPerf Test Results for Job {job_id}"
         body = f"Test results for iPerf test job {job_id}:\n\n"
         for result in results:
@@ -167,32 +157,26 @@ def execute_iperf_test(job_id, server_ip, client_ips, port, dscp, protocol, dura
 def send_email(subject, body, to_email, image_path=None):
     """Send email with test results and optional image attachment"""
     try:
-        # Sender and receiver email addresses
         sender_email = "maroukhlifi15@gmail.com"
         receiver_email = to_email
 
-        # Set up the MIME
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = receiver_email
         msg['Subject'] = subject
 
-        # Attach the body with the msg
         msg.attach(MIMEText(body, 'plain'))
 
-        # Attach the image if provided
         if image_path and os.path.exists(image_path):
             with open(image_path, 'rb') as img_file:
                 img = MIMEImage(img_file.read())
                 img.add_header('Content-Disposition', 'attachment', filename=os.path.basename(image_path))
                 msg.attach(img)
 
-        # Set up the server (Gmail SMTP server)
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()  # Enable security
         server.login(sender_email, 'zjekskhpzzfneqwz')  # App password
 
-        # Send email
         text = msg.as_string()
         server.sendmail(sender_email, receiver_email, text)
         server.quit()
@@ -254,10 +238,8 @@ def schedule_test():
                 'created_at': datetime.now()
             })
 
-            # Get the actual app object (not the proxy)
             app = current_app._get_current_object()
             
-            # Add job to scheduler with the app context
             scheduler.add_job(
                 func=execute_iperf_test_wrapper,
                 trigger='date',
