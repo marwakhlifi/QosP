@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QoS Tracer - Control Packets Prioritization</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      color: #1f2937;
+    }
+
+    .logo {
+      max-width: 100px;
+      margin: 20px auto;
+      display: block;
+    }
+
+    .card {
+      background: #ffffffdd;
+      border: none;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      margin-bottom: 30px;
+    }
+
+    .card h2 {
+      color: #2563eb;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    .form-control, .form-select {
+      border-radius: 10px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-custom {
+      background: linear-gradient(90deg, #3b82f6, #6366f1);
+      border: none;
+      color: white;
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: 8px;
+      margin-top: 15px;
+      transition: all 0.3s ease-in-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-custom:hover {
+      background: linear-gradient(90deg, #2563eb, #4f46e5);
+      transform: translateY(-2px);
+    }
+
+    .btn-custom.running {
+      background: linear-gradient(90deg, #10b981, #059669);
+    }
+
+    .btn-custom.running::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+      100% {
+        left: 100%;
+      }
+    }
+
+    .protocol-card {
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+    }
+
+    .protocol-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .protocol-card.selected {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+    }
+
+    .protocol-icon {
+      font-size: 24px;
+      margin-right: 10px;
+      color: #3b82f6;
+    }
+
+    .protocol-params {
+      background-color: #f8fafc;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      border-left: 3px solid #3b82f6;
+    }
+
+    .result-box {
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 30px;
+      min-height: 150px;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      border-left: 5px solid #3b82f6;
+    }
+
+    .progress-container {
+      height: 8px;
+      background-color: #e5e7eb;
+      border-radius: 4px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #6366f1);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .status-ready {
+      background-color: #9ca3af;
+    }
+
+    .status-running {
+      background-color: #f59e0b;
+    }
+
+    .status-complete {
+      background-color: #10b981;
+    }
+
+    .test-duration-input {
+      max-width: 150px;
+    }
+
+    .bandwidth-input {
+      max-width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card">
+          <h2 class="text-center"><i class="fas fa-network-wired me-2"></i>Control Packets Prioritization</h2>
+          
+          <!-- Protocol Selection -->
+          <div class="mb-4">
+            <h5 class="mb-3">Select Control Protocols to Test:</h5>
+            <div class="row">
+              <!-- DNS Protocol Card -->
+              <div class="col-md-6 mb-3">
+                <div class="protocol-card" id="dns-card" onclick="toggleProtocol('dns')">
+                  <div class="d-flex align-items-center">
+                    <i class="fas fa-globe protocol-icon"></i>
+                    <div>
+                      <h6 class="mb-0">DNS (Port 53)</h6>
+                      <small class="text-muted">Domain Name System</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="protocol-params" id="dns-params" style="display:none;">
+                  <div class="mb-3">
+                    <label class="form-label">DNS Server IP</label>
+                    <input type="text" class="form-control" id="dns-server" placeholder="8.8.8.8" value="8.8.8.8">
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label class="form-label">Domain to Query</label>
+                      <input type="text" class="form-control" id="dns-domain" placeholder="example.com" value="example.com">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Query Type</label>
+                      <select class="form-select" id="dns-query-type">
+                        <option value="A">A (IPv4)</option>
+                        <option value="AAAA">AAAA (IPv6)</option>
+                        <option value="MX">MX</option>
+                        <option value="TXT">TXT</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="mt-2">
+                    <label class="form-label">Query Interval (seconds)</label>
+                    <input type="number" class="form-control" id="dns-interval" min="0.1" max="5" step="0.1" value="1">
+                  </div>
+                </div>
+              </div>
+              
+              <!-- DHCP Protocol Card -->
+              <div class="col-md-6 mb-3">
+                <div class="protocol-card" id="dhcp-card" onclick="toggleProtocol('dhcp')">
+                  <div class="d-flex align-items-center">
+                    <i class="fas fa-plug protocol-icon"></i>
+                    <div>
+                      <h6 class="mb-0">DHCP (Ports 67/68)</h6>
+                      <small class="text-muted">Dynamic Host Configuration</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="protocol-params" id="dhcp-params" style="display:none;">
+                  <div class="mb-3">
+                    <label class="form-label">Interface</label>
+                    <select class="form-select" id="dhcp-interface">
+                      <option value="eth0">eth0</option>
+                      <option value="eth1">eth1</option>
+                      <option value="wlan0">wlan0</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">DHCP Server IP (optional)</label>
+                    <input type="text" class="form-control" id="dhcp-server" placeholder="Auto-detect">
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="dhcp-renew" checked>
+                    <label class="form-check-label" for="dhcp-renew">Perform full DHCP process</label>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- ICMP Protocol Card -->
+              <div class="col-md-6 mb-3">
+                <div class="protocol-card" id="icmp-card" onclick="toggleProtocol('icmp')">
+                  <div class="d-flex align-items-center">
+                    <i class="fas fa-broadcast-tower protocol-icon"></i>
+                    <div>
+                      <h6 class="mb-0">ICMP (Ping)</h6>
+                      <small class="text-muted">Internet Control Message</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="protocol-params" id="icmp-params" style="display:none;">
+                  <div class="mb-3">
+                    <label class="form-label">Target IP Address</label>
+                    <input type="text" class="form-control" id="icmp-target" placeholder="8.8.8.8" value="8.8.8.8">
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label class="form-label">Packet Size (bytes)</label>
+                      <input type="number" class="form-control" id="icmp-size" min="16" max="1500" value="32">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Interval (seconds)</label>
+                      <input type="number" class="form-control" id="icmp-interval" min="0.1" max="5" step="0.1" value="1">
+                    </div>
+                  </div>
+                  <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="icmp-continuous" checked>
+                    <label class="form-check-label" for="icmp-continuous">Continuous Ping</label>
+                  </div>
+                  <div class="mt-2" id="icmp-count-container" style="display:none;">
+                    <label class="form-label">Packet Count</label>
+                    <input type="number" class="form-control" id="icmp-count" min="1" max="100" value="5">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Background Traffic Parameters -->
+          <div class="mb-4">
+            <h5 class="mb-3">Background Traffic Parameters</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="background-traffic" class="form-label">Traffic Type</label>
+                <select class="form-select" id="background-traffic">
+                  <option value="none">No Background Traffic</option>
+                  <option value="udp-50">50Mbps UDP</option>
+                  <option value="udp-100" selected>100Mbps UDP</option>
+                  <option value="tcp-50">50Mbps TCP Bulk</option>
+                  <option value="tcp-100">100Mbps TCP Bulk</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="iperf-server" class="form-label">iPerf Server IP</label>
+                <input type="text" class="form-control" id="iperf-server" placeholder="192.168.1.145" value="192.168.1.145">
+              </div>
+              <div class="col-md-6">
+                <label for="iperf-port" class="form-label">iPerf Port</label>
+                <input type="text" class="form-control" id="iperf-port" placeholder="5201" value="5201">
+              </div>
+              <div class="col-md-6">
+                <label for="test-duration" class="form-label">Test Duration (seconds)</label>
+                <input type="number" class="form-control" id="test-duration" min="1" max="300" value="30">
+              </div>
+              <div class="col-md-6">
+                <label for="network-interface" class="form-label">Network Interface</label>
+                <select class="form-select" id="network-interface">
+                  <option value="eth0">eth0 (LAN)</option>
+                  <option value="eth1">eth1 (WAN)</option>
+                  <option value="auto">Auto-detect</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Start Test Button -->
+          <div class="text-center mt-4">
+            <button class="btn btn-custom btn-lg" id="start-test-btn">
+              <i class="fas fa-play me-2"></i>Start Test
+            </button>
+          </div>
+          
+          <!-- Progress Indicator -->
+          <div class="progress-container mt-4 d-none" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+          
+          <!-- Status Display -->
+          <div class="mt-4 d-none" id="status-display">
+            <h5 class="mb-3">Test Status</h5>
+            <div class="d-flex align-items-center mb-2">
+              <span class="status-indicator status-ready" id="status-indicator"></span>
+              <span id="status-text">Ready to start test</span>
+            </div>
+            <div class="result-box" id="console-output">
+              // Test output will appear here...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // Selected protocols
+    const selectedProtocols = {
+      dns: false,
+      dhcp: false,
+      icmp: false
+    };
+    
+    // Toggle protocol selection and parameters
+    function toggleProtocol(protocol) {
+      selectedProtocols[protocol] = !selectedProtocols[protocol];
+      const card = document.getElementById(`${protocol}-card`);
+      const params = document.getElementById(`${protocol}-params`);
+      
+      if (selectedProtocols[protocol]) {
+        card.classList.add('selected');
+        params.style.display = 'block';
+      } else {
+        card.classList.remove('selected');
+        params.style.display = 'none';
+      }
+    }
+    
+    // Handle continuous ping checkbox
+    document.getElementById('icmp-continuous').addEventListener('change', function() {
+      document.getElementById('icmp-count-container').style.display = this.checked ? 'none' : 'block';
+    });
+    
+    // Start test button click handler
+    document.getElementById('start-test-btn').addEventListener('click', function() {
+      const btn = this;
+      const statusIndicator = document.getElementById('status-indicator');
+      const statusText = document.getElementById('status-text');
+      const consoleOutput = document.getElementById('console-output');
+      const progressContainer = document.getElementById('progress-container');
+      const progressBar = document.getElementById('progress-bar');
+      
+      // Validate at least one protocol is selected
+      const protocolsSelected = Object.values(selectedProtocols).some(val => val);
+      if (!protocolsSelected) {
+        alert('Please select at least one protocol to test!');
+        return;
+      }
+      
+      // Collect all test parameters
+      const testConfig = {
+        // Background traffic parameters
+        background: {
+          type: document.getElementById('background-traffic').value,
+          server: document.getElementById('iperf-server').value,
+          port: document.getElementById('iperf-port').value,
+          duration: document.getElementById('test-duration').value,
+          interface: document.getElementById('network-interface').value
+        },
+        // Protocol-specific parameters
+        protocols: {}
+      };
+      
+      // Add selected protocols with their parameters
+      if (selectedProtocols.dns) {
+        testConfig.protocols.dns = {
+          server: document.getElementById('dns-server').value,
+          domain: document.getElementById('dns-domain').value,
+          query_type: document.getElementById('dns-query-type').value,
+          interval: document.getElementById('dns-interval').value
+        };
+      }
+      
+      if (selectedProtocols.dhcp) {
+        testConfig.protocols.dhcp = {
+          interface: document.getElementById('dhcp-interface').value,
+          server: document.getElementById('dhcp-server').value || null,
+          renew: document.getElementById('dhcp-renew').checked
+        };
+      }
+      
+      if (selectedProtocols.icmp) {
+        testConfig.protocols.icmp = {
+          target: document.getElementById('icmp-target').value,
+          size: document.getElementById('icmp-size').value,
+          interval: document.getElementById('icmp-interval').value,
+          continuous: document.getElementById('icmp-continuous').checked,
+          count: document.getElementById('icmp-continuous').checked ? null : document.getElementById('icmp-count').value
+        };
+      }
+      
+      // Update UI for running state
+      btn.classList.add('running');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Running Test...';
+      btn.disabled = true;
+      
+      statusIndicator.classList.remove('status-ready');
+      statusIndicator.classList.add('status-running');
+      statusText.textContent = 'Test in progress...';
+      document.getElementById('status-display').classList.remove('d-none');
+      progressContainer.classList.remove('d-none');
+      consoleOutput.innerHTML = '';
+      
+      // Start test via API
+      fetch('/start_test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(testConfig)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          // Start polling for updates
+          const pollInterval = setInterval(() => {
+            fetch('/test_status')
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+              })
+              .then(data => {
+                // Validate data
+                if (typeof data.running === 'undefined' || typeof data.progress === 'undefined') {
+                  throw new Error('Invalid response from /test_status');
+                }
+                
+                // Update progress bar
+                progressBar.style.width = `${data.progress}%`;
+                
+                // Update console output
+                if (data.console_output && data.console_output.length > 0) {
+                  consoleOutput.innerHTML = data.console_output.join('\n');
+                  consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                }
+                
+                // Check if test completed
+                if (!data.running) {
+                  clearInterval(pollInterval);
+                  testComplete();
+                }
+              })
+              .catch(error => {
+                console.error('Error polling test status:', error);
+                clearInterval(pollInterval);
+                resetUI();
+                alert('Error polling test status: ' + error.message + '. Test may have failed. Please try again.');
+              });
+          }, 1000);
+          
+          function testComplete() {
+            btn.classList.remove('running');
+            btn.innerHTML = '<i class="fas fa-check me-2"></i>Test Complete';
+            btn.disabled = false;
+            
+            statusIndicator.classList.remove('status-running');
+            statusIndicator.classList.add('status-complete');
+            statusText.textContent = 'Test completed successfully';
+            
+            // Add verification results
+            consoleOutput.innerHTML += '\n=== Verification Results ===\n';
+            
+            if (selectedProtocols.dns) {
+              consoleOutput.innerHTML += 'DNS: Queries sent to ' + testConfig.protocols.dns.server + '\n';
+            }
+            if (selectedProtocols.dhcp) {
+              consoleOutput.innerHTML += 'DHCP: Interface ' + testConfig.protocols.dhcp.interface + '\n';
+            }
+            if (selectedProtocols.icmp) {
+              consoleOutput.innerHTML += 'ICMP: Ping to ' + testConfig.protocols.icmp.target + '\n';
+            }
+            
+            consoleOutput.innerHTML += 'Background: ' + 
+              (testConfig.background.type === 'none' ? 'None' : 
+               testConfig.background.type + ' to ' + testConfig.background.server) + '\n';
+          }
+        } else {
+          alert(`Error: ${data.message}`);
+          resetUI();
+        }
+      })
+      .catch(error => {
+        console.error('Error starting test:', error);
+        resetUI();
+        alert('Error starting test: ' + error.message + '. Please try again.');
+      });
+      
+      function resetUI() {
+        btn.classList.remove('running');
+        btn.innerHTML = '<i class="fas fa-play me-2"></i>Start Test';
+        btn.disabled = false;
+        statusIndicator.classList.remove('status-running');
+        statusIndicator.classList.add('status-ready');
+        statusText.textContent = 'Ready to start test';
+      }
+    });
+  </script>
+</body>
+</html>

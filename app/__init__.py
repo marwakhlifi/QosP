@@ -19,6 +19,8 @@ def create_app():
     from .qoscheck import qos_bp
     from .validation import validation_bp
     from .telnet import telnet_bp
+    from .control import control_bp
+
  
     
 
@@ -34,6 +36,9 @@ def create_app():
     app.register_blueprint(qos_bp)
     app.register_blueprint(validation_bp)
     app.register_blueprint(telnet_bp)
+    app.register_blueprint(control_bp)
+    
+
 
 
 
