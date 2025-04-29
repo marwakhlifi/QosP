@@ -1,448 +1,438 @@
-<!-- app/qoscheck/templates/qoscheck/queuingresult.html -->
-<div class="card">
-    <div class="results-header">
-        <div class="header-content">
-            <i class="fas fa-tachometer-alt header-icon"></i>
-            <h2 class="card-title">QoS Queuing Test Results</h2>
-            <p class="card-subtitle">Traffic Prioritization Analysis</p>
-        </div>
-
-    </div>
-
-    <!-- Summary Cards -->
-    <div class="summary-cards">
-        {% for result in results %}
-        <div class="summary-card traffic-{{ result.type|lower }}">
-            <div class="summary-icon">
-                {% if result.type == 'VO' %}
-                <i class="fas fa-phone-alt"></i>
-                {% elif result.type == 'VI' %}
-                <i class="fas fa-video"></i>
-                {% elif result.type == 'BK' %}
-                <i class="fas fa-cloud-download-alt"></i>
-                {% else %}
-                <i class="fas fa-globe"></i>
-                {% endif %}
-            </div>
-            <div class="summary-content">
-                <h3>{{ result.type }} Traffic</h3>
-                <div class="summary-metrics">
-                    <div class="metric">
-                        <span class="metric-value">{{ "%.2f"|format(result.metrics.throughput) }}</span>
-                        <span class="metric-label">Mbps</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">{{ "%.2f"|format(result.metrics.jitter) }}</span>
-                        <span class="metric-label">ms Jitter</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">{{ "%.1f"|format(result.metrics.packet_loss) }}</span>
-                        <span class="metric-label">% Loss</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-
-    <!-- Charts Section -->
-    <div class="charts-section">
-        <div class="chart-container">
-            <h3><i class="fas fa-chart-line"></i> Throughput per Traffic Class (Mbps)</h3>
-            <canvas id="throughputChart"></canvas>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QoS Queuing Test Results</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --vo-color: #3b82f6;
+      --vi-color: #8b5cf6;
+      --bk-color: #64748b;
+      --be-color: #94a3b8;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      color: #1f2937;
+      overflow-x: hidden;
+    }
+    
+    .logo-container {
+      text-align: center;
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease-in;
+    }
+    
+    .logo {
+      max-width: 100px;
+      height: auto;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+      transition: transform 0.3s ease;
+    }
+    
+    .logo:hover {
+      transform: scale(1.1);
+    }
+    
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      margin-bottom: 30px;
+      transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .card h2 {
+      color: #2563eb;
+      margin-bottom: 20px;
+      font-weight: 700;
+      text-align: center;
+    }
+    
+    .result-summary {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .metrics-card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-left: 4px solid;
+      transition: all 0.3s ease;
+    }
+    
+    .metrics-card:hover {
+      transform: translateX(5px);
+    }
+    
+    .metrics-card.VO { border-color: var(--vo-color); }
+    .metrics-card.VI { border-color: var(--vi-color); }
+    .metrics-card.BK { border-color: var(--bk-color); }
+    .metrics-card.BE { border-color: var(--be-color); }
+    
+    .metric-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    
+    .badge-traffic {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+    
+    .badge-VO { background-color: rgba(59, 130, 246, 0.1); color: var(--vo-color); }
+    .badge-VI { background-color: rgba(139, 92, 246, 0.1); color: var(--vi-color); }
+    .badge-BK { background-color: rgba(100, 116, 139, 0.1); color: var(--bk-color); }
+    .badge-BE { background-color: rgba(148, 163, 184, 0.1); color: var(--be-color); }
+    
+    .chart-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+    
+    .chart-container {
+      flex: 0 0 300px;
+      height: 250px;
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .carousel-control-prev,
+    .carousel-control-next {
+      width: 5%;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      background-size: 50%;
+    }
+    
+    .traffic-icon {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+    
+    .traffic-icon.VO { color: var(--vo-color); }
+    .traffic-icon.VI { color: var(--vi-color); }
+    .traffic-icon.BK { color: var(--bk-color); }
+    .traffic-icon.BE { color: var(--be-color); }
+    
+    .btn-primary {
+      background: linear-gradient(90deg, #3b82f6, #6366f1);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #2563eb, #4f46e5);
+      transform: translateY(-2px);
+    }
+    
+    .btn-download {
+      background: linear-gradient(90deg, #10b981, #059669);
+    }
+    
+    .btn-download:hover {
+      background: linear-gradient(90deg, #059669, #047857);
+    }
+    
+    .chart-type-toggle {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    .chart-type-btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: #e5e7eb;
+      color: #1f2937;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .chart-type-btn.active {
+      background: #3b82f6;
+      color: white;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="logo-container">
+          <h2 class="mt-2">QoS Queuing Test Results</h2>
         </div>
         
-        <div class="chart-container">
-            <h3><i class="fas fa-wave-square"></i> Jitter per Traffic Class (ms)</h3>
-            <canvas id="jitterChart"></canvas>
-        </div>
-        
-        <div class="chart-container">
-            <h3><i class="fas fa-exclamation-triangle"></i> Packet Loss per Traffic Class (%)</h3>
-            <canvas id="lossChart"></canvas>
-        </div>
-    </div>
-
-    <!-- Detailed Results -->
-    <div class="detailed-results">
-        <h3><i class="fas fa-file-alt"></i> Detailed Test Results</h3>
-        
-        <div class="result-tabs">
-            <div class="tab-buttons">
-                {% for result in results %}
-                <button class="tab-btn traffic-{{ result.type|lower }}" onclick="openTab(event, '{{ result.type }}')">
-                    {{ result.type }} Traffic
-                </button>
-                {% endfor %}
+        <div class="card">
+          <h2><i class="fas fa-chart-bar me-2"></i>Test Summary</h2>
+          
+          <div class="result-summary">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <p><strong>Server IP:</strong> {{ results[0].server_ip }}</p>
+                <p><strong>Client IP:</strong> {{ results[0].client_ip }}</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <p><strong>Protocol:</strong> {{ results[0].protocol|upper }}</p>
+                <p><strong>Test Duration:</strong> {{ results[0].metrics.raw_output.split('sec')[0].split(' ').pop() }} seconds</p>
+              </div>
             </div>
-            
+          </div>
+          
+          <div class="d-flex justify-content-between mb-4">
+            <a href="/queuing" class="btn btn-primary"><i class="fas fa-arrow-left me-2"></i>Run Another Test</a>
+            <button class="btn btn-download" onclick="downloadResults()"><i class="fas fa-download me-2"></i>Download Results</button>
+          </div>
+          
+          <h4><i class="fas fa-tachometer-alt me-2"></i>Traffic Class Metrics</h4>
+          <div class="row">
             {% for result in results %}
-            <div id="{{ result.type }}" class="tab-content traffic-{{ result.type|lower }}">
-                <div class="result-header">
-                    <div class="connection-info">
-                        <p><span class="info-label">Client:</span> {{ result.client_ip }}</p>
-                        <p><span class="info-label">Server:</span> {{ result.server_ip }}</p>
-                        <p><span class="info-label">Port:</span> {{ result.port }}</p>
-                    </div>
-                    <div class="qos-info">
-                        <p><span class="info-label">DSCP:</span> {{ result.dscp }}</p>
-                        <p><span class="info-label">Protocol:</span> {{ result.protocol|upper }}</p>
-                        
-                    </div>
+            <div class="col-md-6 mb-4">
+              <div class="metrics-card {{ result.type }}">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="mb-0">
+                    <i class="fas 
+                      {% if result.type == 'VO' %}fa-phone-alt 
+                      {% elif result.type == 'VI' %}fa-video 
+                      {% elif result.type == 'BK' %}fa-cloud-download-alt 
+                      {% else %}fa-globe{% endif %} 
+                      traffic-icon {{ result.type }}"></i>
+                    {{ result.type }} Traffic
+                  </h5>
+                  <span class="badge-traffic badge-{{ result.type }}">Port: {{ result.port }}</span>
                 </div>
-                <div class="result-output">
-                    <pre>{{ result.metrics.raw_output }}</pre>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="mb-3">
+                      <small class="text-muted">Throughput</small>
+                      <div class="metric-value">{{ result.metrics.throughput }} Mbps</div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="mb-3">
+                      <small class="text-muted">Jitter</small>
+                      <div class="metric-value">{{ result.metrics.jitter }} ms</div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="mb-3">
+                      <small class="text-muted">Packet Loss</small>
+                      <div class="metric-value">{{ result.metrics.packet_loss }}%</div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="mb-3">
+                      <small class="text-muted">DSCP</small>
+                      <div class="metric-value">{{ result.dscp }}</div>
+                    </div>
+                  </div>
                 </div>
+              </div>
             </div>
             {% endfor %}
+          </div>
+          
+          <h4><i class="fas fa-chart-line me-2"></i>Performance Comparison</h4>
+          <div class="chart-type-toggle">
+            <button class="chart-type-btn active" onclick="changeChartType('bar')">Bar</button>
+            <button class="chart-type-btn" onclick="changeChartType('line')">Line</button>
+            <button class="chart-type-btn" onclick="changeChartType('radar')">Radar</button>
+          </div>
+          <div class="chart-row">
+            <div class="chart-container">
+              <canvas id="throughputChart"></canvas>
+            </div>
+            <div class="chart-container">
+              <canvas id="jitterChart"></canvas>
+            </div>
+            <div class="chart-container">
+              <canvas id="lossChart"></canvas>
+            </div>
+          </div>
+          
+          <h4 class="mt-4"><i class="fas fa-terminal me-2"></i>Raw Test Output</h4>
+          <div id="rawOutputCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              {% for result in results %}
+              <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <div class="bg-light p-4 rounded-3">
+                  <h5 class="mb-3">{{ result.type }} Traffic (Port {{ result.port }}, DSCP {{ result.dscp }})</h5>
+                  <pre style="white-space: pre-wrap; font-family: 'Courier New', monospace;">{{ result.metrics.raw_output }}</pre>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#rawOutputCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#rawOutputCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <div class="test-actions">
-        <button class="btn btn-back" onclick="window.history.back()">
-            <i class="fas fa-arrow-left"></i> Back to Test Configuration
-        </button>
-        <button class="btn btn-export">
-            <i class="fas fa-file-export"></i> Export Results
-        </button>
-    </div>
-</div>
-
-<!-- Include Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-// Tab functionality
-function openTab(evt, tabName) {
-    const tabContents = document.getElementsByClassName("tab-content");
-    for (let i = 0; i < tabContents.length; i++) {
-        tabContents[i].style.display = "none";
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let currentChartType = 'bar';
+    let charts = {};
+    
+    const chartData = {
+      types: {{ chart_data.types|tojson }},
+      throughputs: {{ chart_data.throughputs }},
+      jitters: {{ chart_data.jitters }},
+      packet_losses: {{ chart_data.packet_losses }},
+      colors: {{ chart_data.colors|tojson }}
+    };
+    
+    function createChartConfig(type, label, data, yLabel) {
+      if (currentChartType === 'radar') {
+        return {
+          type: 'radar',
+          data: {
+            labels: chartData.types,
+            datasets: [{
+              label: label,
+              data: data,
+              backgroundColor: 'rgba(59, 130, 246, 0.2)',
+              borderColor: chartData.colors.VO,
+              borderWidth: 2,
+              pointBackgroundColor: chartData.types.map(t => chartData.colors[t])
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                beginAtZero: true,
+                max: Math.max(...data) * 1.2
+              }
+            }
+          }
+        };
+      }
+      
+      return {
+        type: currentChartType,
+        data: {
+          labels: chartData.types,
+          datasets: [{
+            label: label,
+            data: data,
+            backgroundColor: chartData.types.map(t => chartData.colors[t]),
+            borderColor: chartData.types.map(t => chartData.colors[t]),
+            borderWidth: 1,
+            fill: currentChartType === 'line'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: yLabel
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: currentChartType !== 'radar'
+            }
+          }
+        }
+      };
     }
     
-    const tabButtons = document.getElementsByClassName("tab-btn");
-    for (let i = 0; i < tabButtons.length; i++) {
-        tabButtons[i].className = tabButtons[i].className.replace(" active", "");
+    function initializeCharts() {
+      charts.throughput = new Chart(document.getElementById('throughputChart'), 
+        createChartConfig('throughput', 'Throughput (Mbps)', chartData.throughputs, 'Mbps')
+      );
+      charts.jitter = new Chart(document.getElementById('jitterChart'), 
+        createChartConfig('jitter', 'Jitter (ms)', chartData.jitters, 'Milliseconds')
+      );
+      charts.loss = new Chart(document.getElementById('lossChart'), 
+        createChartConfig('loss', 'Packet Loss (%)', chartData.packet_losses, 'Percentage')
+      );
     }
     
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
-}
-
-// Show first tab by default
-document.querySelector(".tab-btn").click();
-
-// Create charts
-const chartData = {{ chart_data|tojson }};
-const colors = chartData.colors;
-
-// Throughput Chart
-new Chart(document.getElementById('throughputChart'), {
-    type: 'bar',
-    data: {
-        labels: chartData.types,
-        datasets: [{
-            label: 'Throughput (Mbps)',
-            data: chartData.throughputs,
-            backgroundColor: chartData.types.map(type => colors[type]),
-            borderColor: chartData.types.map(type => colors[type]),
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Mbps'
-                }
-            }
-        }
+    function changeChartType(type) {
+      currentChartType = type;
+      document.querySelectorAll('.chart-type-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toLowerCase() === type);
+      });
+      
+      Object.values(charts).forEach(chart => chart.destroy());
+      initializeCharts();
     }
-});
-
-// Jitter Chart
-new Chart(document.getElementById('jitterChart'), {
-    type: 'bar',
-    data: {
-        labels: chartData.types,
-        datasets: [{
-            label: 'Jitter (ms)',
-            data: chartData.jitters,
-            backgroundColor: chartData.types.map(type => colors[type]),
-            borderColor: chartData.types.map(type => colors[type]),
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Milliseconds'
-                }
-            }
-        }
+    
+    function downloadResults() {
+      const results = {
+        summary: {
+          server_ip: '{{ results[0].server_ip }}',
+          client_ip: '{{ results[0].client_ip }}',
+          protocol: '{{ results[0].protocol|upper }}',
+          duration: '{{ results[0].metrics.raw_output.split('sec')[0].split(' ').pop() }} seconds'
+        },
+        metrics: {{ results|tojson }},
+        charts: chartData
+      };
+      
+      const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'qos_test_results.json';
+      a.click();
+      URL.revokeObjectURL(url);
     }
-});
-
-// Packet Loss Chart
-new Chart(document.getElementById('lossChart'), {
-    type: 'bar',
-    data: {
-        labels: chartData.types,
-        datasets: [{
-            label: 'Packet Loss (%)',
-            data: chartData.packet_losses,
-            backgroundColor: chartData.types.map(type => colors[type]),
-            borderColor: chartData.types.map(type => colors[type]),
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Percentage'
-                }
-            }
-        }
-    }
-});
-</script>
-
-<style>
-/* === Base Styles === */
-.card {
-    background: var(--card-light);
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-}
-body.dark-mode .card {
-    background: var(--card-dark);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-}
-
-/* === Header Styles === */
-.results-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e5e7eb;
-}
-body.dark-mode .results-header {
-    border-bottom-color: #374151;
-}
-.header-content {
-    flex: 1;
-}
-.header-icon {
-    font-size: 2.5rem;
-    color: #3b82f6;
-    margin-bottom: 15px;
-}
-.card-title {
-    font-size: 2rem;
-    color: #1e293b;
-    margin: 0;
-}
-body.dark-mode .card-title {
-    color: #f8fafc;
-}
-.card-subtitle {
-    font-size: 1rem;
-    color: #64748b;
-    margin: 5px 0 0;
-}
-.header-logo img {
-    height: 80px;
-    opacity: 0.9;
-}
-
-/* === Summary Cards === */
-.summary-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-.summary-card {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease;
-}
-body.dark-mode .summary-card {
-    background: #1e293b;
-}
-.summary-card:hover {
-    transform: translateY(-5px);
-}
-.summary-icon {
-    font-size: 2rem;
-    margin-right: 20px;
-    color: white;
-    background: #3b82f6;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.summary-content {
-    flex: 1;
-}
-.summary-content h3 {
-    margin: 0 0 10px;
-    font-size: 1.1rem;
-}
-.summary-metrics {
-    display: flex;
-    gap: 15px;
-}
-.metric {
-    text-align: center;
-}
-.metric-value {
-    font-size: 1.2rem;
-    font-weight: bold;
-    display: block;
-}
-.metric-label {
-    font-size: 0.7rem;
-    opacity: 0.8;
-    display: block;
-}
-
-/* Type-specific colors */
-.traffic-vo .summary-icon { background: #3b82f6; }
-.traffic-vi .summary-icon { background: #8b5cf6; }
-.traffic-bk .summary-icon { background: #64748b; }
-.traffic-be .summary-icon { background: #10b981; }
-
-/* === Charts Section === */
-.charts-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-    margin-bottom: 30px;
-}
-.chart-container {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-body.dark-mode .chart-container {
-    background: #1e293b;
-}
-.chart-container h3 {
-    margin-top: 0;
-    font-size: 1.1rem;
-    color: #3b82f6;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-body.dark-mode .chart-container h3 {
-    color: #60a5fa;
-}
-
-/* === Detailed Results === */
-.detailed-results {
-    margin-bottom: 30px;
-}
-.detailed-results h3 {
-    font-size: 1.3rem;
-    margin-bottom: 15px;
-    color: #1e293b;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-body.dark-mode .detailed-results h3 {
-    color: #f8fafc;
-}
-
-/* Tab styling */
-.tab-buttons {
-    display: flex;
-    border-bottom: 1px solid #e5e7eb;
-    margin-bottom: 20px;
-}
-body.dark-mode .tab-buttons {
-    border-bottom-color: #374151;
-}
-.tab-btn {
-    padding: 10px 20px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #64748b;
-    position: relative;
-    transition: all 0.3s ease;
-}
-.tab-btn:hover {
-    color: #3b82f6;
-}
-.tab-btn.active {
-    color: #3b82f6;
-}
-.tab-btn.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: #3b82f6;
-}
-.tab-content {
-    display: none;
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-body.dark-mode .tab-content {
-    background: #1e293b;
-}
-.result-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #e5e7eb;
-}
-body.dark-mode .result-header {
-    border-bottom-color: #374151;
-}
-.info-label {
-    font-weight: 600;
-    color: #3b82f6;
-    display: inline-block;
-    width: 60px;
-}
-.result-output pre {
-    font-family: 'Courier New', monospace;
-    font-size: 0.85rem;
-    white-space: pre-wrap;
-    margin: 0;
-    padding: 15px;
-    background: #f8faf
+    
+    initializeCharts();
+  </script>
+</body>
+</html>

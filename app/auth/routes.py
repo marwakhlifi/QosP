@@ -76,29 +76,54 @@ def select_device(ip):
         flash('This device is locked by another user. Please try again later.', 'error')
         return redirect(url_for('auth.view_devices'))
     
-    devices_collection.update_one({'ip': ip}, {'$set': {'locked_by': session['user_id']}})
+    # Verrouiller l'appareil pour l'utilisateur actuel
+    devices_collection.update_one(
+        {'ip': ip},
+        {'$set': {'locked_by': session['user_id']}}
+    )
+    
+    # Lancer le timer pour déverrouiller automatiquement après 30 minutes
+    auto_unlock_device(ip, session['user_id'])
+    
     return redirect(url_for('auth.index', ip=ip))
+
 @auth_bp.route('/release_device/<ip>', methods=['POST'])
 def release_device(ip):
     device = devices_collection.find_one({'ip': ip})
     if device and device.get('locked_by') == session['user_id']:
-        devices_collection.update_one({'ip': ip}, {'$set': {'locked_by': None}})
+        devices_collection.update_one(
+            {'ip': ip},
+            {'$unset': {'locked_by': ""}}
+        )
+        # Annuler le timer si il existe
+        if ip in unlock_timers:
+            unlock_timers[ip].cancel()
+            del unlock_timers[ip]
         flash('Device released successfully.', 'success')
     else:
         flash('You do not have permission to release this device.', 'error')
     return redirect(url_for('auth.view_devices'))
+
 @auth_bp.route('/logout_and_release_devices')
 def logout_and_release_devices():
     user_id = session.get('user_id')
     
     if user_id:
+        # Libérer tous les appareils verrouillés par cet utilisateur
+        devices = devices_collection.find({'locked_by': user_id})
+        for device in devices:
+            ip = device['ip']
+            # Annuler le timer si il existe
+            if ip in unlock_timers:
+                unlock_timers[ip].cancel()
+                del unlock_timers[ip]
+        
         devices_collection.update_many(
             {'locked_by': user_id},
-            {'$unset': {'locked_by': ""}}  
+            {'$unset': {'locked_by': ""}}
         )
     
     session.clear()
-    
     return redirect(url_for('auth.home'))
 
 
@@ -257,4 +282,27 @@ def delete_device(mac):
 def logout():
     session.clear()
     return redirect(url_for('auth.home'))
+
+unlock_timers = {}
+
+def auto_unlock_device(ip, user_id):
+    def unlock():
+        device = devices_collection.find_one({'ip': ip})
+        if device and device.get('locked_by') == user_id:
+            devices_collection.update_one(
+                {'ip': ip},
+                {'$unset': {'locked_by': ""}}
+            )
+            print(f"Device {ip} automatically unlocked after 30 minutes.")
+        # Supprimer le timer du dictionnaire après exécution
+        if ip in unlock_timers:
+            del unlock_timers[ip]
     
+    # Annuler l'ancien timer s'il existe
+    if ip in unlock_timers:
+        unlock_timers[ip].cancel()
+    
+    # Créer un nouveau timer et le stocker
+    timer = threading.Timer(1800, unlock)
+    timer.start()
+    unlock_timers[ip] = timer

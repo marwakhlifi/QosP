@@ -4,10 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QoS Tracer - Control Packets Prioritization</title>
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
@@ -15,172 +14,69 @@
       min-height: 100vh;
       color: #1f2937;
     }
-
-    .logo {
-      max-width: 100px;
-      margin: 20px auto;
-      display: block;
-    }
-
+    .logo { max-width: 100px; margin: 20px auto; display: block; }
     .card {
-      background: #ffffffdd;
-      border: none;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(10px);
-      margin-bottom: 30px;
+      background: #ffffffdd; border: none; border-radius: 20px; padding: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); backdrop-filter: blur(10px); margin-bottom: 30px;
     }
-
-    .card h2 {
-      color: #2563eb;
-      margin-bottom: 25px;
-      font-weight: 600;
-    }
-
+    .card h2 { color: #2563eb; margin-bottom: 25px; font-weight: 600; }
     .form-control, .form-select {
-      border-radius: 10px;
-      padding: 12px;
-      border: 1px solid #ccc;
-      transition: border-color 0.3s ease;
+      border-radius: 10px; padding: 12px; border: 1px solid #ccc; transition: border-color 0.3s ease;
     }
-
     .form-control:focus, .form-select:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+      border-color: #2563eb; box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
     }
-
     .btn-custom {
-      background: linear-gradient(90deg, #3b82f6, #6366f1);
-      border: none;
-      color: white;
-      padding: 12px 24px;
-      font-weight: bold;
-      border-radius: 8px;
-      margin-top: 15px;
-      transition: all 0.3s ease-in-out;
-      position: relative;
-      overflow: hidden;
+      background: linear-gradient(90deg, #3b82f6, #6366f1); border: none; color: white;
+      padding: 12px 24px; font-weight: bold; border-radius: 8px; margin-top: 15px;
+      transition: all 0.3s ease-in-out; position: relative; overflow: hidden;
     }
-
     .btn-custom:hover {
-      background: linear-gradient(90deg, #2563eb, #4f46e5);
-      transform: translateY(-2px);
+      background: linear-gradient(90deg, #2563eb, #4f46e5); transform: translateY(-2px);
     }
-
-    .btn-custom.running {
-      background: linear-gradient(90deg, #10b981, #059669);
-    }
-
+    .btn-custom.running { background: linear-gradient(90deg, #10b981, #059669); }
     .btn-custom.running::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
+      content: ""; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
       animation: loading 1.5s infinite;
     }
-
-    @keyframes loading {
-      100% {
-        left: 100%;
-      }
-    }
-
+    @keyframes loading { 100% { left: 100%; } }
     .protocol-card {
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 15px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: 2px solid transparent;
+      border-radius: 12px; padding: 15px; margin-bottom: 15px; cursor: pointer;
+      transition: all 0.2s ease; border: 2px solid transparent;
     }
-
-    .protocol-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .protocol-card.selected {
-      border-color: #3b82f6;
-      background-color: #eff6ff;
-    }
-
-    .protocol-icon {
-      font-size: 24px;
-      margin-right: 10px;
-      color: #3b82f6;
-    }
-
+    .protocol-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+    .protocol-card.selected { border-color: #3b82f6; background-color: #eff6ff; }
+    .protocol-icon { font-size: 24px; margin-right: 10px; color: #3b82f6; }
     .protocol-params {
-      background-color: #f8fafc;
-      border-radius: 10px;
-      padding: 15px;
-      margin-top: 10px;
-      margin-bottom: 15px;
-      border-left: 3px solid #3b82f6;
+      background-color: #f8fafc; border-radius: 10px; padding: 15px; margin-top: 10px;
+      margin-bottom: 15px; border-left: 3px solid #3b82f6;
     }
-
     .result-box {
-      background: #f1f5f9;
-      border-radius: 10px;
-      padding: 20px;
-      margin-top: 30px;
-      min-height: 150px;
-      white-space: pre-wrap;
-      font-family: 'Courier New', monospace;
+      background: #f1f5f9; border-radius: 10px; padding: 20px; margin-top: 30px;
+      min-height: 150px; white-space: pre-wrap; font-family: 'Courier New', monospace;
       border-left: 5px solid #3b82f6;
     }
-
     .progress-container {
-      height: 8px;
-      background-color: #e5e7eb;
-      border-radius: 4px;
-      margin-top: 20px;
-      overflow: hidden;
+      height: 8px; background-color: #e5e7eb; border-radius: 4px; margin-top: 20px; overflow: hidden;
     }
-
-    .progress-bar {
-      height: 100%;
-      background: linear-gradient(90deg, #3b82f6, #6366f1);
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
+    .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #6366f1); width: 0%; transition: width 0.3s ease; }
     .status-indicator {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      margin-right: 8px;
+      display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px;
     }
-
-    .status-ready {
-      background-color: #9ca3af;
-    }
-
-    .status-running {
-      background-color: #f59e0b;
-    }
-
-    .status-complete {
-      background-color: #10b981;
-    }
-
-    .test-duration-input {
-      max-width: 150px;
-    }
-
-    .bandwidth-input {
-      max-width: 200px;
-    }
+    .status-ready { background-color: #9ca3af; }
+    .status-running { background-color: #f59e0b; }
+    .status-complete { background-color: #10b981; }
+    .test-duration-input { max-width: 150px; }
+    .bandwidth-input { max-width: 200px; }
+    .metrics-card { background: #ffffff; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+    .metrics-card.ok { border-left: 5px solid #10b981; }
+    .metrics-card.degraded { border-left: 5px solid #dc3545; }
+    .chart-container { max-width: 100%; margin-top: 20px; }
   </style>
 </head>
 <body>
   <div class="container py-5">
-    
     <div class="row justify-content-center">
       <div class="col-lg-8">
         <div class="card">
@@ -243,9 +139,9 @@
                   <div class="mb-3">
                     <label class="form-label">Interface</label>
                     <select class="form-select" id="dhcp-interface">
-                      <option value="eth0">eth0</option>
-                      <option value="eth1">eth1</option>
-                      <option value="wlan0">wlan0</option>
+                      {% for iface in interfaces %}
+                        <option value="{{ iface.friendly_name }}">{{ iface.friendly_name }}</option>
+                      {% endfor %}
                     </select>
                   </div>
                   <div class="mb-3">
@@ -314,11 +210,11 @@
               </div>
               <div class="col-md-6">
                 <label for="iperf-server" class="form-label">iPerf Server IP</label>
-                <input type="text" class="form-control" id="iperf-server" placeholder="192.168.1.145" value="192.168.1.145">
+                <input type="text" class="form-control" id="iperf-server" placeholder="Enter server IP">
               </div>
               <div class="col-md-6">
                 <label for="iperf-port" class="form-label">iPerf Port</label>
-                <input type="text" class="form-control" id="iperf-port" placeholder="5201" value="5201">
+                <input type="text" class="form-control" id="iperf-port" placeholder="5201">
               </div>
               <div class="col-md-6">
                 <label for="test-duration" class="form-label">Test Duration (seconds)</label>
@@ -327,9 +223,10 @@
               <div class="col-md-6">
                 <label for="network-interface" class="form-label">Network Interface</label>
                 <select class="form-select" id="network-interface">
-                  <option value="eth0">eth0 (LAN)</option>
-                  <option value="eth1">eth1 (WAN)</option>
-                  <option value="auto">Auto-detect</option>
+                  {% for iface in interfaces %}
+                    <option value="{{ iface.friendly_name }}">{{ iface.friendly_name }}</option>
+                  {% endfor %}
+                  <option value="auto" selected>Auto-detect</option>
                 </select>
               </div>
             </div>
@@ -345,6 +242,15 @@
           <!-- Progress Indicator -->
           <div class="progress-container mt-4 d-none" id="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
+          </div>
+          
+          <!-- Metrics Display -->
+          <div class="mt-4 d-none" id="metrics-display">
+            <h5 class="mb-3">Control Traffic Metrics</h5>
+            <div id="metrics-container"></div>
+            <div class="chart-container">
+              <canvas id="latency-chart"></canvas>
+            </div>
           </div>
           
           <!-- Status Display -->
@@ -363,23 +269,14 @@
     </div>
   </div>
 
-  <!-- Bootstrap JS Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  
   <script>
-    // Selected protocols
-    const selectedProtocols = {
-      dns: false,
-      dhcp: false,
-      icmp: false
-    };
+    const selectedProtocols = { dns: false, dhcp: false, icmp: false };
     
-    // Toggle protocol selection and parameters
     function toggleProtocol(protocol) {
       selectedProtocols[protocol] = !selectedProtocols[protocol];
       const card = document.getElementById(`${protocol}-card`);
       const params = document.getElementById(`${protocol}-params`);
-      
       if (selectedProtocols[protocol]) {
         card.classList.add('selected');
         params.style.display = 'block';
@@ -389,12 +286,28 @@
       }
     }
     
-    // Handle continuous ping checkbox
     document.getElementById('icmp-continuous').addEventListener('change', function() {
       document.getElementById('icmp-count-container').style.display = this.checked ? 'none' : 'block';
     });
     
-    // Start test button click handler
+    const latencyChart = new Chart(document.getElementById('latency-chart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          { label: 'DNS Latency (ms)', data: [], borderColor: '#3b82f6', fill: false },
+          { label: 'ICMP Latency (ms)', data: [], borderColor: '#10b981', fill: false }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { title: { display: true, text: 'Time (s)' } },
+          y: { title: { display: true, text: 'Latency (ms)' }, beginAtZero: true }
+        }
+      }
+    });
+
     document.getElementById('start-test-btn').addEventListener('click', function() {
       const btn = this;
       const statusIndicator = document.getElementById('status-indicator');
@@ -402,17 +315,15 @@
       const consoleOutput = document.getElementById('console-output');
       const progressContainer = document.getElementById('progress-container');
       const progressBar = document.getElementById('progress-bar');
+      const metricsDisplay = document.getElementById('metrics-display');
+      const metricsContainer = document.getElementById('metrics-container');
       
-      // Validate at least one protocol is selected
-      const protocolsSelected = Object.values(selectedProtocols).some(val => val);
-      if (!protocolsSelected) {
+      if (!Object.values(selectedProtocols).some(val => val)) {
         alert('Please select at least one protocol to test!');
         return;
       }
       
-      // Collect all test parameters
       const testConfig = {
-        // Background traffic parameters
         background: {
           type: document.getElementById('background-traffic').value,
           server: document.getElementById('iperf-server').value,
@@ -420,11 +331,9 @@
           duration: document.getElementById('test-duration').value,
           interface: document.getElementById('network-interface').value
         },
-        // Protocol-specific parameters
         protocols: {}
       };
       
-      // Add selected protocols with their parameters
       if (selectedProtocols.dns) {
         testConfig.protocols.dns = {
           server: document.getElementById('dns-server').value,
@@ -452,7 +361,6 @@
         };
       }
       
-      // Update UI for running state
       btn.classList.add('running');
       btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Running Test...';
       btn.disabled = true;
@@ -462,44 +370,85 @@
       statusText.textContent = 'Test in progress...';
       document.getElementById('status-display').classList.remove('d-none');
       progressContainer.classList.remove('d-none');
+      metricsDisplay.classList.remove('d-none');
       consoleOutput.innerHTML = '';
+      metricsContainer.innerHTML = '';
       
-      // Start test via API
+      latencyChart.data.labels = [];
+      latencyChart.data.datasets[0].data = [];
+      latencyChart.data.datasets[1].data = [];
+      latencyChart.update();
+
       fetch('/start_test', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(testConfig)
       })
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
-          // Start polling for updates
+          let startTime = Date.now();
           const pollInterval = setInterval(() => {
             fetch('/test_status')
               .then(response => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return response.json();
               })
               .then(data => {
-                // Validate data
-                if (typeof data.running === 'undefined' || typeof data.progress === 'undefined') {
-                  throw new Error('Invalid response from /test_status');
-                }
-                
-                // Update progress bar
                 progressBar.style.width = `${data.progress}%`;
-                
-                // Update console output
                 if (data.console_output && data.console_output.length > 0) {
                   consoleOutput.innerHTML = data.console_output.join('\n');
                   consoleOutput.scrollTop = consoleOutput.scrollHeight;
                 }
+                fetch('/test_metrics')
+                  .then(response => response.json())
+                  .then(metrics => {
+                    metricsContainer.innerHTML = '';
+                    if (selectedProtocols.dns) {
+                      const dnsMetrics = metrics.dns;
+                      const status = data.performance_status?.dns || 'unknown';
+                      metricsContainer.innerHTML += `
+                        <div class="metrics-card ${status === 'ok' ? 'ok' : 'degraded'}">
+                          <h6>DNS Metrics</h6>
+                          <p>Latency: ${dnsMetrics.average_latency_ms} ms</p>
+                          <p>Packet Loss: ${dnsMetrics.packet_loss_percent}%</p>
+                          <p>Jitter: ${dnsMetrics.jitter_ms} ms</p>
+                          <p>Status: ${status === 'ok' ? 'OK ✅' : 'Degraded ❌'}</p>
+                        </div>
+                      `;
+                      latencyChart.data.labels.push(((Date.now() - startTime) / 1000).toFixed(1));
+                      latencyChart.data.datasets[0].data.push(dnsMetrics.average_latency_ms);
+                      latencyChart.update();
+                    }
+                    if (selectedProtocols.icmp) {
+                      const icmpMetrics = metrics.icmp;
+                      const status = data.performance_status?.icmp || 'unknown';
+                      metricsContainer.innerHTML += `
+                        <div class="metrics-card ${status === 'ok' ? 'ok' : 'degraded'}">
+                          <h6>ICMP Metrics</h6>
+                          <p>Latency: ${icmpMetrics.average_latency_ms} ms</p>
+                          <p>Packet Loss: ${icmpMetrics.packet_loss_percent}%</p>
+                          <p>Jitter: ${icmpMetrics.jitter_ms} ms</p>
+                          <p>Status: ${status === 'ok' ? 'OK ✅' : 'Degraded ❌'}</p>
+                        </div>
+                      `;
+                      latencyChart.data.datasets[1].data.push(icmpMetrics.average_latency_ms);
+                      latencyChart.update();
+                    }
+                    if (selectedProtocols.dhcp && metrics.dhcp.duration_s > 0) {
+                      const dhcpMetrics = metrics.dhcp;
+                      const status = data.performance_status?.dhcp || 'unknown';
+                      metricsContainer.innerHTML += `
+                        <div class="metrics-card ${status === 'ok' ? 'ok' : 'degraded'}">
+                          <h6>DHCP Metrics</h6>
+                          <p>Success: ${dhcpMetrics.success ? 'Yes' : 'No'}</p>
+                          <p>Duration: ${dhcpMetrics.duration_s} s</p>
+                          <p>Status: ${status === 'ok' ? 'OK ✅' : 'Degraded ❌'}</p>
+                        </div>
+                      `;
+                    }
+                  });
                 
-                // Check if test completed
                 if (!data.running) {
                   clearInterval(pollInterval);
                   testComplete();
@@ -509,7 +458,7 @@
                 console.error('Error polling test status:', error);
                 clearInterval(pollInterval);
                 resetUI();
-                alert('Error polling test status: ' + error.message + '. Test may have failed. Please try again.');
+                alert('Error polling test status: ' + error.message + '. Test may have failed.');
               });
           }, 1000);
           
@@ -517,14 +466,10 @@
             btn.classList.remove('running');
             btn.innerHTML = '<i class="fas fa-check me-2"></i>Test Complete';
             btn.disabled = false;
-            
             statusIndicator.classList.remove('status-running');
             statusIndicator.classList.add('status-complete');
             statusText.textContent = 'Test completed successfully';
-            
-            // Add verification results
             consoleOutput.innerHTML += '\n=== Verification Results ===\n';
-            
             if (selectedProtocols.dns) {
               consoleOutput.innerHTML += 'DNS: Queries sent to ' + testConfig.protocols.dns.server + '\n';
             }
@@ -534,7 +479,6 @@
             if (selectedProtocols.icmp) {
               consoleOutput.innerHTML += 'ICMP: Ping to ' + testConfig.protocols.icmp.target + '\n';
             }
-            
             consoleOutput.innerHTML += 'Background: ' + 
               (testConfig.background.type === 'none' ? 'None' : 
                testConfig.background.type + ' to ' + testConfig.background.server) + '\n';
@@ -557,6 +501,7 @@
         statusIndicator.classList.remove('status-running');
         statusIndicator.classList.add('status-ready');
         statusText.textContent = 'Ready to start test';
+        metricsDisplay.classList.add('d-none');
       }
     });
   </script>

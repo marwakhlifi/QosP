@@ -167,4 +167,3 @@ def run_queuing_test():
         "status": "success",
         "redirect_url": url_for('qos.queuingresult')
     })
-
