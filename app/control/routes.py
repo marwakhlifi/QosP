@@ -13,7 +13,7 @@ import statistics
 from . import control_bp 
 
 
-# Global variables to manage test state
+# var forr theee test state
 test_process = None
 test_output = []
 test_running = False
@@ -26,16 +26,15 @@ test_metrics = {
 test_thread_lock = threading.Lock()
 sent_timestamps = {}  # Track sent packet timestamps
 
-# Path to iperf3 executable (adjust for your environment)
 IPERF_PATH = r"C:\Users\marou\Downloads\iperf3\iperf-3.1.3-win64\iperf3.exe"
 
 def get_interfaces_with_names():
     """Retrieve interfaces with both NPF names and friendly names."""
     interfaces = []
     for iface in get_windows_if_list():
-        npf_name = iface.get('win32_ifname', '')  # e.g., \Device\NPF_{...}
-        description = iface.get('description', '')  # e.g., Intel(R) Wi-Fi 6 AX201 160MHz
-        # Map to ipconfig-friendly names based on description
+        npf_name = iface.get('win32_ifname', '')  
+        description = iface.get('description', '') 
+        
         ipconfig_name = description
         if "Wi-Fi 6 AX201" in description:
             ipconfig_name = "Wi-Fi"
@@ -59,7 +58,7 @@ def get_interfaces_with_names():
 
 @control_bp.route('/controlpackets')
 def control_packets():
-    # Get available network interfaces with friendly names
+    #for the available network interfaces 
     interfaces = get_interfaces_with_names()
     return render_template('controlpackets.html', interfaces=interfaces)
 
@@ -68,29 +67,25 @@ def start_test():
     global test_process, test_output, test_running, test_progress, test_metrics, sent_timestamps
     data = request.get_json()
     
-    # Extract background traffic parameters
+    #  background traffic parameters
     background = data.get('background', {})
     background_type = background.get('type', 'none')
-    iperf_server = background.get('server', '').strip()  # User-provided server IP
-    iperf_port = background.get('port', '').strip()  # User-provided port
+    iperf_server = background.get('server', '').strip()  
+    iperf_port = background.get('port', '').strip()  
     duration = int(background.get('duration', 30))
     interface = background.get('interface', 'auto')
 
-    # Extract protocol-specific parameters
     protocols = data.get('protocols', {})
 
-    # Validate input
     if not protocols:
         return jsonify({'status': 'error', 'message': 'At least one protocol must be selected'})
 
     if duration < 1 or duration > 300:
         return jsonify({'status': 'error', 'message': 'Duration must be between 1 and 300 seconds'})
 
-    # Check if iperf3 executable exists
     if not os.path.exists(IPERF_PATH):
         return jsonify({'status': 'error', 'message': f'iperf3 executable not found at {IPERF_PATH}'})
 
-    # Validate iperf server and port if background traffic is enabled
     if background_type != 'none':
         if not iperf_server:
             return jsonify({'status': 'error', 'message': 'iPerf server IP is required for background traffic'})
@@ -107,7 +102,6 @@ def start_test():
         except ValueError:
             return jsonify({'status': 'error', 'message': 'Invalid iPerf server IP address'})
 
-        # Check if iperf3 server is reachable
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(2)
@@ -173,11 +167,9 @@ def start_test():
             ))
             protocol_threads.append(icmp_thread)
 
-        # Start all protocol threads
         for thread in protocol_threads:
             thread.start()
 
-        # Start progress simulation
         def update_progress():
             global test_progress
             for i in range(0, 100, 5):
@@ -192,7 +184,6 @@ def start_test():
         progress_thread = threading.Thread(target=update_progress)
         progress_thread.start()
 
-        # Wait for all threads to complete with a timeout
         timeout = duration + 10
         sniffer_thread.join(timeout)
         bg_thread.join(timeout)
@@ -213,7 +204,7 @@ def start_test():
     finally:
         cleanup_test()
 
-    # Add verification results
+    # verification results
     with test_thread_lock:
         test_output.append("\n=== Verification Results ===")
         if 'dns' in protocols:
@@ -247,7 +238,6 @@ def run_packet_sniffer(protocols, duration, interface):
         sniff_interface = interface if interface != 'auto' else None
         if interface == 'auto':
             interfaces = get_interfaces_with_names()
-            # Prefer active interfaces (Wi-Fi or Ethernet 3)
             for iface in interfaces:
                 if iface['friendly_name'] in ['Wi-Fi', 'Ethernet 3']:
                     sniff_interface = iface['npf_name']
@@ -257,7 +247,6 @@ def run_packet_sniffer(protocols, duration, interface):
                     test_output.append(f"Error: No suitable interface found. Available: {[i['friendly_name'] for i in interfaces]}")
                 return
         else:
-            # Map friendly name to NPF name
             interfaces = get_interfaces_with_names()
             for iface in interfaces:
                 if iface['friendly_name'] == interface:
@@ -372,7 +361,6 @@ def run_dhcp_traffic(interface, server, renew, duration):
     global test_output, test_metrics
     try:
         start_time = time.time()
-        # Check if interface is active
         cmd_ipconfig = ['ipconfig', '/all']
         process = subprocess.Popen(cmd_ipconfig, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         output, _ = process.communicate()

@@ -7,7 +7,6 @@ from . import validation_bp
 
 def simple_telnet(host, port, username, password, command, timeout=5):
     try:
-        # Create socket
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(timeout)
         s.connect((host, port))
