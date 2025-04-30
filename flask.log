@@ -808,3 +808,191 @@
 2025-04-30 09:41:03,835 DEBUG: No jobs; waiting until a job is added
 2025-04-30 09:41:04,190 WARNING:  * Debugger is active!
 2025-04-30 09:41:04,193 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 12:09:08,185 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:09:08,196 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:09:08,197 DEBUG: interactive is False
+2025-04-30 12:09:08,197 DEBUG: platform is win32
+2025-04-30 12:09:08,250 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:09:08,252 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:09:08,420 DEBUG: Looking up time zone info from registry
+2025-04-30 12:09:08,427 INFO: Scheduler started
+2025-04-30 12:09:08,427 DEBUG: Looking for jobs to run
+2025-04-30 12:09:08,427 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:09:08,849 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 12:09:08,849 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 12:09:08,850 INFO:  * Restarting with stat
+2025-04-30 12:09:09,433 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:09:09,441 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:09:09,441 DEBUG: interactive is False
+2025-04-30 12:09:09,441 DEBUG: platform is win32
+2025-04-30 12:09:09,482 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:09:09,484 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:09:09,615 DEBUG: Looking up time zone info from registry
+2025-04-30 12:09:09,620 INFO: Scheduler started
+2025-04-30 12:09:09,620 DEBUG: Looking for jobs to run
+2025-04-30 12:09:09,621 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:09:09,972 WARNING:  * Debugger is active!
+2025-04-30 12:09:09,976 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 12:09:44,826 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:09:44,834 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:09:44,835 DEBUG: interactive is False
+2025-04-30 12:09:44,835 DEBUG: platform is win32
+2025-04-30 12:09:44,877 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:09:44,879 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:09:45,026 DEBUG: Looking up time zone info from registry
+2025-04-30 12:09:45,030 INFO: Scheduler started
+2025-04-30 12:09:45,031 DEBUG: Looking for jobs to run
+2025-04-30 12:09:45,031 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:09:45,391 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 12:09:45,391 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 12:09:45,393 INFO:  * Restarting with stat
+2025-04-30 12:09:45,990 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:09:45,997 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:09:45,998 DEBUG: interactive is False
+2025-04-30 12:09:45,998 DEBUG: platform is win32
+2025-04-30 12:09:46,038 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:09:46,040 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:09:46,168 DEBUG: Looking up time zone info from registry
+2025-04-30 12:09:46,173 INFO: Scheduler started
+2025-04-30 12:09:46,173 DEBUG: Looking for jobs to run
+2025-04-30 12:09:46,174 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:09:46,501 WARNING:  * Debugger is active!
+2025-04-30 12:09:46,504 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 12:10:06,706 INFO: 127.0.0.1 - - [30/Apr/2025 12:10:06] "[32mGET /index2 HTTP/1.1[0m" 302 -
+2025-04-30 12:10:06,723 INFO: 127.0.0.1 - - [30/Apr/2025 12:10:06] "GET / HTTP/1.1" 200 -
+2025-04-30 12:10:06,759 INFO: 127.0.0.1 - - [30/Apr/2025 12:10:06] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
+2025-04-30 12:10:06,791 INFO: 127.0.0.1 - - [30/Apr/2025 12:10:06] "GET / HTTP/1.1" 200 -
+2025-04-30 12:10:10,555 INFO: 127.0.0.1 - - [30/Apr/2025 12:10:10] "GET /login HTTP/1.1" 200 -
+2025-04-30 12:10:23,024 INFO: 127.0.0.1 - - [30/Apr/2025 12:10:23] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-30 12:10:23,036 INFO: 127.0.0.1 - - [30/Apr/2025 12:10:23] "GET /auth.network HTTP/1.1" 200 -
+2025-04-30 12:10:26,448 INFO: 127.0.0.1 - - [30/Apr/2025 12:10:26] "GET /qostype HTTP/1.1" 200 -
+2025-04-30 12:10:34,731 INFO: 127.0.0.1 - - [30/Apr/2025 12:10:34] "GET /view_devices HTTP/1.1" 200 -
+2025-04-30 12:10:38,958 INFO: 127.0.0.1 - - [30/Apr/2025 12:10:38] "GET /queuing HTTP/1.1" 200 -
+2025-04-30 12:10:41,574 INFO: 127.0.0.1 - - [30/Apr/2025 12:10:41] "GET /view_devices HTTP/1.1" 200 -
+2025-04-30 12:10:52,197 INFO: 127.0.0.1 - - [30/Apr/2025 12:10:52] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:11:29,574 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\ssh\\routes.py', reloading
+2025-04-30 12:11:30,173 INFO:  * Restarting with stat
+2025-04-30 12:11:30,847 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:11:30,854 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:11:30,855 DEBUG: interactive is False
+2025-04-30 12:11:30,855 DEBUG: platform is win32
+2025-04-30 12:11:30,899 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:11:30,901 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:11:31,046 DEBUG: Looking up time zone info from registry
+2025-04-30 12:11:31,053 INFO: Scheduler started
+2025-04-30 12:11:31,054 DEBUG: Looking for jobs to run
+2025-04-30 12:11:31,054 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:11:31,420 WARNING:  * Debugger is active!
+2025-04-30 12:11:31,423 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 12:11:46,668 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\ssh\\routes.py', reloading
+2025-04-30 12:11:47,372 INFO:  * Restarting with stat
+2025-04-30 12:11:48,037 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:11:48,047 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:11:48,048 DEBUG: interactive is False
+2025-04-30 12:11:48,048 DEBUG: platform is win32
+2025-04-30 12:11:48,101 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:11:48,103 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:11:48,279 DEBUG: Looking up time zone info from registry
+2025-04-30 12:11:48,285 INFO: Scheduler started
+2025-04-30 12:11:48,285 DEBUG: Looking for jobs to run
+2025-04-30 12:11:48,285 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:11:48,679 WARNING:  * Debugger is active!
+2025-04-30 12:11:48,682 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 12:11:54,761 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\ssh\\routes.py', reloading
+2025-04-30 12:11:55,059 INFO:  * Restarting with stat
+2025-04-30 12:12:43,808 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:12:43,815 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:12:43,816 DEBUG: interactive is False
+2025-04-30 12:12:43,816 DEBUG: platform is win32
+2025-04-30 12:12:43,867 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:12:43,869 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:12:44,020 DEBUG: Looking up time zone info from registry
+2025-04-30 12:12:44,026 INFO: Scheduler started
+2025-04-30 12:12:44,027 DEBUG: Looking for jobs to run
+2025-04-30 12:12:44,027 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:12:44,416 WARNING:  * Debugger is active!
+2025-04-30 12:12:44,420 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 12:12:53,119 INFO: 127.0.0.1 - - [30/Apr/2025 12:12:53] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:13:35,336 INFO: 127.0.0.1 - - [30/Apr/2025 12:13:35] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 12:13:35,356 INFO: 127.0.0.1 - - [30/Apr/2025 12:13:35] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:13:35,381 INFO: 127.0.0.1 - - [30/Apr/2025 12:13:35] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:13:35,421 INFO: 127.0.0.1 - - [30/Apr/2025 12:13:35] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-30 12:13:38,408 INFO: Received request to close SSH session
+2025-04-30 12:13:38,408 INFO: No active SSH session to close
+2025-04-30 12:13:38,409 INFO: 127.0.0.1 - - [30/Apr/2025 12:13:38] "POST /close_ssh_session HTTP/1.1" 200 -
+2025-04-30 12:13:51,220 INFO: 127.0.0.1 - - [30/Apr/2025 12:13:51] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:13:53,079 INFO: 127.0.0.1 - - [30/Apr/2025 12:13:53] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:13:53,979 INFO: 127.0.0.1 - - [30/Apr/2025 12:13:53] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:14:22,919 INFO: 127.0.0.1 - - [30/Apr/2025 12:14:22] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:14:30,622 INFO: 127.0.0.1 - - [30/Apr/2025 12:14:30] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 12:14:36,644 INFO: 127.0.0.1 - - [30/Apr/2025 12:14:36] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:14:50,617 INFO: 127.0.0.1 - - [30/Apr/2025 12:14:50] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 12:17:58,692 INFO: 127.0.0.1 - - [30/Apr/2025 12:17:58] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:18:11,022 INFO: 127.0.0.1 - - [30/Apr/2025 12:18:11] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 12:18:16,534 INFO: 127.0.0.1 - - [30/Apr/2025 12:18:16] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:18:22,890 INFO: 127.0.0.1 - - [30/Apr/2025 12:18:22] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 12:18:31,526 INFO: 127.0.0.1 - - [30/Apr/2025 12:18:31] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 12:18:46,956 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:18:46,965 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:18:46,966 DEBUG: interactive is False
+2025-04-30 12:18:46,966 DEBUG: platform is win32
+2025-04-30 12:18:47,023 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:18:47,025 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:18:47,176 DEBUG: Looking up time zone info from registry
+2025-04-30 12:18:47,181 INFO: Scheduler started
+2025-04-30 12:18:47,181 DEBUG: Looking for jobs to run
+2025-04-30 12:18:47,182 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:18:47,561 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 12:18:47,561 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 12:18:47,564 INFO:  * Restarting with stat
+2025-04-30 12:18:48,183 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:18:48,191 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:18:48,192 DEBUG: interactive is False
+2025-04-30 12:18:48,192 DEBUG: platform is win32
+2025-04-30 12:18:48,242 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:18:48,244 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:18:48,390 DEBUG: Looking up time zone info from registry
+2025-04-30 12:18:48,396 INFO: Scheduler started
+2025-04-30 12:18:48,396 DEBUG: Looking for jobs to run
+2025-04-30 12:18:48,396 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:18:48,782 WARNING:  * Debugger is active!
+2025-04-30 12:18:48,785 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 12:20:06,635 INFO: 127.0.0.1 - - [30/Apr/2025 12:20:06] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:20:06,667 INFO: 127.0.0.1 - - [30/Apr/2025 12:20:06] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:20:36,641 INFO: 127.0.0.1 - - [30/Apr/2025 12:20:36] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:20:36,668 INFO: 127.0.0.1 - - [30/Apr/2025 12:20:36] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:22:08,140 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:22:08,147 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:22:08,147 DEBUG: interactive is False
+2025-04-30 12:22:08,147 DEBUG: platform is win32
+2025-04-30 12:22:08,188 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:22:08,190 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:22:08,323 DEBUG: Looking up time zone info from registry
+2025-04-30 12:22:08,329 INFO: Scheduler started
+2025-04-30 12:22:08,329 DEBUG: Looking for jobs to run
+2025-04-30 12:22:08,329 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:22:08,673 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 12:22:08,673 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 12:22:08,676 INFO:  * Restarting with stat
+2025-04-30 12:22:09,260 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:22:09,266 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:22:09,267 DEBUG: interactive is False
+2025-04-30 12:22:09,267 DEBUG: platform is win32
+2025-04-30 12:22:09,305 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:22:09,307 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:22:09,437 DEBUG: Looking up time zone info from registry
+2025-04-30 12:22:09,442 INFO: Scheduler started
+2025-04-30 12:22:09,442 DEBUG: Looking for jobs to run
+2025-04-30 12:22:09,442 DEBUG: No jobs; waiting until a job is added
