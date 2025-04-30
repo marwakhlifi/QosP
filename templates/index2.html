@@ -1,13 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>QoS Test Setup</title>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
@@ -17,8 +21,9 @@
             margin: 0;
             padding: 0;
         }
+
         .navbar {
-            background-color: #007bff; /* Custom Blue for navbar */
+            background-color: #007bff;
         }
 
         .navbar .navbar-brand {
@@ -31,10 +36,15 @@
             color: #0056b3 !important;
         }
 
-        /* Title Styles */
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
         h1 {
             font-size: 2.5rem;
-            color: #2c3e50; /* Darker blue for the title */
+            color: #2c3e50;
             margin-top: 40px;
             text-align: center;
             font-weight: bold;
@@ -49,174 +59,359 @@
         }
 
         .form-container {
-            background-color: white; /* White background for the form */
-            color: black;  /* Black text color */
-            border-radius: 10px;
-            padding: 30px;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            max-width: 650px;
             margin: 0 auto;
+            position: relative;
         }
 
         .form-section {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            margin-bottom: 25px;
         }
 
         label {
             font-size: 1rem;
-            font-weight: bold;
+            font-weight: 600;
             display: block;
             margin-bottom: 8px;
             text-align: left;
         }
 
-        input, select, button {
+        input, select {
             width: 100%;
             padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
+            border-radius: 6px;
+            border: 1px solid #ccc;
             font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
         }
 
         button {
-            background-color: #007bff; /* Custom Blue for the button */
+            width: 100%;
+            padding: 14px;
+            background-color: #007bff;
             color: white;
             border: none;
-            cursor: pointer;
+            border-radius: 6px;
             font-size: 1.2rem;
+            cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-top: 20px;
         }
 
         button:hover {
             background-color: #0056b3;
         }
 
-
         .optional-input {
             display: none;
+            animation: fadeIn 0.3s ease-in-out;
         }
 
-        /* Responsive Design */
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(-10px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .form-header i {
+            font-size: 1.4rem;
+            margin-right: 10px;
+            color: #007bff;
+        }
+
+        .form-subheader {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        /* Traffic Type Selection Styles */
+        .traffic-type-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            max-width: 650px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .traffic-type-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .traffic-type-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .traffic-type-btn {
+            flex: 1;
+            min-width: 120px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .traffic-type-btn:hover {
+            border-color: #007bff;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.1);
+        }
+
+        .traffic-type-btn.active {
+            border-color: #007bff;
+            background-color: #e7f1ff;
+        }
+
+        .traffic-type-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #007bff;
+        }
+
+        .traffic-type-btn.active .traffic-type-icon {
+            color: #0056b3;
+        }
+
+        .traffic-type-label {
+            font-weight: 600;
+            font-size: 14px;
+            display: block;
+        }
+
+        .traffic-type-desc {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
         @media (max-width: 600px) {
             h1 {
                 font-size: 2rem;
             }
-
-            .form-container {
-                width: 90%;
+            .form-container, .traffic-type-container {
+                padding: 25px;
+            }
+            .traffic-type-btn {
+                min-width: 100px;
+                padding: 12px 8px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="#">QoSTracer</a>
-    </nav>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="https://cdn-icons-png.flaticon.com/512/1163/1163661.png" alt="Logo" class="logo-icon">
+        QoSTracer
+    </a>
+</nav>
 
-    <!-- Title -->
-    <h1>Quality of Service Test Setup</h1>
+<!-- Title -->
+<h1>Quality of Service Test Setup</h1>
 
-    <!-- Description -->
-    <div class="description">
-        Please enter the details to set up and test the Quality of Service for your client and server.
-        Customize your settings for the test, including protocol, direction, and more...
+<!-- Description -->
+<div class="description">
+    Please enter the details to set up and test the Quality of Service for your client and server.
+    Customize your settings for the test, including protocol, direction, and more...
+</div>
+
+<!-- Traffic Type Selection -->
+<div class="traffic-type-container shadow-sm rounded">
+    <div class="traffic-type-title">
+        <i class="fas fa-traffic-light me-2"></i>Traffic Type Selection
     </div>
-
-    <!-- Form Container -->
-    <div class="form-container">
-        <form id="iperfForm">
-            <div class="form-section">
-                <label for="serverIp">Server IP:</label>
-                <input type="text" id="serverIp" name="serverIp" required placeholder="Enter the server IP">
-            </div>
-
-            <div class="form-section">
-                <label for="clientIp">Client IP:</label>
-                <input type="text" id="clientIp" name="clientIp" required placeholder="Enter the client IP">
-            </div>
-
-            <div class="form-section">
-                <label for="port">Port:</label>
-                <input type="text" id="port" name="port" value="5201" placeholder="Default port: 5201">
-            </div>
-
-            <div class="form-section">
-                <label for="dscp">DSCP (TOS):</label>
-                <select id="dscp" name="dscp">
-                    <option value="184">VO (RTP) - 184</option>
-                    <option value="136">VO (SIP) - 136</option>
-                    <option value="104">VI - 104</option>
-                    <option value="40">VI - 40</option>
-                    <option value="0">BE (data) - 0</option>
-                    <option value="32">BK - 32</option>
-                </select>
-            </div>
-
-            <div class="form-section">
-                <label for="protocol">Protocol:</label>
-                <select id="protocol" name="protocol">
-                    <option value="tcp">TCP</option>
-                    <option value="udp">UDP</option>
-                </select>
-            </div>
-
-            <div class="form-section">
-                <label for="direction">Direction:</label>
-                <select id="direction" name="direction">
-                    <option value="uplink">Uplink</option>
-                    <option value="downlink">Downlink</option>
-                </select>
-            </div>
-
-            <!-- Optional Duration -->
-            <div class="form-section">
-                <label for="setDuration">
-                    <input type="checkbox" id="setDuration" name="setDuration"> Set Duration (seconds)
-                </label>
-                <div id="durationInput" class="optional-input">
-                    <label for="duration">Duration (seconds):</label>
-                    <input type="number" id="duration" name="duration" placeholder="Enter duration">
-                </div>
-            </div>
-
-            <!-- Optional Data Size -->
-            <div class="form-section">
-                <label for="setDataSize">
-                    <input type="checkbox" id="setDataSize" name="setDataSize"> Set Data Size
-                </label>
-                <div id="dataSizeInput" class="optional-input">
-                    <label for="dataSize">Data Size:</label>
-                    <input type="number" id="dataSize" name="dataSize" placeholder="Enter data size">
-                    
-                    <label for="dataUnit">Unit:</label>
-                    <select id="dataUnit" name="dataUnit">
-                        <option value="MB">MB</option>
-                        <option value="GB">GB</option>
-                        <option value="KB">KB</option>
-                        <option value="TB">TB</option>
-                    </select>
-                </div>
-            </div>
-
-            <button type="submit">Start Test</button>
-        </form>
+    <p class="text-muted mb-3">Select the network type for traffic generation:</p>
+    <div class="traffic-type-options">
+        <div class="traffic-type-btn active" data-type="wlan5">
+            <i class="fas fa-wifi traffic-type-icon"></i>
+            <span class="traffic-type-label">WLAN 5GHz</span>
+            <span class="traffic-type-desc">High-speed wireless</span>
+        </div>
+        <div class="traffic-type-btn" data-type="wlan2">
+            <i class="fas fa-wifi traffic-type-icon"></i>
+            <span class="traffic-type-label">WLAN 2.4GHz</span>
+            <span class="traffic-type-desc">Long-range wireless</span>
+        </div>
+        <div class="traffic-type-btn" data-type="lan">
+            <i class="fas fa-ethernet traffic-type-icon"></i>
+            <span class="traffic-type-label">LAN</span>
+            <span class="traffic-type-desc">Wired connection</span>
+        </div>
     </div>
+</div>
 
-    <script>
+<!-- Form Container -->
+<div class="form-container shadow-sm rounded">
+    <form id="iperfForm">
+
+        <!-- Server Control Section -->
+        <div class="form-section">
+            <div class="form-header">
+                <i class="fas fa-server"></i>
+                <strong>Server Settings</strong>
+            </div>
+            <label for="serverControl">Server Control Method:</label>
+            <select id="serverControl" name="serverControl">
+                <option value="manual">Manual (Server Already Running)</option>
+                <option value="ssh">SSH Controlled Server</option>
+            </select>
+        </div>
+
+        <!-- SSH Inputs -->
+        <div id="sshInputs" class="optional-input">
+            <div class="form-section">
+                <label for="remoteServerIp">Remote Server IP (for SSH):</label>
+                <input type="text" id="remoteServerIp" name="remoteServerIp" placeholder="Enter remote server IP">
+            </div>
+            <div class="form-section">
+                <label for="sshUsername">SSH Username:</label>
+                <input type="text" id="sshUsername" name="sshUsername" placeholder="Enter SSH username">
+            </div>
+            <div class="form-section">
+                <label for="sshPassword">SSH Password:</label>
+                <input type="password" id="sshPassword" name="sshPassword" placeholder="Enter SSH password">
+            </div>
+        </div>
+
+        <!-- Network Configuration -->
+        <div class="form-section">
+            <div class="form-header">
+                <i class="fas fa-network-wired"></i>
+                <strong>Network Configuration</strong>
+            </div>
+            <label for="serverIp">Server IP (for iPerf):</label>
+            <input type="text" id="serverIp" name="serverIp" required placeholder="Enter the server IP">
+        </div>
+
+        <div class="form-section">
+            <label for="clientIp">Client IP:</label>
+            <input type="text" id="clientIp" name="clientIp" required placeholder="Enter the client IP">
+        </div>
+
+        <div class="form-section">
+            <label for="port">Port:</label>
+            <input type="text" id="port" name="port" value="5201" placeholder="Default port: 5201">
+        </div>
+
+        <!-- Advanced Options -->
+        <div class="form-section">
+            <div class="form-header">
+                <i class="fas fa-sliders-h"></i>
+                <strong>Advanced Settings</strong>
+            </div>
+            <label for="dscp">DSCP (TOS):</label>
+            <select id="dscp" name="dscp">
+                <option value="184">VO (RTP) - 184</option>
+                <option value="136">VO (SIP) - 136</option>
+                <option value="104">VI - 104</option>
+                <option value="40">VI - 40</option>
+                <option value="0">BE (data) - 0</option>
+                <option value="32">BK - 32</option>
+            </select>
+        </div>
+
+        <div class="form-section">
+            <label for="protocol">Protocol:</label>
+            <select id="protocol" name="protocol">
+                <option value="tcp">TCP</option>
+                <option value="udp">UDP</option>
+            </select>
+        </div>
+
+        <div class="form-section">
+            <label for="direction">Direction:</label>
+            <select id="direction" name="direction">
+                <option value="uplink">Uplink</option>
+                <option value="downlink">Downlink</option>
+            </select>
+        </div>
+
+        <!-- Optional Duration -->
+        <div class="form-section">
+            <label for="setDuration">
+                <input type="checkbox" id="setDuration" name="setDuration"> Set Duration (seconds)
+            </label>
+            <div id="durationInput" class="optional-input">
+                <label for="duration">Duration (seconds):</label>
+                <input type="number" id="duration" name="duration" placeholder="Enter duration">
+            </div>
+        </div>
+
+        <!-- Optional Data Size -->
+        <div class="form-section">
+            <label for="setDataSize">
+                <input type="checkbox" id="setDataSize" name="setDataSize"> Set Data Size
+            </label>
+            <div id="dataSizeInput" class="optional-input">
+                <label for="dataSize">Data Size:</label>
+                <input type="number" id="dataSize" name="dataSize" placeholder="Enter data size">
+                <label for="dataUnit">Unit:</label>
+                <select id="dataUnit" name="dataUnit">
+                    <option value="MB">MB</option>
+                    <option value="GB">GB</option>
+                    <option value="KB">KB</option>
+                    <option value="TB">TB</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit">Start Test</button>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Initialize traffic type selection
+        let selectedTrafficType = 'wlan5'; // Default selection
+        
+        // Set up traffic type selection
+        $('.traffic-type-btn').on('click', function() {
+            $('.traffic-type-btn').removeClass('active');
+            $(this).addClass('active');
+            selectedTrafficType = $(this).data('type');
+        });
+
+        // Toggle SSH inputs visibility
+        $('#serverControl').change(function () {
+            $('#sshInputs').toggle($(this).val() === 'ssh');
+        });
+
         // Toggle duration input visibility
-        $('#setDuration').on('change', function() {
+        $('#setDuration').change(function () {
             $('#durationInput').toggle(this.checked);
         });
 
         // Toggle data size input visibility
-        $('#setDataSize').on('change', function() {
+        $('#setDataSize').change(function () {
             $('#dataSizeInput').toggle(this.checked);
         });
 
@@ -224,16 +419,29 @@
             e.preventDefault();
 
             var formData = {
+                serverControl: $('#serverControl').val(),
+                remoteServerIp: $('#remoteServerIp').val(),
+                sshUsername: $('#sshUsername').val(),
+                sshPassword: $('#sshPassword').val(),
                 serverIp: $('#serverIp').val(),
                 clientIp: $('#clientIp').val(),
                 port: $('#port').val(),
                 dscp: $('#dscp').val(),
-                direction: $("input[name='direction']:checked").val(),
+                protocol: $('#protocol').val(),
+                direction: $('#direction').val(),
                 duration: $('#duration').val(),
-                dataSize: $('#dataSize').val(),
-                dataUnit: $('#dataUnit').val(),
-                autoTelnet: true
+                taille: $('#dataSize').val() ? $('#dataSize').val() + $('#dataUnit').val() : '',
+                autoTelnet: true,
+                trafficType: selectedTrafficType // Add traffic type to form data
             };
+
+            // Validation for SSH fields
+            if (formData.serverControl === 'ssh') {
+                if (!formData.remoteServerIp || !formData.sshUsername || !formData.sshPassword) {
+                    alert('Please provide all SSH credentials (Remote Server IP, Username, Password)!');
+                    return;
+                }
+            }
 
             // Validation for optional fields
             if ($('#setDuration').prop('checked') && !formData.duration) {
@@ -241,14 +449,14 @@
                 return;
             }
 
-            if ($('#setDataSize').prop('checked') && (!formData.dataSize || !formData.dataUnit)) {
+            if ($('#setDataSize').prop('checked') && !formData.taille) {
                 alert('Please enter valid data size and unit!');
                 return;
             }
 
             $.ajax({
                 type: 'POST',
-                url: '/run_iperf',
+                url: 'run_iperf',
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
@@ -263,10 +471,11 @@
                 }
             });
         });
-    </script>
+    });
+</script>
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/popper.js/1.16.1/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

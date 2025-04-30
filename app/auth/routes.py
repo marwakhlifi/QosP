@@ -53,13 +53,50 @@ def login():
     if user:
         session['user_id'] = user['username']
         session['is_admin'] = False
+        session['login_time'] = datetime.now().timestamp()
         flash(f'Welcome back, {username}!', 'success')  
         return redirect(url_for('auth.network_page'))
     else:
         flash('Invalid credentials, please try again.', 'error')
         return redirect(url_for('home'))
     
-
+@auth_bp.before_app_request
+def check_session_expiry():
+    # Skip for static files and login page
+    if request.endpoint in ['static', 'auth.login']:
+        return
+    
+    if 'user_id' in session and 'login_time' in session:
+        current_time = datetime.now().timestamp()
+        login_time = session['login_time']
+        
+        # Check if session has expired (30 minutes)
+        if current_time - login_time > 1800:
+            user_id = session['user_id']
+            
+            # Release all devices locked by this user
+            devices_collection.update_many(
+                {'locked_by': user_id},
+                {'$unset': {'locked_by': ""}}
+            )
+            
+            # Clear any active timers for this user's devices
+            devices = devices_collection.find({'locked_by': user_id})
+            for device in devices:
+                ip = device['ip']
+                if ip in unlock_timers:
+                    unlock_timers[ip].cancel()
+                    del unlock_timers[ip]
+            
+            # Clear the session
+            session.clear()
+            flash('Your session has expired after 30 minutes of inactivity.', 'warning')
+            return redirect(url_for('auth.home'))
+    
+    # For routes that require authentication
+    elif not request.endpoint in ['auth.home', 'auth.login_page']:
+        return redirect(url_for('auth.home'))
+    
 @auth_bp.route('/admin_dashboard')
 def admin_dashboard():
     if not session.get('is_admin'):
@@ -109,11 +146,11 @@ def logout_and_release_devices():
     user_id = session.get('user_id')
     
     if user_id:
-        # Libérer tous les appareils verrouillés par cet utilisateur
+        # Release all devices locked by this user
         devices = devices_collection.find({'locked_by': user_id})
         for device in devices:
             ip = device['ip']
-            # Annuler le timer si il existe
+            # Cancel any active timers
             if ip in unlock_timers:
                 unlock_timers[ip].cancel()
                 del unlock_timers[ip]
@@ -289,21 +326,27 @@ def auto_unlock_device(ip, user_id):
     def unlock():
         device = devices_collection.find_one({'ip': ip})
         if device and device.get('locked_by') == user_id:
+            # Unlock the device
             devices_collection.update_one(
                 {'ip': ip},
                 {'$unset': {'locked_by': ""}}
             )
             print(f"Device {ip} automatically unlocked after 30 minutes.")
-        # Supprimer le timer du dictionnaire après exécution
+            
+            # Note: We can't directly modify the session here as it's in a background thread
+            # The actual logout will be handled by the before_request handler
+            
+        # Remove the timer from the dictionary after execution
         if ip in unlock_timers:
             del unlock_timers[ip]
     
-    # Annuler l'ancien timer s'il existe
+    # Cancel the old timer if it exists
     if ip in unlock_timers:
         unlock_timers[ip].cancel()
     
-    # Créer un nouveau timer et le stocker
-    timer = threading.Timer(1800, unlock)
+    # Create a new timer and store it
+    timer = threading.Timer(1800, unlock)  # 1800 seconds = 30 minutes
     timer.start()
     unlock_timers[ip] = timer
+
     

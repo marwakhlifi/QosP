@@ -142,6 +142,39 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        .result-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .close-ssh-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .close-ssh-btn:hover {
+            background-color: #c82333;
+        }
+        .close-ssh-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
 
     </style>
 </head>
@@ -202,10 +235,54 @@
             <table id="resultsTable" class="results-table">
                 <!-- Table will be populated by JavaScript -->
             </table>
-        </div> 
+        </div>
+        <button class="close-ssh-btn" onclick="closeSSHSession()">Close SSH Session</button>
+ 
     </div>
 
     <script>
+                async function closeSSHSession() {
+            const button = document.querySelector('.close-ssh-btn');
+            button.disabled = true;
+            button.textContent = 'Closing...';
+
+            try {
+                const response = await fetch('/close_ssh_session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                // Log raw response for debugging
+                const rawText = await response.text();
+                console.log('Raw response:', rawText);
+
+                // Attempt to parse as JSON
+                let data;
+                try {
+                    data = JSON.parse(rawText);
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    throw new Error('Invalid JSON response from server');
+                }
+
+                if (data.status === 'success') {
+                    alert('SSH session closed successfully.');
+                    button.textContent = 'SSH Session Closed';
+                } else {
+                    alert('Error: ' + data.message);
+                    button.disabled = false;
+                    button.textContent = 'Close SSH Session';
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                alert('Error closing SSH session: ' + error.message);
+                button.disabled = false;
+                button.textContent = 'Close SSH Session';
+            }
+        }
+
+
         $(document).ready(function() {
             // Get the results from the session
             const results = JSON.parse('{{ results | tojson | safe }}');

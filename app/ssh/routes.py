@@ -4,6 +4,12 @@ import paramiko
 import subprocess
 import os
 import json
+from flask import session, jsonify
+import logging
+
+
+
+
 
 HISTORY_FILE = 'ssh_history.json'
 
@@ -50,3 +56,66 @@ def test_ssh():
         return jsonify({"status": "error", "message": f"❌ SSH Connection Failed for: {', '.join(failed_tests)}!"})
 
 
+
+
+
+# Configure logging (ensure this is in your file or app setup)
+logging.basicConfig(
+    filename='flask.log',
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s: %(message)s'
+)
+
+
+@ssh_bp.route('/close_ssh_session', methods=['POST'])
+def close_ssh_session():
+    logging.info("Received request to close SSH session")
+    
+    # Get SSH session from Flask session
+    ssh_session = session.get('ssh_session', None)
+
+    # If no session or not active, return success
+    if not ssh_session or not ssh_session.get('ssh_client_active', False):
+        logging.info("No active SSH session to close")
+        session.pop('ssh_session', None)
+        return jsonify({"status": "success", "message": "SSH session closed successfully"}), 200
+
+    try:
+        # Get server process list from session
+        server_process_list = ssh_session.get('server_process_list', [])
+        if not server_process_list:
+            logging.info("No server processes to terminate")
+            session.pop('ssh_session', None)
+            return jsonify({"status": "success", "message": "SSH session closed successfully"}), 200
+
+        # Attempt to terminate each process
+        for ssh_client, pid in server_process_list:
+            try:
+                # Check if SSH client is still active
+                if ssh_client and ssh_client.get_transport() and ssh_client.get_transport().is_active():
+                    cmd = f"kill -9 {pid}"
+                    logging.info(f"Terminating iPerf server process {pid}")
+                    stdin, stdout, stderr = ssh_client.exec_command(cmd)
+                    stdout.read()  # Wait for command to complete
+                    stderr_output = stderr.read().decode()
+                    if stderr_output:
+                        logging.warning(f"Error during termination of PID {pid}: {stderr_output}")
+                    ssh_client.close()
+                    logging.info(f"Closed SSH connection for PID {pid}")
+                else:
+                    logging.info(f"SSH connection for PID {pid} is already closed or invalid")
+            except Exception as e:
+                logging.error(f"Error terminating PID {pid}: {e}")
+                # Continue to next PID to ensure all are attempted
+
+        # Clear session data
+        session.pop('ssh_session', None)
+        logging.info("SSH session closed successfully")
+        return jsonify({"status": "success", "message": "SSH session closed successfully"}), 200
+
+    except Exception as e:
+        logging.error(f"Unexpected error closing SSH session: {e}")
+        # Clear session to prevent stuck state
+        session.pop('ssh_session', None)
+        return jsonify({"status": "success", "message": "SSH session closed successfully"}), 200
+    

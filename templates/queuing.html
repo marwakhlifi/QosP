@@ -262,6 +262,40 @@
       margin-top: 10px;
       margin-bottom: 15px;
     }
+
+    .ssh-fields {
+      display: none;
+      flex-direction: row;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f8fafc;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .ssh-fields.visible {
+      display: flex;
+      opacity: 1;
+    }
+
+    .ssh-fields .form-control {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 768px) {
+      .ssh-fields {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .ssh-fields .form-control {
+        margin-bottom: 15px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -280,6 +314,20 @@
           <div class="mb-4">
             <h5 class="mb-3"><i class="fas fa-server me-2"></i>Test Server Configuration</h5>
             <div class="row g-3">
+              <!-- Server Control Dropdown -->
+              <div class="col-md-6">
+                <label for="serverControl" class="form-label">Server Control Method</label>
+                <select class="form-select" id="serverControl">
+                  <option value="manual">Manual</option>
+                  <option value="ssh">SSH Controlled Server</option>
+                </select>
+              </div>
+              <!-- SSH Credential Fields -->
+              <div class="col-md-12 ssh-fields" id="sshFields">
+                <input type="text" class="form-control" id="remoteServerIp" placeholder="Enter Remote Server IP">
+                <input type="text" class="form-control" id="sshUsername" placeholder="Enter SSH Username">
+                <input type="password" class="form-control" id="sshPassword" placeholder="Enter SSH Password">
+              </div>
               <div class="col-md-6">
                 <label for="server-ip" class="form-label">Server IP Address</label>
                 <input type="text" class="form-control" id="server-ip" placeholder="192.168.1.100" required>
@@ -440,6 +488,18 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    // Toggle SSH credential fields visibility with animation
+    document.getElementById('serverControl').addEventListener('change', function() {
+      const sshFields = document.getElementById('sshFields');
+      if (this.value === 'ssh') {
+        sshFields.classList.remove('d-none');
+        sshFields.classList.add('visible');
+      } else {
+        sshFields.classList.add('d-none');
+        sshFields.classList.remove('visible');
+      }
+    });
+
     document.getElementById('start-test-btn').addEventListener('click', function() {
       const btn = this;
       const statusIndicator = document.getElementById('status-indicator');
@@ -455,6 +515,10 @@
         clientIp: document.getElementById('client-ip').value,
         duration: document.getElementById('test-duration').value,
         protocol: document.getElementById('protocol-type').value,
+        serverControl: document.getElementById('serverControl').value,
+        remoteServerIp: document.getElementById('server-ip').value, // Same as serverIp
+        sshUsername: document.getElementById('sshUsername').value,
+        sshPassword: document.getElementById('sshPassword').value,
         VO: {
           port: document.querySelector('.vo-port').value,
           dscp: document.querySelector('.vo-dscp').value,
@@ -479,13 +543,21 @@
       
       // Validate inputs
       if (!testConfig.serverIp || !testConfig.clientIp) {
-        alert('Please enter both server and client IP addresses');
+        alert('Please enter both Server IP and Client IP addresses');
         return;
       }
       
       if (testConfig.duration < 5 || testConfig.duration > 300) {
         alert('Test duration must be between 5 and 300 seconds');
         return;
+      }
+
+      // Validate SSH credentials when SSH is selected
+      if (testConfig.serverControl === 'ssh') {
+        if (!testConfig.remoteServerIp || !testConfig.sshUsername || !testConfig.sshPassword) {
+          alert('All SSH credentials (Remote Server IP, SSH Username, SSH Password) are required for SSH Controlled Server');
+          return;
+        }
       }
       
       // Update UI for running state
