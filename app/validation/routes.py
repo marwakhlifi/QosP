@@ -22,20 +22,16 @@ def simple_telnet(host, port, username, password, command, timeout=5):
                     break
             return data
         
-        # Login 
         read_until(b"login: ")
         s.send(username.encode() + b"\n")
         
         read_until(b"Password: ")
         s.send(password.encode() + b"\n")
         
-        # Waiiing
         read_until(b"#")
         
-        # Send commandd
         s.send(command.encode() + b"\n")
         
-        # Get output
         output = read_until(b"#").decode('utf-8')
         
         s.close()
@@ -43,6 +39,7 @@ def simple_telnet(host, port, username, password, command, timeout=5):
     
     except Exception as e:
         raise Exception(f"Telnet error: {str(e)}")
+    
 
 @validation_bp.route('/test_telnet', methods=['POST'])
 def test_telnet():

@@ -996,3 +996,1344 @@
 2025-04-30 12:22:09,442 INFO: Scheduler started
 2025-04-30 12:22:09,442 DEBUG: Looking for jobs to run
 2025-04-30 12:22:09,442 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:30:34,540 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:30:34,547 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:30:34,548 DEBUG: interactive is False
+2025-04-30 12:30:34,548 DEBUG: platform is win32
+2025-04-30 12:30:34,594 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:30:34,596 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:30:34,732 DEBUG: Looking up time zone info from registry
+2025-04-30 12:30:34,737 INFO: Scheduler started
+2025-04-30 12:30:34,737 DEBUG: Looking for jobs to run
+2025-04-30 12:30:34,737 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:30:35,086 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 12:30:35,086 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 12:30:35,087 INFO:  * Restarting with stat
+2025-04-30 12:30:35,669 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:30:35,676 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:30:35,677 DEBUG: interactive is False
+2025-04-30 12:30:35,677 DEBUG: platform is win32
+2025-04-30 12:30:35,715 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:30:35,717 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:30:35,869 DEBUG: Looking up time zone info from registry
+2025-04-30 12:30:35,873 INFO: Scheduler started
+2025-04-30 12:30:35,873 DEBUG: Looking for jobs to run
+2025-04-30 12:30:35,873 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:30:36,259 WARNING:  * Debugger is active!
+2025-04-30 12:30:36,262 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 12:30:40,663 INFO: 127.0.0.1 - - [30/Apr/2025 12:30:40] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:30:40,935 INFO: 127.0.0.1 - - [30/Apr/2025 12:30:40] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-30 12:31:16,801 INFO: 127.0.0.1 - - [30/Apr/2025 12:31:16] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 12:31:16,820 INFO: 127.0.0.1 - - [30/Apr/2025 12:31:16] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:31:16,842 INFO: 127.0.0.1 - - [30/Apr/2025 12:31:16] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:38:17,502 INFO: 127.0.0.1 - - [30/Apr/2025 12:38:17] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:38:17,550 INFO: 127.0.0.1 - - [30/Apr/2025 12:38:17] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:44:23,613 INFO: 127.0.0.1 - - [30/Apr/2025 12:44:23] "[32mGET /index3 HTTP/1.1[0m" 302 -
+2025-04-30 12:44:23,631 INFO: 127.0.0.1 - - [30/Apr/2025 12:44:23] "GET / HTTP/1.1" 200 -
+2025-04-30 12:44:28,967 INFO: 127.0.0.1 - - [30/Apr/2025 12:44:28] "GET /login HTTP/1.1" 200 -
+2025-04-30 12:44:32,235 INFO: 127.0.0.1 - - [30/Apr/2025 12:44:32] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-30 12:44:32,247 INFO: 127.0.0.1 - - [30/Apr/2025 12:44:32] "GET /auth.network HTTP/1.1" 200 -
+2025-04-30 12:44:33,554 INFO: 127.0.0.1 - - [30/Apr/2025 12:44:33] "GET /qostype HTTP/1.1" 200 -
+2025-04-30 12:44:40,606 INFO: 127.0.0.1 - - [30/Apr/2025 12:44:40] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:44:43,821 INFO: 127.0.0.1 - - [30/Apr/2025 12:44:43] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:44:43,847 INFO: 127.0.0.1 - - [30/Apr/2025 12:44:43] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:46:06,001 INFO: 127.0.0.1 - - [30/Apr/2025 12:46:06] "[31m[1mGET /generate_graph_data HTTP/1.1[0m" 400 -
+2025-04-30 12:46:48,748 DEBUG: starting thread (client mode): 0xa84bacf0
+2025-04-30 12:46:48,748 DEBUG: Local version/idstring: SSH-2.0-paramiko_3.5.1
+2025-04-30 12:46:48,762 DEBUG: Remote version/idstring: SSH-2.0-OpenSSH_9.9p2 Debian-1
+2025-04-30 12:46:48,762 INFO: Connected (version 2.0, client OpenSSH_9.9p2)
+2025-04-30 12:46:48,765 DEBUG: === Key exchange possibilities ===
+2025-04-30 12:46:48,765 DEBUG: kex algos: sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, mlkem768x25519-sha256, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+2025-04-30 12:46:48,765 DEBUG: server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+2025-04-30 12:46:48,765 DEBUG: client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 12:46:48,765 DEBUG: server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 12:46:48,765 DEBUG: client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 12:46:48,766 DEBUG: server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 12:46:48,766 DEBUG: client compress: none, zlib@openssh.com
+2025-04-30 12:46:48,766 DEBUG: server compress: none, zlib@openssh.com
+2025-04-30 12:46:48,766 DEBUG: client lang: <none>
+2025-04-30 12:46:48,766 DEBUG: server lang: <none>
+2025-04-30 12:46:48,766 DEBUG: kex follows: False
+2025-04-30 12:46:48,766 DEBUG: === Key exchange agreements ===
+2025-04-30 12:46:48,766 DEBUG: Strict kex mode: True
+2025-04-30 12:46:48,766 DEBUG: Kex: curve25519-sha256@libssh.org
+2025-04-30 12:46:48,766 DEBUG: HostKey: ssh-ed25519
+2025-04-30 12:46:48,766 DEBUG: Cipher: aes128-ctr
+2025-04-30 12:46:48,767 DEBUG: MAC: hmac-sha2-256
+2025-04-30 12:46:48,767 DEBUG: Compression: none
+2025-04-30 12:46:48,767 DEBUG: === End of kex handshake ===
+2025-04-30 12:46:48,784 DEBUG: Resetting outbound seqno after NEWKEYS due to strict mode
+2025-04-30 12:46:48,784 DEBUG: kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+2025-04-30 12:46:48,789 DEBUG: Switch to new keys ...
+2025-04-30 12:46:48,789 DEBUG: Resetting inbound seqno after NEWKEYS due to strict mode
+2025-04-30 12:46:48,790 DEBUG: Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+2025-04-30 12:46:48,790 DEBUG: Adding ssh-ed25519 host key for 192.168.1.145: b'9ca6b548fff256c7273f0edd3c8b14de'
+2025-04-30 12:46:48,842 DEBUG: userauth is OK
+2025-04-30 12:46:48,924 INFO: Authentication (password) successful!
+2025-04-30 12:46:48,926 DEBUG: EOF in transport thread
+2025-04-30 12:46:48,927 INFO: 127.0.0.1 - - [30/Apr/2025 12:46:48] "[35m[1mPOST /run_iperf HTTP/1.1[0m" 500 -
+2025-04-30 12:47:15,120 DEBUG: starting thread (client mode): 0xa8497ed0
+2025-04-30 12:47:15,120 DEBUG: Local version/idstring: SSH-2.0-paramiko_3.5.1
+2025-04-30 12:47:15,127 DEBUG: Remote version/idstring: SSH-2.0-OpenSSH_9.9p2 Debian-1
+2025-04-30 12:47:15,127 INFO: Connected (version 2.0, client OpenSSH_9.9p2)
+2025-04-30 12:47:15,130 DEBUG: === Key exchange possibilities ===
+2025-04-30 12:47:15,130 DEBUG: kex algos: sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, mlkem768x25519-sha256, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+2025-04-30 12:47:15,130 DEBUG: server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+2025-04-30 12:47:15,130 DEBUG: client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 12:47:15,130 DEBUG: server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 12:47:15,130 DEBUG: client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 12:47:15,130 DEBUG: server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 12:47:15,130 DEBUG: client compress: none, zlib@openssh.com
+2025-04-30 12:47:15,130 DEBUG: server compress: none, zlib@openssh.com
+2025-04-30 12:47:15,131 DEBUG: client lang: <none>
+2025-04-30 12:47:15,131 DEBUG: server lang: <none>
+2025-04-30 12:47:15,131 DEBUG: kex follows: False
+2025-04-30 12:47:15,131 DEBUG: === Key exchange agreements ===
+2025-04-30 12:47:15,131 DEBUG: Strict kex mode: True
+2025-04-30 12:47:15,131 DEBUG: Kex: curve25519-sha256@libssh.org
+2025-04-30 12:47:15,131 DEBUG: HostKey: ssh-ed25519
+2025-04-30 12:47:15,131 DEBUG: Cipher: aes128-ctr
+2025-04-30 12:47:15,131 DEBUG: MAC: hmac-sha2-256
+2025-04-30 12:47:15,131 DEBUG: Compression: none
+2025-04-30 12:47:15,131 DEBUG: === End of kex handshake ===
+2025-04-30 12:47:15,143 DEBUG: Resetting outbound seqno after NEWKEYS due to strict mode
+2025-04-30 12:47:15,143 DEBUG: kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+2025-04-30 12:47:15,143 DEBUG: Switch to new keys ...
+2025-04-30 12:47:15,143 DEBUG: Resetting inbound seqno after NEWKEYS due to strict mode
+2025-04-30 12:47:15,143 DEBUG: Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+2025-04-30 12:47:15,143 DEBUG: Adding ssh-ed25519 host key for 192.168.1.145: b'9ca6b548fff256c7273f0edd3c8b14de'
+2025-04-30 12:47:15,186 DEBUG: userauth is OK
+2025-04-30 12:47:15,260 INFO: Authentication (password) successful!
+2025-04-30 12:47:15,261 DEBUG: EOF in transport thread
+2025-04-30 12:47:15,261 INFO: 127.0.0.1 - - [30/Apr/2025 12:47:15] "[35m[1mPOST /run_iperf HTTP/1.1[0m" 500 -
+2025-04-30 12:47:26,554 INFO: 127.0.0.1 - - [30/Apr/2025 12:47:26] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:47:27,714 INFO: 127.0.0.1 - - [30/Apr/2025 12:47:27] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:47:34,414 INFO: 127.0.0.1 - - [30/Apr/2025 12:47:34] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:47:37,002 INFO: 127.0.0.1 - - [30/Apr/2025 12:47:37] "GET / HTTP/1.1" 200 -
+2025-04-30 12:47:38,808 INFO: 127.0.0.1 - - [30/Apr/2025 12:47:38] "GET /login HTTP/1.1" 200 -
+2025-04-30 12:47:42,058 INFO: 127.0.0.1 - - [30/Apr/2025 12:47:42] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-30 12:47:42,067 INFO: 127.0.0.1 - - [30/Apr/2025 12:47:42] "GET /auth.network HTTP/1.1" 200 -
+2025-04-30 12:47:43,684 INFO: 127.0.0.1 - - [30/Apr/2025 12:47:43] "GET /qostype HTTP/1.1" 200 -
+2025-04-30 12:47:47,793 INFO: 127.0.0.1 - - [30/Apr/2025 12:47:47] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:48:24,221 INFO: 127.0.0.1 - - [30/Apr/2025 12:48:24] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 12:48:24,237 INFO: 127.0.0.1 - - [30/Apr/2025 12:48:24] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:48:24,255 INFO: 127.0.0.1 - - [30/Apr/2025 12:48:24] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:48:31,760 INFO: 127.0.0.1 - - [30/Apr/2025 12:48:31] "GET /generate_graph_data HTTP/1.1" 200 -
+2025-04-30 12:48:38,171 INFO: 127.0.0.1 - - [30/Apr/2025 12:48:38] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:48:55,487 INFO: 127.0.0.1 - - [30/Apr/2025 12:48:55] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:48:55,501 INFO: 127.0.0.1 - - [30/Apr/2025 12:48:55] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:48:56,450 INFO: 127.0.0.1 - - [30/Apr/2025 12:48:56] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:48:56,463 INFO: 127.0.0.1 - - [30/Apr/2025 12:48:56] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:49:06,025 INFO: 127.0.0.1 - - [30/Apr/2025 12:49:06] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 12:49:06,047 INFO: 127.0.0.1 - - [30/Apr/2025 12:49:06] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:49:06,067 INFO: 127.0.0.1 - - [30/Apr/2025 12:49:06] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:49:14,784 INFO: 127.0.0.1 - - [30/Apr/2025 12:49:14] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:49:22,342 INFO: 127.0.0.1 - - [30/Apr/2025 12:49:22] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 12:49:22,395 INFO: 127.0.0.1 - - [30/Apr/2025 12:49:22] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:49:22,415 INFO: 127.0.0.1 - - [30/Apr/2025 12:49:22] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:49:22,456 INFO: 127.0.0.1 - - [30/Apr/2025 12:49:22] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-30 12:49:47,188 INFO: 127.0.0.1 - - [30/Apr/2025 12:49:47] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:49:47,201 INFO: 127.0.0.1 - - [30/Apr/2025 12:49:47] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:49:49,114 INFO: 127.0.0.1 - - [30/Apr/2025 12:49:49] "GET /generate_graph_data HTTP/1.1" 200 -
+2025-04-30 12:53:35,159 INFO: 127.0.0.1 - - [30/Apr/2025 12:53:35] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 12:53:35,172 INFO: 127.0.0.1 - - [30/Apr/2025 12:53:35] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 12:53:41,560 INFO: 127.0.0.1 - - [30/Apr/2025 12:53:41] "GET /generate_graph_data HTTP/1.1" 200 -
+2025-04-30 12:53:49,421 INFO: 127.0.0.1 - - [30/Apr/2025 12:53:49] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 12:54:08,641 DEBUG: starting thread (client mode): 0xa8496490
+2025-04-30 12:54:08,641 DEBUG: Local version/idstring: SSH-2.0-paramiko_3.5.1
+2025-04-30 12:54:08,657 DEBUG: Remote version/idstring: SSH-2.0-OpenSSH_9.9p2 Debian-1
+2025-04-30 12:54:08,657 INFO: Connected (version 2.0, client OpenSSH_9.9p2)
+2025-04-30 12:54:08,662 DEBUG: === Key exchange possibilities ===
+2025-04-30 12:54:08,662 DEBUG: kex algos: sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, mlkem768x25519-sha256, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+2025-04-30 12:54:08,662 DEBUG: server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+2025-04-30 12:54:08,662 DEBUG: client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 12:54:08,662 DEBUG: server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 12:54:08,662 DEBUG: client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 12:54:08,662 DEBUG: server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 12:54:08,662 DEBUG: client compress: none, zlib@openssh.com
+2025-04-30 12:54:08,662 DEBUG: server compress: none, zlib@openssh.com
+2025-04-30 12:54:08,662 DEBUG: client lang: <none>
+2025-04-30 12:54:08,662 DEBUG: server lang: <none>
+2025-04-30 12:54:08,662 DEBUG: kex follows: False
+2025-04-30 12:54:08,662 DEBUG: === Key exchange agreements ===
+2025-04-30 12:54:08,662 DEBUG: Strict kex mode: True
+2025-04-30 12:54:08,662 DEBUG: Kex: curve25519-sha256@libssh.org
+2025-04-30 12:54:08,662 DEBUG: HostKey: ssh-ed25519
+2025-04-30 12:54:08,662 DEBUG: Cipher: aes128-ctr
+2025-04-30 12:54:08,662 DEBUG: MAC: hmac-sha2-256
+2025-04-30 12:54:08,662 DEBUG: Compression: none
+2025-04-30 12:54:08,662 DEBUG: === End of kex handshake ===
+2025-04-30 12:54:08,670 DEBUG: Resetting outbound seqno after NEWKEYS due to strict mode
+2025-04-30 12:54:08,670 DEBUG: kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+2025-04-30 12:54:08,671 DEBUG: Switch to new keys ...
+2025-04-30 12:54:08,671 DEBUG: Resetting inbound seqno after NEWKEYS due to strict mode
+2025-04-30 12:54:08,671 DEBUG: Adding ssh-ed25519 host key for 192.168.1.145: b'9ca6b548fff256c7273f0edd3c8b14de'
+2025-04-30 12:54:08,671 DEBUG: Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+2025-04-30 12:54:08,809 DEBUG: userauth is OK
+2025-04-30 12:54:08,886 INFO: Authentication (password) successful!
+2025-04-30 12:54:08,888 DEBUG: EOF in transport thread
+2025-04-30 12:54:08,890 INFO: 127.0.0.1 - - [30/Apr/2025 12:54:08] "[35m[1mPOST /run_iperf HTTP/1.1[0m" 500 -
+2025-04-30 12:54:25,641 INFO: 127.0.0.1 - - [30/Apr/2025 12:54:25] "GET /index222 HTTP/1.1" 200 -
+2025-04-30 12:54:25,791 INFO: 127.0.0.1 - - [30/Apr/2025 12:54:25] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-30 12:54:54,396 DEBUG: starting thread (client mode): 0xa8496e90
+2025-04-30 12:54:54,397 DEBUG: Local version/idstring: SSH-2.0-paramiko_3.5.1
+2025-04-30 12:54:54,411 DEBUG: Remote version/idstring: SSH-2.0-OpenSSH_9.9p2 Debian-1
+2025-04-30 12:54:54,411 INFO: Connected (version 2.0, client OpenSSH_9.9p2)
+2025-04-30 12:54:54,415 DEBUG: === Key exchange possibilities ===
+2025-04-30 12:54:54,415 DEBUG: kex algos: sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, mlkem768x25519-sha256, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+2025-04-30 12:54:54,415 DEBUG: server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+2025-04-30 12:54:54,415 DEBUG: client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 12:54:54,415 DEBUG: server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 12:54:54,415 DEBUG: client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 12:54:54,415 DEBUG: server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 12:54:54,415 DEBUG: client compress: none, zlib@openssh.com
+2025-04-30 12:54:54,415 DEBUG: server compress: none, zlib@openssh.com
+2025-04-30 12:54:54,415 DEBUG: client lang: <none>
+2025-04-30 12:54:54,415 DEBUG: server lang: <none>
+2025-04-30 12:54:54,415 DEBUG: kex follows: False
+2025-04-30 12:54:54,415 DEBUG: === Key exchange agreements ===
+2025-04-30 12:54:54,415 DEBUG: Strict kex mode: True
+2025-04-30 12:54:54,416 DEBUG: Kex: curve25519-sha256@libssh.org
+2025-04-30 12:54:54,416 DEBUG: HostKey: ssh-ed25519
+2025-04-30 12:54:54,416 DEBUG: Cipher: aes128-ctr
+2025-04-30 12:54:54,416 DEBUG: MAC: hmac-sha2-256
+2025-04-30 12:54:54,416 DEBUG: Compression: none
+2025-04-30 12:54:54,416 DEBUG: === End of kex handshake ===
+2025-04-30 12:54:54,424 DEBUG: Resetting outbound seqno after NEWKEYS due to strict mode
+2025-04-30 12:54:54,424 DEBUG: kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+2025-04-30 12:54:54,425 DEBUG: Switch to new keys ...
+2025-04-30 12:54:54,425 DEBUG: Resetting inbound seqno after NEWKEYS due to strict mode
+2025-04-30 12:54:54,425 DEBUG: Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+2025-04-30 12:54:54,425 DEBUG: Adding ssh-ed25519 host key for 192.168.1.145: b'9ca6b548fff256c7273f0edd3c8b14de'
+2025-04-30 12:54:54,469 DEBUG: userauth is OK
+2025-04-30 12:54:54,629 INFO: Authentication (password) successful!
+2025-04-30 12:54:54,630 DEBUG: [chan 0] Max packet in: 32768 bytes
+2025-04-30 12:54:54,630 DEBUG: [chan 1] Max packet in: 32768 bytes
+2025-04-30 12:54:54,631 DEBUG: [chan 2] Max packet in: 32768 bytes
+2025-04-30 12:54:54,688 DEBUG: Received global request "hostkeys-00@openssh.com"
+2025-04-30 12:54:54,688 DEBUG: Rejecting "hostkeys-00@openssh.com" global request from server.
+2025-04-30 12:54:54,732 DEBUG: [chan 0] Max packet out: 32768 bytes
+2025-04-30 12:54:54,733 DEBUG: Secsh channel 0 opened.
+2025-04-30 12:54:54,734 DEBUG: [chan 1] Max packet out: 32768 bytes
+2025-04-30 12:54:54,734 DEBUG: Secsh channel 1 opened.
+2025-04-30 12:54:54,735 DEBUG: [chan 2] Max packet out: 32768 bytes
+2025-04-30 12:54:54,735 DEBUG: Secsh channel 2 opened.
+2025-04-30 12:54:54,744 DEBUG: [chan 0] Sesch channel 0 request ok
+2025-04-30 12:54:54,750 DEBUG: [chan 1] Sesch channel 1 request ok
+2025-04-30 12:54:54,750 DEBUG: [chan 2] Sesch channel 2 request ok
+2025-04-30 12:54:54,761 DEBUG: [chan 0] EOF received (0)
+2025-04-30 12:54:54,761 DEBUG: [chan 0] EOF sent (0)
+2025-04-30 12:54:54,762 DEBUG: [chan 2] EOF received (2)
+2025-04-30 12:54:54,762 DEBUG: [chan 2] EOF sent (2)
+2025-04-30 12:54:54,767 DEBUG: [chan 1] EOF received (1)
+2025-04-30 12:54:54,767 DEBUG: [chan 1] EOF sent (1)
+2025-04-30 12:54:54,773 DEBUG: EOF in transport thread
+2025-04-30 12:54:54,775 INFO: 127.0.0.1 - - [30/Apr/2025 12:54:54] "[35m[1mPOST /run_iperf_three_clients HTTP/1.1[0m" 500 -
+2025-04-30 12:55:39,127 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\ssh\\routes.py', reloading
+2025-04-30 12:55:39,771 INFO:  * Restarting with stat
+2025-04-30 12:55:40,474 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:55:40,482 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:55:40,482 DEBUG: interactive is False
+2025-04-30 12:55:40,482 DEBUG: platform is win32
+2025-04-30 12:55:40,533 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:55:40,535 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:55:40,701 DEBUG: Looking up time zone info from registry
+2025-04-30 12:55:40,708 INFO: Scheduler started
+2025-04-30 12:55:40,709 DEBUG: Looking for jobs to run
+2025-04-30 12:55:40,709 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:55:41,112 WARNING:  * Debugger is active!
+2025-04-30 12:55:41,115 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 12:55:44,155 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\ssh\\routes.py', reloading
+2025-04-30 12:55:44,501 INFO:  * Restarting with stat
+2025-04-30 12:55:47,160 INFO:  * Restarting with stat
+2025-04-30 12:55:47,918 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:55:47,925 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:55:47,926 DEBUG: interactive is False
+2025-04-30 12:55:47,926 DEBUG: platform is win32
+2025-04-30 12:55:47,973 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:55:47,975 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:55:48,137 DEBUG: Looking up time zone info from registry
+2025-04-30 12:55:48,142 INFO: Scheduler started
+2025-04-30 12:55:48,143 DEBUG: Looking for jobs to run
+2025-04-30 12:55:48,143 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:55:48,521 WARNING:  * Debugger is active!
+2025-04-30 12:55:48,524 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 12:56:36,303 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\ssh\\routes.py', reloading
+2025-04-30 12:56:36,998 INFO:  * Restarting with stat
+2025-04-30 12:56:37,606 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:56:37,613 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:56:37,614 DEBUG: interactive is False
+2025-04-30 12:56:37,614 DEBUG: platform is win32
+2025-04-30 12:56:37,661 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:56:37,663 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:56:37,811 DEBUG: Looking up time zone info from registry
+2025-04-30 12:56:37,817 INFO: Scheduler started
+2025-04-30 12:56:37,818 DEBUG: Looking for jobs to run
+2025-04-30 12:56:37,818 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:56:38,186 WARNING:  * Debugger is active!
+2025-04-30 12:56:38,189 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 12:56:39,204 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\ssh\\routes.py', reloading
+2025-04-30 12:56:39,655 INFO:  * Restarting with stat
+2025-04-30 12:56:40,268 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 12:56:40,275 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:56:40,276 DEBUG: interactive is False
+2025-04-30 12:56:40,276 DEBUG: platform is win32
+2025-04-30 12:56:40,324 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 12:56:40,327 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 12:56:40,497 DEBUG: Looking up time zone info from registry
+2025-04-30 12:56:40,502 INFO: Scheduler started
+2025-04-30 12:56:40,503 DEBUG: Looking for jobs to run
+2025-04-30 12:56:40,503 DEBUG: No jobs; waiting until a job is added
+2025-04-30 12:56:40,864 WARNING:  * Debugger is active!
+2025-04-30 12:56:40,867 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:01:47,242 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:01:47,866 INFO:  * Restarting with stat
+2025-04-30 13:01:48,646 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:01:48,655 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:01:48,655 DEBUG: interactive is False
+2025-04-30 13:01:48,655 DEBUG: platform is win32
+2025-04-30 13:01:48,703 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:01:48,706 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:01:48,868 DEBUG: Looking up time zone info from registry
+2025-04-30 13:01:48,875 INFO: Scheduler started
+2025-04-30 13:01:48,875 DEBUG: Looking for jobs to run
+2025-04-30 13:01:48,875 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:01:49,284 WARNING:  * Debugger is active!
+2025-04-30 13:01:49,287 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:01:54,339 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:01:54,575 INFO:  * Restarting with stat
+2025-04-30 13:01:55,275 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:01:55,284 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:01:55,285 DEBUG: interactive is False
+2025-04-30 13:01:55,285 DEBUG: platform is win32
+2025-04-30 13:01:55,327 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:01:55,329 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:01:55,477 DEBUG: Looking up time zone info from registry
+2025-04-30 13:01:55,483 INFO: Scheduler started
+2025-04-30 13:01:55,483 DEBUG: Looking for jobs to run
+2025-04-30 13:01:55,484 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:01:55,854 WARNING:  * Debugger is active!
+2025-04-30 13:01:55,857 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:01:58,903 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:01:59,332 INFO:  * Restarting with stat
+2025-04-30 13:02:00,036 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:02:00,043 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:02:00,044 DEBUG: interactive is False
+2025-04-30 13:02:00,044 DEBUG: platform is win32
+2025-04-30 13:02:00,084 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:02:00,085 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:02:00,218 DEBUG: Looking up time zone info from registry
+2025-04-30 13:02:00,224 INFO: Scheduler started
+2025-04-30 13:02:00,225 DEBUG: Looking for jobs to run
+2025-04-30 13:02:00,225 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:02:00,608 WARNING:  * Debugger is active!
+2025-04-30 13:02:00,612 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:02:08,603 DEBUG: starting thread (client mode): 0x161456a0
+2025-04-30 13:02:08,604 DEBUG: Local version/idstring: SSH-2.0-paramiko_3.5.1
+2025-04-30 13:02:08,625 DEBUG: Remote version/idstring: SSH-2.0-OpenSSH_9.9p2 Debian-1
+2025-04-30 13:02:08,625 INFO: Connected (version 2.0, client OpenSSH_9.9p2)
+2025-04-30 13:02:08,628 DEBUG: === Key exchange possibilities ===
+2025-04-30 13:02:08,628 DEBUG: kex algos: sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, mlkem768x25519-sha256, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+2025-04-30 13:02:08,628 DEBUG: server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+2025-04-30 13:02:08,628 DEBUG: client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 13:02:08,628 DEBUG: server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 13:02:08,628 DEBUG: client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 13:02:08,628 DEBUG: server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 13:02:08,628 DEBUG: client compress: none, zlib@openssh.com
+2025-04-30 13:02:08,628 DEBUG: server compress: none, zlib@openssh.com
+2025-04-30 13:02:08,628 DEBUG: client lang: <none>
+2025-04-30 13:02:08,628 DEBUG: server lang: <none>
+2025-04-30 13:02:08,628 DEBUG: kex follows: False
+2025-04-30 13:02:08,628 DEBUG: === Key exchange agreements ===
+2025-04-30 13:02:08,628 DEBUG: Strict kex mode: True
+2025-04-30 13:02:08,628 DEBUG: Kex: curve25519-sha256@libssh.org
+2025-04-30 13:02:08,628 DEBUG: HostKey: ssh-ed25519
+2025-04-30 13:02:08,628 DEBUG: Cipher: aes128-ctr
+2025-04-30 13:02:08,628 DEBUG: MAC: hmac-sha2-256
+2025-04-30 13:02:08,628 DEBUG: Compression: none
+2025-04-30 13:02:08,628 DEBUG: === End of kex handshake ===
+2025-04-30 13:02:08,640 DEBUG: Resetting outbound seqno after NEWKEYS due to strict mode
+2025-04-30 13:02:08,640 DEBUG: kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+2025-04-30 13:02:08,643 DEBUG: Switch to new keys ...
+2025-04-30 13:02:08,643 DEBUG: Resetting inbound seqno after NEWKEYS due to strict mode
+2025-04-30 13:02:08,644 DEBUG: Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+2025-04-30 13:02:08,644 DEBUG: Adding ssh-ed25519 host key for 192.168.1.145: b'9ca6b548fff256c7273f0edd3c8b14de'
+2025-04-30 13:02:08,690 DEBUG: userauth is OK
+2025-04-30 13:02:08,765 INFO: Authentication (password) successful!
+2025-04-30 13:02:08,767 DEBUG: [chan 0] Max packet in: 32768 bytes
+2025-04-30 13:02:08,767 DEBUG: [chan 1] Max packet in: 32768 bytes
+2025-04-30 13:02:08,768 DEBUG: [chan 2] Max packet in: 32768 bytes
+2025-04-30 13:02:08,886 DEBUG: Received global request "hostkeys-00@openssh.com"
+2025-04-30 13:02:08,886 DEBUG: Rejecting "hostkeys-00@openssh.com" global request from server.
+2025-04-30 13:02:08,929 DEBUG: [chan 0] Max packet out: 32768 bytes
+2025-04-30 13:02:08,929 DEBUG: Secsh channel 0 opened.
+2025-04-30 13:02:08,931 DEBUG: [chan 1] Max packet out: 32768 bytes
+2025-04-30 13:02:08,931 DEBUG: Secsh channel 1 opened.
+2025-04-30 13:02:08,932 DEBUG: [chan 2] Max packet out: 32768 bytes
+2025-04-30 13:02:08,932 DEBUG: Secsh channel 2 opened.
+2025-04-30 13:02:08,933 DEBUG: [chan 0] Sesch channel 0 request ok
+2025-04-30 13:02:08,934 DEBUG: [chan 1] Sesch channel 1 request ok
+2025-04-30 13:02:08,935 DEBUG: [chan 2] Sesch channel 2 request ok
+2025-04-30 13:02:08,943 DEBUG: [chan 0] EOF received (0)
+2025-04-30 13:02:08,943 DEBUG: [chan 0] EOF sent (0)
+2025-04-30 13:02:08,943 DEBUG: [chan 1] EOF received (1)
+2025-04-30 13:02:08,944 DEBUG: [chan 3] Max packet in: 32768 bytes
+2025-04-30 13:02:08,944 DEBUG: [chan 1] EOF sent (1)
+2025-04-30 13:02:08,944 DEBUG: [chan 2] EOF received (2)
+2025-04-30 13:02:08,945 DEBUG: [chan 2] EOF sent (2)
+2025-04-30 13:02:08,945 DEBUG: [chan 4] Max packet in: 32768 bytes
+2025-04-30 13:02:08,945 DEBUG: [chan 3] Max packet out: 32768 bytes
+2025-04-30 13:02:08,945 DEBUG: Secsh channel 3 opened.
+2025-04-30 13:02:08,946 DEBUG: [chan 5] Max packet in: 32768 bytes
+2025-04-30 13:02:08,996 DEBUG: [chan 4] Max packet out: 32768 bytes
+2025-04-30 13:02:08,997 DEBUG: Secsh channel 4 opened.
+2025-04-30 13:02:08,997 DEBUG: [chan 3] Sesch channel 3 request ok
+2025-04-30 13:02:08,999 DEBUG: [chan 5] Max packet out: 32768 bytes
+2025-04-30 13:02:09,000 DEBUG: Secsh channel 5 opened.
+2025-04-30 13:02:09,007 DEBUG: [chan 4] Sesch channel 4 request ok
+2025-04-30 13:02:09,011 DEBUG: [chan 5] Sesch channel 5 request ok
+2025-04-30 13:02:09,015 DEBUG: [chan 3] EOF received (3)
+2025-04-30 13:02:09,015 DEBUG: [chan 3] EOF sent (3)
+2025-04-30 13:02:09,017 DEBUG: [chan 4] EOF received (4)
+2025-04-30 13:02:09,017 DEBUG: [chan 5] EOF received (5)
+2025-04-30 13:02:09,018 DEBUG: [chan 4] EOF sent (4)
+2025-04-30 13:02:09,018 DEBUG: [chan 5] EOF sent (5)
+2025-04-30 13:02:12,016 DEBUG: [chan 6] Max packet in: 32768 bytes
+2025-04-30 13:02:12,016 DEBUG: [chan 6] Max packet out: 32768 bytes
+2025-04-30 13:02:12,016 DEBUG: Secsh channel 6 opened.
+2025-04-30 13:02:12,017 DEBUG: [chan 6] Sesch channel 6 request ok
+2025-04-30 13:02:12,018 DEBUG: [chan 7] Max packet in: 32768 bytes
+2025-04-30 13:02:12,018 DEBUG: [chan 7] Max packet out: 32768 bytes
+2025-04-30 13:02:12,018 DEBUG: Secsh channel 7 opened.
+2025-04-30 13:02:12,018 DEBUG: [chan 8] Max packet in: 32768 bytes
+2025-04-30 13:02:12,020 DEBUG: [chan 7] Sesch channel 7 request ok
+2025-04-30 13:02:12,020 DEBUG: [chan 8] Max packet out: 32768 bytes
+2025-04-30 13:02:12,020 DEBUG: Secsh channel 8 opened.
+2025-04-30 13:02:12,027 DEBUG: [chan 8] Sesch channel 8 request ok
+2025-04-30 13:02:12,037 DEBUG: [chan 6] EOF received (6)
+2025-04-30 13:02:12,037 DEBUG: [chan 6] EOF sent (6)
+2025-04-30 13:02:12,047 DEBUG: [chan 7] EOF received (7)
+2025-04-30 13:02:12,047 DEBUG: [chan 7] EOF sent (7)
+2025-04-30 13:02:12,048 DEBUG: [chan 8] EOF received (8)
+2025-04-30 13:02:12,048 DEBUG: [chan 8] EOF sent (8)
+2025-04-30 13:02:22,236 DEBUG: [chan 9] Max packet in: 32768 bytes
+2025-04-30 13:02:22,236 DEBUG: [chan 9] Max packet out: 32768 bytes
+2025-04-30 13:02:22,236 DEBUG: Secsh channel 9 opened.
+2025-04-30 13:02:22,238 DEBUG: [chan 9] Sesch channel 9 request ok
+2025-04-30 13:02:22,238 DEBUG: [chan 9] EOF sent (9)
+2025-04-30 13:02:22,239 DEBUG: [chan 10] Max packet in: 32768 bytes
+2025-04-30 13:02:22,243 DEBUG: [chan 9] EOF received (9)
+2025-04-30 13:02:22,243 DEBUG: [chan 10] Max packet out: 32768 bytes
+2025-04-30 13:02:22,243 DEBUG: Secsh channel 10 opened.
+2025-04-30 13:02:22,287 DEBUG: [chan 10] Sesch channel 10 request ok
+2025-04-30 13:02:22,287 DEBUG: [chan 10] EOF sent (10)
+2025-04-30 13:02:22,287 DEBUG: [chan 11] Max packet in: 32768 bytes
+2025-04-30 13:02:22,290 DEBUG: [chan 10] EOF received (10)
+2025-04-30 13:02:22,290 DEBUG: [chan 11] Max packet out: 32768 bytes
+2025-04-30 13:02:22,290 DEBUG: Secsh channel 11 opened.
+2025-04-30 13:02:22,335 DEBUG: [chan 11] Sesch channel 11 request ok
+2025-04-30 13:02:22,336 DEBUG: [chan 11] EOF sent (11)
+2025-04-30 13:02:22,336 DEBUG: EOF in transport thread
+2025-04-30 13:02:22,340 INFO: 127.0.0.1 - - [30/Apr/2025 13:02:22] "POST /run_iperf_three_clients HTTP/1.1" 200 -
+2025-04-30 13:02:22,380 INFO: 127.0.0.1 - - [30/Apr/2025 13:02:22] "GET /index333 HTTP/1.1" 200 -
+2025-04-30 13:02:22,456 INFO: 127.0.0.1 - - [30/Apr/2025 13:02:22] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-30 13:02:22,459 INFO: 127.0.0.1 - - [30/Apr/2025 13:02:22] "GET /generate_graph_data_three_clients HTTP/1.1" 200 -
+2025-04-30 13:02:40,956 INFO: 127.0.0.1 - - [30/Apr/2025 13:02:40] "GET /index222 HTTP/1.1" 200 -
+2025-04-30 13:02:43,859 INFO: 127.0.0.1 - - [30/Apr/2025 13:02:43] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 13:03:05,656 DEBUG: starting thread (client mode): 0x16123250
+2025-04-30 13:03:05,657 DEBUG: Local version/idstring: SSH-2.0-paramiko_3.5.1
+2025-04-30 13:03:05,658 DEBUG: Remote version/idstring: SSH-2.0-OpenSSH_9.9p2 Debian-1
+2025-04-30 13:03:05,658 INFO: Connected (version 2.0, client OpenSSH_9.9p2)
+2025-04-30 13:03:05,665 DEBUG: === Key exchange possibilities ===
+2025-04-30 13:03:05,665 DEBUG: kex algos: sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, mlkem768x25519-sha256, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+2025-04-30 13:03:05,665 DEBUG: server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+2025-04-30 13:03:05,665 DEBUG: client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 13:03:05,665 DEBUG: server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 13:03:05,665 DEBUG: client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 13:03:05,665 DEBUG: server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 13:03:05,665 DEBUG: client compress: none, zlib@openssh.com
+2025-04-30 13:03:05,665 DEBUG: server compress: none, zlib@openssh.com
+2025-04-30 13:03:05,665 DEBUG: client lang: <none>
+2025-04-30 13:03:05,665 DEBUG: server lang: <none>
+2025-04-30 13:03:05,665 DEBUG: kex follows: False
+2025-04-30 13:03:05,666 DEBUG: === Key exchange agreements ===
+2025-04-30 13:03:05,666 DEBUG: Strict kex mode: True
+2025-04-30 13:03:05,666 DEBUG: Kex: curve25519-sha256@libssh.org
+2025-04-30 13:03:05,666 DEBUG: HostKey: ssh-ed25519
+2025-04-30 13:03:05,666 DEBUG: Cipher: aes128-ctr
+2025-04-30 13:03:05,666 DEBUG: MAC: hmac-sha2-256
+2025-04-30 13:03:05,666 DEBUG: Compression: none
+2025-04-30 13:03:05,666 DEBUG: === End of kex handshake ===
+2025-04-30 13:03:05,675 DEBUG: Resetting outbound seqno after NEWKEYS due to strict mode
+2025-04-30 13:03:05,675 DEBUG: kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+2025-04-30 13:03:05,675 DEBUG: Switch to new keys ...
+2025-04-30 13:03:05,675 DEBUG: Resetting inbound seqno after NEWKEYS due to strict mode
+2025-04-30 13:03:05,675 DEBUG: Adding ssh-ed25519 host key for 192.168.1.145: b'9ca6b548fff256c7273f0edd3c8b14de'
+2025-04-30 13:03:05,676 DEBUG: Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+2025-04-30 13:03:05,721 DEBUG: userauth is OK
+2025-04-30 13:03:05,872 INFO: Authentication (password) successful!
+2025-04-30 13:03:05,873 DEBUG: [chan 0] Max packet in: 32768 bytes
+2025-04-30 13:03:05,922 DEBUG: Received global request "hostkeys-00@openssh.com"
+2025-04-30 13:03:05,922 DEBUG: Rejecting "hostkeys-00@openssh.com" global request from server.
+2025-04-30 13:03:05,965 DEBUG: [chan 0] Max packet out: 32768 bytes
+2025-04-30 13:03:05,965 DEBUG: Secsh channel 0 opened.
+2025-04-30 13:03:05,972 DEBUG: [chan 0] Sesch channel 0 request ok
+2025-04-30 13:03:05,997 DEBUG: [chan 0] EOF received (0)
+2025-04-30 13:03:05,997 DEBUG: [chan 0] EOF sent (0)
+2025-04-30 13:03:13,130 DEBUG: [chan 1] Max packet in: 32768 bytes
+2025-04-30 13:03:13,131 DEBUG: [chan 1] Max packet out: 32768 bytes
+2025-04-30 13:03:13,131 DEBUG: Secsh channel 1 opened.
+2025-04-30 13:03:13,132 DEBUG: [chan 1] Sesch channel 1 request ok
+2025-04-30 13:03:13,135 DEBUG: [chan 1] EOF received (1)
+2025-04-30 13:03:13,135 DEBUG: [chan 1] EOF sent (1)
+2025-04-30 13:03:13,135 DEBUG: EOF in transport thread
+2025-04-30 13:03:13,137 INFO: 127.0.0.1 - - [30/Apr/2025 13:03:13] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 13:03:13,159 INFO: 127.0.0.1 - - [30/Apr/2025 13:03:13] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 13:03:13,182 INFO: 127.0.0.1 - - [30/Apr/2025 13:03:13] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 13:03:17,002 INFO: 127.0.0.1 - - [30/Apr/2025 13:03:17] "GET /generate_graph_data HTTP/1.1" 200 -
+2025-04-30 13:03:19,343 INFO: Received request to close SSH session
+2025-04-30 13:03:19,343 INFO: No active SSH session to close
+2025-04-30 13:03:19,344 INFO: 127.0.0.1 - - [30/Apr/2025 13:03:19] "POST /close_ssh_session HTTP/1.1" 200 -
+2025-04-30 13:04:33,408 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:04:34,112 INFO:  * Restarting with stat
+2025-04-30 13:04:34,759 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:04:34,766 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:04:34,767 DEBUG: interactive is False
+2025-04-30 13:04:34,767 DEBUG: platform is win32
+2025-04-30 13:04:34,810 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:04:34,812 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:04:34,959 DEBUG: Looking up time zone info from registry
+2025-04-30 13:04:34,965 INFO: Scheduler started
+2025-04-30 13:04:34,966 DEBUG: Looking for jobs to run
+2025-04-30 13:04:34,966 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:04:35,323 WARNING:  * Debugger is active!
+2025-04-30 13:04:35,325 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:05:42,281 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\validation\\routes.py', reloading
+2025-04-30 13:05:42,893 INFO:  * Restarting with stat
+2025-04-30 13:05:43,527 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:05:43,534 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:05:43,535 DEBUG: interactive is False
+2025-04-30 13:05:43,535 DEBUG: platform is win32
+2025-04-30 13:05:43,579 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:05:43,581 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:05:43,738 DEBUG: Looking up time zone info from registry
+2025-04-30 13:05:43,743 INFO: Scheduler started
+2025-04-30 13:05:43,743 DEBUG: Looking for jobs to run
+2025-04-30 13:05:43,744 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:05:44,168 WARNING:  * Debugger is active!
+2025-04-30 13:05:44,171 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:06:44,180 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:06:44,635 INFO:  * Restarting with stat
+2025-04-30 13:06:45,279 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:06:45,287 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:06:45,288 DEBUG: interactive is False
+2025-04-30 13:06:45,288 DEBUG: platform is win32
+2025-04-30 13:06:45,332 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:06:45,334 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:06:45,473 DEBUG: Looking up time zone info from registry
+2025-04-30 13:06:45,478 INFO: Scheduler started
+2025-04-30 13:06:45,479 DEBUG: Looking for jobs to run
+2025-04-30 13:06:45,479 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:06:45,815 WARNING:  * Debugger is active!
+2025-04-30 13:06:45,818 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:07:19,300 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:07:19,959 INFO:  * Restarting with stat
+2025-04-30 13:07:20,684 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:07:20,693 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:07:20,695 DEBUG: interactive is False
+2025-04-30 13:07:20,696 DEBUG: platform is win32
+2025-04-30 13:07:20,755 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:07:20,758 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:07:20,938 DEBUG: Looking up time zone info from registry
+2025-04-30 13:07:20,942 INFO: Scheduler started
+2025-04-30 13:07:20,943 DEBUG: Looking for jobs to run
+2025-04-30 13:07:20,943 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:07:21,341 WARNING:  * Debugger is active!
+2025-04-30 13:07:21,343 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:09:07,590 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:09:08,350 INFO:  * Restarting with stat
+2025-04-30 13:13:36,245 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:13:36,254 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:13:36,254 DEBUG: interactive is False
+2025-04-30 13:13:36,255 DEBUG: platform is win32
+2025-04-30 13:13:36,302 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:13:36,305 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:13:36,447 DEBUG: Looking up time zone info from registry
+2025-04-30 13:13:36,452 INFO: Scheduler started
+2025-04-30 13:13:36,453 DEBUG: Looking for jobs to run
+2025-04-30 13:13:36,453 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:13:36,808 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 13:13:36,808 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 13:13:36,809 INFO:  * Restarting with stat
+2025-04-30 13:13:37,396 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:13:37,403 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:13:37,404 DEBUG: interactive is False
+2025-04-30 13:13:37,404 DEBUG: platform is win32
+2025-04-30 13:13:37,464 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:13:37,466 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:13:37,624 DEBUG: Looking up time zone info from registry
+2025-04-30 13:13:37,630 INFO: Scheduler started
+2025-04-30 13:13:37,630 DEBUG: Looking for jobs to run
+2025-04-30 13:13:37,630 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:13:38,025 WARNING:  * Debugger is active!
+2025-04-30 13:13:38,028 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:13:38,949 INFO: 127.0.0.1 - - [30/Apr/2025 13:13:38] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 13:13:39,268 INFO: 127.0.0.1 - - [30/Apr/2025 13:13:39] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-30 13:15:00,957 INFO: 127.0.0.1 - - [30/Apr/2025 13:15:00] "[35m[1mPOST /run_iperf HTTP/1.1[0m" 500 -
+2025-04-30 13:15:18,381 INFO: 127.0.0.1 - - [30/Apr/2025 13:15:18] "[35m[1mPOST /run_iperf HTTP/1.1[0m" 500 -
+2025-04-30 13:17:07,003 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:17:07,504 INFO:  * Restarting with stat
+2025-04-30 13:17:08,308 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:17:08,316 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:17:08,317 DEBUG: interactive is False
+2025-04-30 13:17:08,317 DEBUG: platform is win32
+2025-04-30 13:17:08,369 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:17:08,371 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:17:08,530 DEBUG: Looking up time zone info from registry
+2025-04-30 13:17:08,536 INFO: Scheduler started
+2025-04-30 13:17:08,537 DEBUG: Looking for jobs to run
+2025-04-30 13:17:08,537 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:17:08,948 WARNING:  * Debugger is active!
+2025-04-30 13:17:08,951 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:18:02,796 INFO: 127.0.0.1 - - [30/Apr/2025 13:18:02] "[32mPOST /run_iperf HTTP/1.1[0m" 302 -
+2025-04-30 13:18:02,809 INFO: 127.0.0.1 - - [30/Apr/2025 13:18:02] "GET / HTTP/1.1" 200 -
+2025-04-30 13:18:08,125 INFO: 127.0.0.1 - - [30/Apr/2025 13:18:08] "[32mGET /index2 HTTP/1.1[0m" 302 -
+2025-04-30 13:18:08,129 INFO: 127.0.0.1 - - [30/Apr/2025 13:18:08] "GET / HTTP/1.1" 200 -
+2025-04-30 13:18:09,527 INFO: 127.0.0.1 - - [30/Apr/2025 13:18:09] "GET /login HTTP/1.1" 200 -
+2025-04-30 13:18:13,500 INFO: 127.0.0.1 - - [30/Apr/2025 13:18:13] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-30 13:18:13,512 INFO: 127.0.0.1 - - [30/Apr/2025 13:18:13] "GET /auth.network HTTP/1.1" 200 -
+2025-04-30 13:18:14,810 INFO: 127.0.0.1 - - [30/Apr/2025 13:18:14] "GET /qostype HTTP/1.1" 200 -
+2025-04-30 13:18:21,022 INFO: 127.0.0.1 - - [30/Apr/2025 13:18:21] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 13:18:38,619 INFO: 127.0.0.1 - - [30/Apr/2025 13:18:38] "[35m[1mPOST /run_iperf HTTP/1.1[0m" 500 -
+2025-04-30 13:18:51,577 INFO: 127.0.0.1 - - [30/Apr/2025 13:18:51] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 13:18:51,607 INFO: 127.0.0.1 - - [30/Apr/2025 13:18:51] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 13:53:56,542 INFO: 127.0.0.1 - - [30/Apr/2025 13:53:56] "[32mGET /index3 HTTP/1.1[0m" 302 -
+2025-04-30 13:53:56,551 INFO: 127.0.0.1 - - [30/Apr/2025 13:53:56] "GET / HTTP/1.1" 200 -
+2025-04-30 13:53:56,582 INFO: 127.0.0.1 - - [30/Apr/2025 13:53:56] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
+2025-04-30 13:53:56,658 INFO: 127.0.0.1 - - [30/Apr/2025 13:53:56] "GET / HTTP/1.1" 200 -
+2025-04-30 13:53:58,033 INFO: 127.0.0.1 - - [30/Apr/2025 13:53:58] "GET /login HTTP/1.1" 200 -
+2025-04-30 13:54:01,755 INFO: 127.0.0.1 - - [30/Apr/2025 13:54:01] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-30 13:54:01,766 INFO: 127.0.0.1 - - [30/Apr/2025 13:54:01] "GET /auth.network HTTP/1.1" 200 -
+2025-04-30 13:54:12,749 INFO: 127.0.0.1 - - [30/Apr/2025 13:54:12] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 13:54:33,957 INFO: 127.0.0.1 - - [30/Apr/2025 13:54:33] "[35m[1mPOST /run_iperf HTTP/1.1[0m" 500 -
+2025-04-30 13:54:53,241 INFO: 127.0.0.1 - - [30/Apr/2025 13:54:53] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 13:54:53,270 INFO: 127.0.0.1 - - [30/Apr/2025 13:54:53] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 13:56:51,071 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:56:51,819 INFO:  * Restarting with stat
+2025-04-30 13:57:00,597 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:57:00,605 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:57:00,606 DEBUG: interactive is False
+2025-04-30 13:57:00,606 DEBUG: platform is win32
+2025-04-30 13:57:00,654 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:57:00,656 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:57:00,810 DEBUG: Looking up time zone info from registry
+2025-04-30 13:57:00,816 INFO: Scheduler started
+2025-04-30 13:57:00,817 DEBUG: Looking for jobs to run
+2025-04-30 13:57:00,817 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:57:01,252 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 13:57:01,252 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 13:57:01,254 INFO:  * Restarting with stat
+2025-04-30 13:57:01,853 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:57:01,860 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:57:01,861 DEBUG: interactive is False
+2025-04-30 13:57:01,861 DEBUG: platform is win32
+2025-04-30 13:57:01,901 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:57:01,903 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:57:02,035 DEBUG: Looking up time zone info from registry
+2025-04-30 13:57:02,040 INFO: Scheduler started
+2025-04-30 13:57:02,041 DEBUG: Looking for jobs to run
+2025-04-30 13:57:02,041 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:57:02,459 WARNING:  * Debugger is active!
+2025-04-30 13:57:02,461 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:57:04,944 INFO: 127.0.0.1 - - [30/Apr/2025 13:57:04] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-30 13:57:05,989 INFO: 127.0.0.1 - - [30/Apr/2025 13:57:05] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 13:57:06,243 INFO: 127.0.0.1 - - [30/Apr/2025 13:57:06] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-30 13:57:22,957 INFO: 127.0.0.1 - - [30/Apr/2025 13:57:22] "[35m[1mPOST /run_iperf HTTP/1.1[0m" 500 -
+2025-04-30 13:58:45,426 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:58:46,053 INFO:  * Restarting with stat
+2025-04-30 13:58:46,758 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:58:46,765 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:58:46,766 DEBUG: interactive is False
+2025-04-30 13:58:46,766 DEBUG: platform is win32
+2025-04-30 13:58:46,811 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:58:46,813 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:58:46,954 DEBUG: Looking up time zone info from registry
+2025-04-30 13:58:46,959 INFO: Scheduler started
+2025-04-30 13:58:46,960 DEBUG: Looking for jobs to run
+2025-04-30 13:58:46,960 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:58:47,315 WARNING:  * Debugger is active!
+2025-04-30 13:58:47,318 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:58:51,377 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:58:51,795 INFO:  * Restarting with stat
+2025-04-30 13:58:52,434 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:58:52,442 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:58:52,442 DEBUG: interactive is False
+2025-04-30 13:58:52,442 DEBUG: platform is win32
+2025-04-30 13:58:52,490 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:58:52,492 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:58:52,627 DEBUG: Looking up time zone info from registry
+2025-04-30 13:58:52,632 INFO: Scheduler started
+2025-04-30 13:58:52,632 DEBUG: Looking for jobs to run
+2025-04-30 13:58:52,632 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:58:52,957 WARNING:  * Debugger is active!
+2025-04-30 13:58:52,959 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:58:53,975 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:58:54,436 INFO:  * Restarting with stat
+2025-04-30 13:58:55,039 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:58:55,046 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:58:55,047 DEBUG: interactive is False
+2025-04-30 13:58:55,047 DEBUG: platform is win32
+2025-04-30 13:58:55,086 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:58:55,088 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:58:55,214 DEBUG: Looking up time zone info from registry
+2025-04-30 13:58:55,219 INFO: Scheduler started
+2025-04-30 13:58:55,219 DEBUG: Looking for jobs to run
+2025-04-30 13:58:55,219 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:58:55,562 WARNING:  * Debugger is active!
+2025-04-30 13:58:55,565 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:58:56,593 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:58:57,059 INFO:  * Restarting with stat
+2025-04-30 13:58:57,654 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:58:57,661 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:58:57,662 DEBUG: interactive is False
+2025-04-30 13:58:57,662 DEBUG: platform is win32
+2025-04-30 13:58:57,702 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:58:57,704 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:58:57,833 DEBUG: Looking up time zone info from registry
+2025-04-30 13:58:57,837 INFO: Scheduler started
+2025-04-30 13:58:57,837 DEBUG: Looking for jobs to run
+2025-04-30 13:58:57,837 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:58:58,168 WARNING:  * Debugger is active!
+2025-04-30 13:58:58,171 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 13:59:03,212 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 13:59:03,714 INFO:  * Restarting with stat
+2025-04-30 13:59:04,464 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 13:59:04,472 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:59:04,473 DEBUG: interactive is False
+2025-04-30 13:59:04,473 DEBUG: platform is win32
+2025-04-30 13:59:04,524 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 13:59:04,526 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 13:59:04,693 DEBUG: Looking up time zone info from registry
+2025-04-30 13:59:04,699 INFO: Scheduler started
+2025-04-30 13:59:04,699 DEBUG: Looking for jobs to run
+2025-04-30 13:59:04,699 DEBUG: No jobs; waiting until a job is added
+2025-04-30 13:59:05,075 WARNING:  * Debugger is active!
+2025-04-30 13:59:05,078 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:01:00,582 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 14:01:01,089 INFO:  * Restarting with stat
+2025-04-30 14:01:01,730 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:01:01,738 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:01:01,739 DEBUG: interactive is False
+2025-04-30 14:01:01,739 DEBUG: platform is win32
+2025-04-30 14:01:01,783 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:01:01,785 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:01:01,926 DEBUG: Looking up time zone info from registry
+2025-04-30 14:01:01,931 INFO: Scheduler started
+2025-04-30 14:01:01,931 DEBUG: Looking for jobs to run
+2025-04-30 14:01:01,932 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:01:02,269 WARNING:  * Debugger is active!
+2025-04-30 14:01:02,271 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:01:27,238 INFO: 127.0.0.1 - - [30/Apr/2025 14:01:27] "GET /index333 HTTP/1.1" 200 -
+2025-04-30 14:01:27,296 INFO: 127.0.0.1 - - [30/Apr/2025 14:01:27] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-30 14:01:27,299 INFO: 127.0.0.1 - - [30/Apr/2025 14:01:27] "[31m[1mGET /generate_graph_data_three_clients HTTP/1.1[0m" 400 -
+2025-04-30 14:01:32,510 INFO: 127.0.0.1 - - [30/Apr/2025 14:01:32] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:01:51,014 INFO: 127.0.0.1 - - [30/Apr/2025 14:01:51] "[35m[1mPOST /run_iperf HTTP/1.1[0m" 500 -
+2025-04-30 14:04:55,101 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:04:55,111 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:04:55,112 DEBUG: interactive is False
+2025-04-30 14:04:55,112 DEBUG: platform is win32
+2025-04-30 14:04:55,165 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:04:55,167 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:04:55,332 DEBUG: Looking up time zone info from registry
+2025-04-30 14:04:55,338 INFO: Scheduler started
+2025-04-30 14:04:55,338 DEBUG: Looking for jobs to run
+2025-04-30 14:04:55,338 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:04:55,738 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 14:04:55,738 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 14:04:55,740 INFO:  * Restarting with stat
+2025-04-30 14:04:56,361 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:04:56,368 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:04:56,369 DEBUG: interactive is False
+2025-04-30 14:04:56,369 DEBUG: platform is win32
+2025-04-30 14:04:56,410 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:04:56,411 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:04:56,554 DEBUG: Looking up time zone info from registry
+2025-04-30 14:04:56,560 INFO: Scheduler started
+2025-04-30 14:04:56,560 DEBUG: Looking for jobs to run
+2025-04-30 14:04:56,560 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:04:56,938 WARNING:  * Debugger is active!
+2025-04-30 14:04:56,941 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:05:34,850 INFO: 127.0.0.1 - - [30/Apr/2025 14:05:34] "[35m[1mPOST /run_iperf HTTP/1.1[0m" 500 -
+2025-04-30 14:05:42,480 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 14:05:42,992 INFO:  * Restarting with stat
+2025-04-30 14:05:43,624 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:05:43,632 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:05:43,633 DEBUG: interactive is False
+2025-04-30 14:05:43,633 DEBUG: platform is win32
+2025-04-30 14:05:43,678 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:05:43,680 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:05:43,821 DEBUG: Looking up time zone info from registry
+2025-04-30 14:05:43,828 INFO: Scheduler started
+2025-04-30 14:05:43,828 DEBUG: Looking for jobs to run
+2025-04-30 14:05:43,828 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:05:44,182 WARNING:  * Debugger is active!
+2025-04-30 14:05:44,185 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:09:18,661 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 14:11:05,419 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:11:05,426 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:11:05,427 DEBUG: interactive is False
+2025-04-30 14:11:05,427 DEBUG: platform is win32
+2025-04-30 14:11:05,468 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:11:05,470 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:11:05,605 DEBUG: Looking up time zone info from registry
+2025-04-30 14:11:05,612 INFO: Scheduler started
+2025-04-30 14:11:05,612 DEBUG: Looking for jobs to run
+2025-04-30 14:11:05,612 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:11:06,017 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 14:11:06,017 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 14:11:06,018 INFO:  * Restarting with stat
+2025-04-30 14:11:06,637 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:11:06,644 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:11:06,645 DEBUG: interactive is False
+2025-04-30 14:11:06,645 DEBUG: platform is win32
+2025-04-30 14:11:06,692 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:11:06,694 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:11:06,856 DEBUG: Looking up time zone info from registry
+2025-04-30 14:11:06,861 INFO: Scheduler started
+2025-04-30 14:11:06,861 DEBUG: Looking for jobs to run
+2025-04-30 14:11:06,861 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:11:07,282 WARNING:  * Debugger is active!
+2025-04-30 14:11:07,285 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:11:08,711 INFO: 127.0.0.1 - - [30/Apr/2025 14:11:08] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:11:25,036 INFO: 127.0.0.1 - - [30/Apr/2025 14:11:25] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:12:41,458 INFO: 127.0.0.1 - - [30/Apr/2025 14:12:41] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 14:12:41,477 INFO: 127.0.0.1 - - [30/Apr/2025 14:12:41] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 14:17:48,078 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 14:17:48,745 INFO:  * Restarting with stat
+2025-04-30 14:17:51,453 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:17:51,471 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:17:51,471 DEBUG: interactive is False
+2025-04-30 14:17:51,472 DEBUG: platform is win32
+2025-04-30 14:17:51,550 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:17:51,558 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:17:51,878 DEBUG: Looking up time zone info from registry
+2025-04-30 14:17:51,890 INFO: Scheduler started
+2025-04-30 14:17:51,890 DEBUG: Looking for jobs to run
+2025-04-30 14:17:51,890 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:17:53,390 WARNING:  * Debugger is active!
+2025-04-30 14:17:53,392 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:18:13,601 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 14:18:14,096 INFO:  * Restarting with stat
+2025-04-30 14:18:14,825 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:18:14,832 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:18:14,833 DEBUG: interactive is False
+2025-04-30 14:18:14,833 DEBUG: platform is win32
+2025-04-30 14:18:14,881 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:18:14,883 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:18:15,043 DEBUG: Looking up time zone info from registry
+2025-04-30 14:18:15,049 INFO: Scheduler started
+2025-04-30 14:18:15,049 DEBUG: Looking for jobs to run
+2025-04-30 14:18:15,049 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:18:15,431 WARNING:  * Debugger is active!
+2025-04-30 14:18:15,435 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:19:02,840 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 14:19:03,457 INFO:  * Restarting with stat
+2025-04-30 14:19:04,173 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:19:04,180 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:19:04,181 DEBUG: interactive is False
+2025-04-30 14:19:04,181 DEBUG: platform is win32
+2025-04-30 14:19:04,229 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:19:04,231 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:19:04,383 DEBUG: Looking up time zone info from registry
+2025-04-30 14:19:04,389 INFO: Scheduler started
+2025-04-30 14:19:04,392 DEBUG: Looking for jobs to run
+2025-04-30 14:19:04,393 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:19:04,786 WARNING:  * Debugger is active!
+2025-04-30 14:19:04,790 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:19:40,478 INFO: 127.0.0.1 - - [30/Apr/2025 14:19:40] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 14:19:40,498 INFO: 127.0.0.1 - - [30/Apr/2025 14:19:40] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 14:19:41,288 INFO: 127.0.0.1 - - [30/Apr/2025 14:19:41] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 14:19:41,337 INFO: 127.0.0.1 - - [30/Apr/2025 14:19:41] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 14:19:42,218 INFO: 127.0.0.1 - - [30/Apr/2025 14:19:42] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:19:49,521 INFO: 127.0.0.1 - - [30/Apr/2025 14:19:49] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:19:52,053 INFO: 127.0.0.1 - - [30/Apr/2025 14:19:52] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:20:00,742 INFO: 127.0.0.1 - - [30/Apr/2025 14:20:00] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:20:02,587 INFO: 127.0.0.1 - - [30/Apr/2025 14:20:02] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:20:11,134 INFO: 127.0.0.1 - - [30/Apr/2025 14:20:11] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:20:34,975 INFO: 127.0.0.1 - - [30/Apr/2025 14:20:34] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:20:52,098 INFO: 127.0.0.1 - - [30/Apr/2025 14:20:52] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:21:00,980 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:21:00,988 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:21:00,988 DEBUG: interactive is False
+2025-04-30 14:21:00,988 DEBUG: platform is win32
+2025-04-30 14:21:01,028 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:21:01,030 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:21:01,160 DEBUG: Looking up time zone info from registry
+2025-04-30 14:21:01,164 INFO: Scheduler started
+2025-04-30 14:21:01,165 DEBUG: Looking for jobs to run
+2025-04-30 14:21:01,165 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:21:01,495 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 14:21:01,495 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 14:21:01,497 INFO:  * Restarting with stat
+2025-04-30 14:21:02,047 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:21:02,054 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:21:02,055 DEBUG: interactive is False
+2025-04-30 14:21:02,055 DEBUG: platform is win32
+2025-04-30 14:21:02,094 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:21:02,096 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:21:02,231 DEBUG: Looking up time zone info from registry
+2025-04-30 14:21:02,235 INFO: Scheduler started
+2025-04-30 14:21:02,235 DEBUG: Looking for jobs to run
+2025-04-30 14:21:02,236 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:21:02,650 WARNING:  * Debugger is active!
+2025-04-30 14:21:02,654 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:21:03,763 INFO: 127.0.0.1 - - [30/Apr/2025 14:21:03] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:21:04,761 INFO: 127.0.0.1 - - [30/Apr/2025 14:21:04] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:21:11,110 INFO: 127.0.0.1 - - [30/Apr/2025 14:21:11] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:21:54,154 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 14:21:54,712 INFO:  * Restarting with stat
+2025-04-30 14:21:55,399 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:21:55,407 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:21:55,407 DEBUG: interactive is False
+2025-04-30 14:21:55,408 DEBUG: platform is win32
+2025-04-30 14:21:55,452 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:21:55,454 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:21:55,614 DEBUG: Looking up time zone info from registry
+2025-04-30 14:21:55,621 INFO: Scheduler started
+2025-04-30 14:21:55,621 DEBUG: Looking for jobs to run
+2025-04-30 14:21:55,622 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:21:56,001 WARNING:  * Debugger is active!
+2025-04-30 14:21:56,004 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:22:05,090 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 14:22:05,451 INFO:  * Restarting with stat
+2025-04-30 14:22:06,054 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:22:06,062 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:22:06,063 DEBUG: interactive is False
+2025-04-30 14:22:06,063 DEBUG: platform is win32
+2025-04-30 14:22:06,107 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:22:06,108 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:22:06,248 DEBUG: Looking up time zone info from registry
+2025-04-30 14:22:06,254 INFO: Scheduler started
+2025-04-30 14:22:06,254 DEBUG: Looking for jobs to run
+2025-04-30 14:22:06,254 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:22:06,650 WARNING:  * Debugger is active!
+2025-04-30 14:22:06,653 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:22:23,028 INFO: 127.0.0.1 - - [30/Apr/2025 14:22:23] "[35m[1mPOST /run_iperf HTTP/1.1[0m" 500 -
+2025-04-30 14:22:55,243 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 14:22:55,658 INFO:  * Restarting with stat
+2025-04-30 14:22:56,311 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:22:56,319 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:22:56,320 DEBUG: interactive is False
+2025-04-30 14:22:56,320 DEBUG: platform is win32
+2025-04-30 14:22:56,363 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:22:56,365 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:22:56,510 DEBUG: Looking up time zone info from registry
+2025-04-30 14:22:56,515 INFO: Scheduler started
+2025-04-30 14:22:56,515 DEBUG: Looking for jobs to run
+2025-04-30 14:22:56,515 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:22:56,933 WARNING:  * Debugger is active!
+2025-04-30 14:22:56,937 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:23:13,278 INFO: 127.0.0.1 - - [30/Apr/2025 14:23:13] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:23:13,935 INFO: 127.0.0.1 - - [30/Apr/2025 14:23:13] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:23:14,823 INFO: 127.0.0.1 - - [30/Apr/2025 14:23:14] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:25:50,669 INFO: 127.0.0.1 - - [30/Apr/2025 14:25:50] "[32mGET /index3 HTTP/1.1[0m" 302 -
+2025-04-30 14:25:50,739 INFO: 127.0.0.1 - - [30/Apr/2025 14:25:50] "GET / HTTP/1.1" 200 -
+2025-04-30 14:25:52,532 INFO: 127.0.0.1 - - [30/Apr/2025 14:25:52] "GET /login HTTP/1.1" 200 -
+2025-04-30 14:25:59,950 INFO: 127.0.0.1 - - [30/Apr/2025 14:25:59] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-30 14:25:59,991 INFO: 127.0.0.1 - - [30/Apr/2025 14:25:59] "GET /auth.network HTTP/1.1" 200 -
+2025-04-30 14:26:01,436 INFO: 127.0.0.1 - - [30/Apr/2025 14:26:01] "GET /qostype HTTP/1.1" 200 -
+2025-04-30 14:26:05,050 INFO: 127.0.0.1 - - [30/Apr/2025 14:26:05] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:26:15,653 INFO: 127.0.0.1 - - [30/Apr/2025 14:26:15] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:27:35,648 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 14:27:36,415 INFO:  * Restarting with stat
+2025-04-30 14:27:37,228 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:27:37,237 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:27:37,238 DEBUG: interactive is False
+2025-04-30 14:27:37,238 DEBUG: platform is win32
+2025-04-30 14:27:37,291 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:27:37,293 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:27:37,476 DEBUG: Looking up time zone info from registry
+2025-04-30 14:27:37,486 INFO: Scheduler started
+2025-04-30 14:27:37,487 DEBUG: Looking for jobs to run
+2025-04-30 14:27:37,487 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:27:37,956 WARNING:  * Debugger is active!
+2025-04-30 14:27:37,959 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:28:04,543 INFO: 127.0.0.1 - - [30/Apr/2025 14:28:04] "GET / HTTP/1.1" 200 -
+2025-04-30 14:28:07,029 INFO: 127.0.0.1 - - [30/Apr/2025 14:28:07] "GET /login HTTP/1.1" 200 -
+2025-04-30 14:28:11,152 INFO: 127.0.0.1 - - [30/Apr/2025 14:28:11] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-30 14:28:11,173 INFO: 127.0.0.1 - - [30/Apr/2025 14:28:11] "GET /auth.network HTTP/1.1" 200 -
+2025-04-30 14:28:12,560 INFO: 127.0.0.1 - - [30/Apr/2025 14:28:12] "GET /qostype HTTP/1.1" 200 -
+2025-04-30 14:28:14,327 INFO: 127.0.0.1 - - [30/Apr/2025 14:28:14] "GET /queuing HTTP/1.1" 200 -
+2025-04-30 14:28:20,478 INFO: 127.0.0.1 - - [30/Apr/2025 14:28:20] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:28:38,820 INFO: 127.0.0.1 - - [30/Apr/2025 14:28:38] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:28:38,860 INFO: 127.0.0.1 - - [30/Apr/2025 14:28:38] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 14:28:38,899 INFO: 127.0.0.1 - - [30/Apr/2025 14:28:38] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-30 14:28:49,100 INFO: 127.0.0.1 - - [30/Apr/2025 14:28:49] "[35m[1mGET /generate_graph_data HTTP/1.1[0m" 500 -
+2025-04-30 14:31:49,289 INFO: 127.0.0.1 - - [30/Apr/2025 14:31:49] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:31:53,536 INFO: 127.0.0.1 - - [30/Apr/2025 14:31:53] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:31:53,562 INFO: 127.0.0.1 - - [30/Apr/2025 14:31:53] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 14:31:54,704 INFO: 127.0.0.1 - - [30/Apr/2025 14:31:54] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:32:00,813 INFO: 127.0.0.1 - - [30/Apr/2025 14:32:00] "[35m[1mGET /generate_graph_data HTTP/1.1[0m" 500 -
+2025-04-30 14:32:07,857 INFO: 127.0.0.1 - - [30/Apr/2025 14:32:07] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:32:23,015 INFO: 127.0.0.1 - - [30/Apr/2025 14:32:23] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:32:23,068 INFO: 127.0.0.1 - - [30/Apr/2025 14:32:23] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 14:32:26,411 INFO: 127.0.0.1 - - [30/Apr/2025 14:32:26] "[35m[1mGET /generate_graph_data HTTP/1.1[0m" 500 -
+2025-04-30 14:33:35,708 INFO: 127.0.0.1 - - [30/Apr/2025 14:33:35] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:33:53,202 DEBUG: starting thread (client mode): 0x2effcc20
+2025-04-30 14:33:53,202 DEBUG: Local version/idstring: SSH-2.0-paramiko_3.5.1
+2025-04-30 14:33:53,218 DEBUG: Remote version/idstring: SSH-2.0-OpenSSH_9.9p2 Debian-1
+2025-04-30 14:33:53,218 INFO: Connected (version 2.0, client OpenSSH_9.9p2)
+2025-04-30 14:33:53,222 DEBUG: === Key exchange possibilities ===
+2025-04-30 14:33:53,222 DEBUG: kex algos: sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, mlkem768x25519-sha256, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+2025-04-30 14:33:53,222 DEBUG: server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+2025-04-30 14:33:53,222 DEBUG: client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 14:33:53,222 DEBUG: server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 14:33:53,223 DEBUG: client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 14:33:53,223 DEBUG: server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 14:33:53,223 DEBUG: client compress: none, zlib@openssh.com
+2025-04-30 14:33:53,223 DEBUG: server compress: none, zlib@openssh.com
+2025-04-30 14:33:53,223 DEBUG: client lang: <none>
+2025-04-30 14:33:53,223 DEBUG: server lang: <none>
+2025-04-30 14:33:53,223 DEBUG: kex follows: False
+2025-04-30 14:33:53,223 DEBUG: === Key exchange agreements ===
+2025-04-30 14:33:53,223 DEBUG: Strict kex mode: True
+2025-04-30 14:33:53,223 DEBUG: Kex: curve25519-sha256@libssh.org
+2025-04-30 14:33:53,223 DEBUG: HostKey: ssh-ed25519
+2025-04-30 14:33:53,223 DEBUG: Cipher: aes128-ctr
+2025-04-30 14:33:53,223 DEBUG: MAC: hmac-sha2-256
+2025-04-30 14:33:53,223 DEBUG: Compression: none
+2025-04-30 14:33:53,223 DEBUG: === End of kex handshake ===
+2025-04-30 14:33:53,243 DEBUG: Resetting outbound seqno after NEWKEYS due to strict mode
+2025-04-30 14:33:53,243 DEBUG: kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+2025-04-30 14:33:53,248 DEBUG: Switch to new keys ...
+2025-04-30 14:33:53,248 DEBUG: Resetting inbound seqno after NEWKEYS due to strict mode
+2025-04-30 14:33:53,249 DEBUG: Adding ssh-ed25519 host key for 192.168.1.145: b'9ca6b548fff256c7273f0edd3c8b14de'
+2025-04-30 14:33:53,249 DEBUG: Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+2025-04-30 14:33:53,448 DEBUG: userauth is OK
+2025-04-30 14:33:53,563 INFO: Authentication (password) successful!
+2025-04-30 14:33:53,564 DEBUG: [chan 0] Max packet in: 32768 bytes
+2025-04-30 14:33:53,650 DEBUG: Received global request "hostkeys-00@openssh.com"
+2025-04-30 14:33:53,650 DEBUG: Rejecting "hostkeys-00@openssh.com" global request from server.
+2025-04-30 14:33:53,692 DEBUG: [chan 0] Max packet out: 32768 bytes
+2025-04-30 14:33:53,692 DEBUG: Secsh channel 0 opened.
+2025-04-30 14:33:53,694 DEBUG: [chan 0] Sesch channel 0 request ok
+2025-04-30 14:33:53,699 DEBUG: [chan 0] EOF received (0)
+2025-04-30 14:33:53,700 DEBUG: [chan 0] EOF sent (0)
+2025-04-30 14:34:05,830 DEBUG: [chan 1] Max packet in: 32768 bytes
+2025-04-30 14:34:05,831 DEBUG: [chan 1] Max packet out: 32768 bytes
+2025-04-30 14:34:05,831 DEBUG: Secsh channel 1 opened.
+2025-04-30 14:34:05,833 DEBUG: [chan 1] Sesch channel 1 request ok
+2025-04-30 14:34:05,839 DEBUG: [chan 1] EOF received (1)
+2025-04-30 14:34:05,839 DEBUG: [chan 1] EOF sent (1)
+2025-04-30 14:34:05,840 DEBUG: EOF in transport thread
+2025-04-30 14:34:07,860 INFO: 127.0.0.1 - - [30/Apr/2025 14:34:07] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:34:07,889 INFO: 127.0.0.1 - - [30/Apr/2025 14:34:07] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 14:34:22,545 INFO: Received request to close SSH session
+2025-04-30 14:34:22,545 INFO: No active SSH session to close
+2025-04-30 14:34:22,545 INFO: 127.0.0.1 - - [30/Apr/2025 14:34:22] "POST /close_ssh_session HTTP/1.1" 200 -
+2025-04-30 14:35:41,883 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 14:35:42,401 INFO:  * Restarting with stat
+2025-04-30 14:35:43,170 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:35:43,179 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:35:43,180 DEBUG: interactive is False
+2025-04-30 14:35:43,180 DEBUG: platform is win32
+2025-04-30 14:35:43,229 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:35:43,231 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:35:43,387 DEBUG: Looking up time zone info from registry
+2025-04-30 14:35:43,392 INFO: Scheduler started
+2025-04-30 14:35:43,393 DEBUG: Looking for jobs to run
+2025-04-30 14:35:43,393 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:35:43,789 WARNING:  * Debugger is active!
+2025-04-30 14:35:43,792 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:35:57,915 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\iperf\\routes.py', reloading
+2025-04-30 14:35:58,174 INFO:  * Restarting with stat
+2025-04-30 14:36:35,375 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:36:35,383 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:36:35,383 DEBUG: interactive is False
+2025-04-30 14:36:35,383 DEBUG: platform is win32
+2025-04-30 14:36:35,428 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:36:35,429 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:36:35,573 DEBUG: Looking up time zone info from registry
+2025-04-30 14:36:35,578 INFO: Scheduler started
+2025-04-30 14:36:35,579 DEBUG: Looking for jobs to run
+2025-04-30 14:36:35,579 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:36:35,943 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 14:36:35,943 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 14:36:35,944 INFO:  * Restarting with stat
+2025-04-30 14:36:36,551 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:36:36,559 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:36:36,559 DEBUG: interactive is False
+2025-04-30 14:36:36,559 DEBUG: platform is win32
+2025-04-30 14:36:36,602 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:36:36,604 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:36:36,745 DEBUG: Looking up time zone info from registry
+2025-04-30 14:36:36,751 INFO: Scheduler started
+2025-04-30 14:36:36,752 DEBUG: Looking for jobs to run
+2025-04-30 14:36:36,753 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:36:37,134 WARNING:  * Debugger is active!
+2025-04-30 14:36:37,137 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:36:41,512 INFO: 127.0.0.1 - - [30/Apr/2025 14:36:41] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:36:42,657 INFO: 127.0.0.1 - - [30/Apr/2025 14:36:42] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:36:55,625 INFO: 127.0.0.1 - - [30/Apr/2025 14:36:55] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:37:13,221 INFO: 127.0.0.1 - - [30/Apr/2025 14:37:13] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:37:13,257 INFO: 127.0.0.1 - - [30/Apr/2025 14:37:13] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 14:37:18,464 INFO: 127.0.0.1 - - [30/Apr/2025 14:37:18] "GET /generate_graph_data HTTP/1.1" 200 -
+2025-04-30 14:47:47,285 INFO: 127.0.0.1 - - [30/Apr/2025 14:47:47] "GET /index3 HTTP/1.1" 200 -
+2025-04-30 14:47:47,308 INFO: 127.0.0.1 - - [30/Apr/2025 14:47:47] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 14:47:51,660 INFO: 127.0.0.1 - - [30/Apr/2025 14:47:51] "[35m[1mPOST /test_telnet HTTP/1.1[0m" 500 -
+2025-04-30 14:47:58,311 INFO: 127.0.0.1 - - [30/Apr/2025 14:47:58] "GET /generate_graph_data HTTP/1.1" 200 -
+2025-04-30 14:50:09,288 INFO: 127.0.0.1 - - [30/Apr/2025 14:50:09] "[32mGET /index HTTP/1.1[0m" 302 -
+2025-04-30 14:50:09,295 INFO: 127.0.0.1 - - [30/Apr/2025 14:50:09] "GET / HTTP/1.1" 200 -
+2025-04-30 14:50:19,645 INFO: 127.0.0.1 - - [30/Apr/2025 14:50:19] "[32mPOST /test_telnet HTTP/1.1[0m" 302 -
+2025-04-30 14:50:19,649 INFO: 127.0.0.1 - - [30/Apr/2025 14:50:19] "GET / HTTP/1.1" 200 -
+2025-04-30 14:50:47,534 INFO: 127.0.0.1 - - [30/Apr/2025 14:50:47] "[32mPOST /test_telnet HTTP/1.1[0m" 302 -
+2025-04-30 14:50:47,537 INFO: 127.0.0.1 - - [30/Apr/2025 14:50:47] "GET / HTTP/1.1" 200 -
+2025-04-30 14:51:27,168 INFO: 127.0.0.1 - - [30/Apr/2025 14:51:27] "[32mPOST /test_telnet HTTP/1.1[0m" 302 -
+2025-04-30 14:51:27,173 INFO: 127.0.0.1 - - [30/Apr/2025 14:51:27] "GET / HTTP/1.1" 200 -
+2025-04-30 14:51:47,171 INFO: 127.0.0.1 - - [30/Apr/2025 14:51:47] "[32mPOST /test_telnet HTTP/1.1[0m" 302 -
+2025-04-30 14:51:47,175 INFO: 127.0.0.1 - - [30/Apr/2025 14:51:47] "GET / HTTP/1.1" 200 -
+2025-04-30 14:52:03,840 INFO: 127.0.0.1 - - [30/Apr/2025 14:52:03] "[32mPOST /test_telnet HTTP/1.1[0m" 302 -
+2025-04-30 14:52:03,844 INFO: 127.0.0.1 - - [30/Apr/2025 14:52:03] "GET / HTTP/1.1" 200 -
+2025-04-30 14:52:13,266 INFO: 127.0.0.1 - - [30/Apr/2025 14:52:13] "[32mPOST /test_telnet HTTP/1.1[0m" 302 -
+2025-04-30 14:52:13,270 INFO: 127.0.0.1 - - [30/Apr/2025 14:52:13] "GET / HTTP/1.1" 200 -
+2025-04-30 14:54:04,899 INFO: 127.0.0.1 - - [30/Apr/2025 14:54:04] "[32mPOST /test_telnet HTTP/1.1[0m" 302 -
+2025-04-30 14:54:04,905 INFO: 127.0.0.1 - - [30/Apr/2025 14:54:04] "GET / HTTP/1.1" 200 -
+2025-04-30 14:54:35,171 INFO: 127.0.0.1 - - [30/Apr/2025 14:54:35] "[32mPOST /test_telnet HTTP/1.1[0m" 302 -
+2025-04-30 14:54:35,174 INFO: 127.0.0.1 - - [30/Apr/2025 14:54:35] "GET / HTTP/1.1" 200 -
+2025-04-30 14:56:34,655 INFO: 127.0.0.1 - - [30/Apr/2025 14:56:34] "GET /index2 HTTP/1.1" 200 -
+2025-04-30 14:56:53,876 DEBUG: starting thread (client mode): 0xd4a09e80
+2025-04-30 14:56:53,876 DEBUG: Local version/idstring: SSH-2.0-paramiko_3.5.1
+2025-04-30 14:56:53,878 DEBUG: Remote version/idstring: SSH-2.0-OpenSSH_9.9p2 Debian-1
+2025-04-30 14:56:53,879 INFO: Connected (version 2.0, client OpenSSH_9.9p2)
+2025-04-30 14:56:53,882 DEBUG: === Key exchange possibilities ===
+2025-04-30 14:56:53,882 DEBUG: kex algos: sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, mlkem768x25519-sha256, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+2025-04-30 14:56:53,882 DEBUG: server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+2025-04-30 14:56:53,882 DEBUG: client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 14:56:53,882 DEBUG: server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 14:56:53,882 DEBUG: client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 14:56:53,882 DEBUG: server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 14:56:53,882 DEBUG: client compress: none, zlib@openssh.com
+2025-04-30 14:56:53,882 DEBUG: server compress: none, zlib@openssh.com
+2025-04-30 14:56:53,882 DEBUG: client lang: <none>
+2025-04-30 14:56:53,882 DEBUG: server lang: <none>
+2025-04-30 14:56:53,882 DEBUG: kex follows: False
+2025-04-30 14:56:53,882 DEBUG: === Key exchange agreements ===
+2025-04-30 14:56:53,882 DEBUG: Strict kex mode: True
+2025-04-30 14:56:53,882 DEBUG: Kex: curve25519-sha256@libssh.org
+2025-04-30 14:56:53,882 DEBUG: HostKey: ssh-ed25519
+2025-04-30 14:56:53,882 DEBUG: Cipher: aes128-ctr
+2025-04-30 14:56:53,882 DEBUG: MAC: hmac-sha2-256
+2025-04-30 14:56:53,882 DEBUG: Compression: none
+2025-04-30 14:56:53,882 DEBUG: === End of kex handshake ===
+2025-04-30 14:56:53,895 DEBUG: Resetting outbound seqno after NEWKEYS due to strict mode
+2025-04-30 14:56:53,895 DEBUG: kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+2025-04-30 14:56:53,898 DEBUG: Switch to new keys ...
+2025-04-30 14:56:53,898 DEBUG: Resetting inbound seqno after NEWKEYS due to strict mode
+2025-04-30 14:56:53,898 DEBUG: Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+2025-04-30 14:56:53,899 DEBUG: Adding ssh-ed25519 host key for 192.168.1.145: b'9ca6b548fff256c7273f0edd3c8b14de'
+2025-04-30 14:56:53,939 DEBUG: userauth is OK
+2025-04-30 14:56:54,020 INFO: Authentication (password) successful!
+2025-04-30 14:56:54,021 DEBUG: [chan 0] Max packet in: 32768 bytes
+2025-04-30 14:56:54,056 DEBUG: Received global request "hostkeys-00@openssh.com"
+2025-04-30 14:56:54,056 DEBUG: Rejecting "hostkeys-00@openssh.com" global request from server.
+2025-04-30 14:56:54,098 DEBUG: [chan 0] Max packet out: 32768 bytes
+2025-04-30 14:56:54,098 DEBUG: Secsh channel 0 opened.
+2025-04-30 14:56:54,102 DEBUG: [chan 0] Sesch channel 0 request ok
+2025-04-30 14:56:54,110 DEBUG: [chan 0] EOF received (0)
+2025-04-30 14:56:54,110 DEBUG: [chan 0] EOF sent (0)
+2025-04-30 14:57:01,281 DEBUG: [chan 1] Max packet in: 32768 bytes
+2025-04-30 14:57:01,282 DEBUG: [chan 1] Max packet out: 32768 bytes
+2025-04-30 14:57:01,282 DEBUG: Secsh channel 1 opened.
+2025-04-30 14:57:01,284 DEBUG: [chan 1] Sesch channel 1 request ok
+2025-04-30 14:57:01,289 DEBUG: [chan 1] EOF received (1)
+2025-04-30 14:57:01,290 DEBUG: [chan 1] EOF sent (1)
+2025-04-30 14:57:01,293 DEBUG: EOF in transport thread
+2025-04-30 14:57:03,308 INFO: 127.0.0.1 - - [30/Apr/2025 14:57:03] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:57:03,348 INFO: 127.0.0.1 - - [30/Apr/2025 14:57:03] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 14:57:26,234 INFO: 127.0.0.1 - - [30/Apr/2025 14:57:26] "GET /generate_graph_data HTTP/1.1" 200 -
+2025-04-30 14:58:02,194 INFO: 127.0.0.1 - - [30/Apr/2025 14:58:02] "[32mGET /run_iperf HTTP/1.1[0m" 302 -
+2025-04-30 14:58:02,198 INFO: 127.0.0.1 - - [30/Apr/2025 14:58:02] "GET / HTTP/1.1" 200 -
+2025-04-30 14:58:08,827 DEBUG: starting thread (client mode): 0xd49e5bd0
+2025-04-30 14:58:08,828 DEBUG: Local version/idstring: SSH-2.0-paramiko_3.5.1
+2025-04-30 14:58:08,828 DEBUG: Remote version/idstring: SSH-2.0-OpenSSH_9.9p2 Debian-1
+2025-04-30 14:58:08,828 INFO: Connected (version 2.0, client OpenSSH_9.9p2)
+2025-04-30 14:58:08,831 DEBUG: === Key exchange possibilities ===
+2025-04-30 14:58:08,831 DEBUG: kex algos: sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, mlkem768x25519-sha256, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+2025-04-30 14:58:08,831 DEBUG: server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+2025-04-30 14:58:08,831 DEBUG: client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 14:58:08,831 DEBUG: server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-04-30 14:58:08,831 DEBUG: client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 14:58:08,831 DEBUG: server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-04-30 14:58:08,831 DEBUG: client compress: none, zlib@openssh.com
+2025-04-30 14:58:08,831 DEBUG: server compress: none, zlib@openssh.com
+2025-04-30 14:58:08,831 DEBUG: client lang: <none>
+2025-04-30 14:58:08,831 DEBUG: server lang: <none>
+2025-04-30 14:58:08,831 DEBUG: kex follows: False
+2025-04-30 14:58:08,831 DEBUG: === Key exchange agreements ===
+2025-04-30 14:58:08,831 DEBUG: Strict kex mode: True
+2025-04-30 14:58:08,831 DEBUG: Kex: curve25519-sha256@libssh.org
+2025-04-30 14:58:08,831 DEBUG: HostKey: ssh-ed25519
+2025-04-30 14:58:08,831 DEBUG: Cipher: aes128-ctr
+2025-04-30 14:58:08,832 DEBUG: MAC: hmac-sha2-256
+2025-04-30 14:58:08,832 DEBUG: Compression: none
+2025-04-30 14:58:08,832 DEBUG: === End of kex handshake ===
+2025-04-30 14:58:08,838 DEBUG: Resetting outbound seqno after NEWKEYS due to strict mode
+2025-04-30 14:58:08,838 DEBUG: kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+2025-04-30 14:58:08,838 DEBUG: Switch to new keys ...
+2025-04-30 14:58:08,838 DEBUG: Resetting inbound seqno after NEWKEYS due to strict mode
+2025-04-30 14:58:08,838 DEBUG: Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+2025-04-30 14:58:08,839 DEBUG: Adding ssh-ed25519 host key for 192.168.1.145: b'9ca6b548fff256c7273f0edd3c8b14de'
+2025-04-30 14:58:08,886 DEBUG: userauth is OK
+2025-04-30 14:58:08,963 INFO: Authentication (password) successful!
+2025-04-30 14:58:08,963 DEBUG: [chan 0] Max packet in: 32768 bytes
+2025-04-30 14:58:09,013 DEBUG: Received global request "hostkeys-00@openssh.com"
+2025-04-30 14:58:09,013 DEBUG: Rejecting "hostkeys-00@openssh.com" global request from server.
+2025-04-30 14:58:09,052 DEBUG: [chan 0] Max packet out: 32768 bytes
+2025-04-30 14:58:09,053 DEBUG: Secsh channel 0 opened.
+2025-04-30 14:58:09,054 DEBUG: [chan 0] Sesch channel 0 request ok
+2025-04-30 14:58:09,064 DEBUG: [chan 0] EOF received (0)
+2025-04-30 14:58:09,064 DEBUG: [chan 0] EOF sent (0)
+2025-04-30 14:58:16,211 DEBUG: [chan 1] Max packet in: 32768 bytes
+2025-04-30 14:58:16,211 DEBUG: [chan 1] Max packet out: 32768 bytes
+2025-04-30 14:58:16,211 DEBUG: Secsh channel 1 opened.
+2025-04-30 14:58:16,213 DEBUG: [chan 1] Sesch channel 1 request ok
+2025-04-30 14:58:16,216 DEBUG: [chan 1] EOF received (1)
+2025-04-30 14:58:16,217 DEBUG: [chan 1] EOF sent (1)
+2025-04-30 14:58:16,217 DEBUG: EOF in transport thread
+2025-04-30 14:58:18,230 INFO: 127.0.0.1 - - [30/Apr/2025 14:58:18] "POST /run_iperf HTTP/1.1" 200 -
+2025-04-30 14:58:18,289 INFO: 127.0.0.1 - - [30/Apr/2025 14:58:18] "[33mGET /static/style3.css HTTP/1.1[0m" 404 -
+2025-04-30 14:59:33,734 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\run.py', reloading
+2025-04-30 14:59:34,455 INFO:  * Restarting with stat
+2025-04-30 14:59:35,280 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:59:35,290 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:59:35,291 DEBUG: interactive is False
+2025-04-30 14:59:35,291 DEBUG: platform is win32
+2025-04-30 14:59:35,343 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:59:35,346 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:59:35,520 DEBUG: Looking up time zone info from registry
+2025-04-30 14:59:35,527 INFO: Scheduler started
+2025-04-30 14:59:35,528 DEBUG: Looking for jobs to run
+2025-04-30 14:59:35,528 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:59:35,964 WARNING:  * Debugger is active!
+2025-04-30 14:59:35,967 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:59:41,487 WARNING:  * Debugger is active!
+2025-04-30 14:59:41,487 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 14:59:45,275 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:59:45,282 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:59:45,283 DEBUG: interactive is False
+2025-04-30 14:59:45,283 DEBUG: platform is win32
+2025-04-30 14:59:45,328 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:59:45,330 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:59:45,481 DEBUG: Looking up time zone info from registry
+2025-04-30 14:59:45,487 INFO: Scheduler started
+2025-04-30 14:59:45,487 DEBUG: Looking for jobs to run
+2025-04-30 14:59:45,487 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:59:45,866 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-04-30 14:59:45,866 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 14:59:45,868 INFO:  * Restarting with stat
+2025-04-30 14:59:46,505 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 14:59:46,513 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:59:46,513 DEBUG: interactive is False
+2025-04-30 14:59:46,513 DEBUG: platform is win32
+2025-04-30 14:59:46,556 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 14:59:46,558 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 14:59:46,707 DEBUG: Looking up time zone info from registry
+2025-04-30 14:59:46,713 INFO: Scheduler started
+2025-04-30 14:59:46,714 DEBUG: Looking for jobs to run
+2025-04-30 14:59:46,714 DEBUG: No jobs; waiting until a job is added
+2025-04-30 14:59:47,071 WARNING:  * Debugger is active!
+2025-04-30 14:59:47,074 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 15:01:03,586 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\run.py', reloading
+2025-04-30 15:01:04,093 INFO:  * Restarting with stat
+2025-04-30 15:01:04,730 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 15:01:04,737 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 15:01:04,738 DEBUG: interactive is False
+2025-04-30 15:01:04,738 DEBUG: platform is win32
+2025-04-30 15:01:04,784 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 15:01:04,786 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 15:01:04,948 DEBUG: Looking up time zone info from registry
+2025-04-30 15:01:04,953 INFO: Scheduler started
+2025-04-30 15:01:04,954 DEBUG: Looking for jobs to run
+2025-04-30 15:01:04,954 DEBUG: No jobs; waiting until a job is added
+2025-04-30 15:01:05,310 WARNING:  * Debugger is active!
+2025-04-30 15:01:05,313 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 15:02:58,899 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 15:02:58,908 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 15:02:58,909 DEBUG: interactive is False
+2025-04-30 15:02:58,909 DEBUG: platform is win32
+2025-04-30 15:02:58,957 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 15:02:58,960 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 15:02:59,116 DEBUG: Looking up time zone info from registry
+2025-04-30 15:02:59,121 INFO: Scheduler started
+2025-04-30 15:02:59,122 DEBUG: Looking for jobs to run
+2025-04-30 15:02:59,122 DEBUG: No jobs; waiting until a job is added
+2025-04-30 15:02:59,527 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 15:02:59,527 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 15:02:59,528 INFO:  * Restarting with stat
+2025-04-30 15:03:00,150 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 15:03:00,158 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 15:03:00,159 DEBUG: interactive is False
+2025-04-30 15:03:00,159 DEBUG: platform is win32
+2025-04-30 15:03:00,204 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 15:03:00,205 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 15:03:00,353 DEBUG: Looking up time zone info from registry
+2025-04-30 15:03:00,359 INFO: Scheduler started
+2025-04-30 15:03:00,362 DEBUG: Looking for jobs to run
+2025-04-30 15:03:00,362 DEBUG: No jobs; waiting until a job is added
+2025-04-30 15:03:00,728 WARNING:  * Debugger is active!
+2025-04-30 15:03:00,730 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 15:03:39,002 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 15:03:39,010 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 15:03:39,011 DEBUG: interactive is False
+2025-04-30 15:03:39,011 DEBUG: platform is win32
+2025-04-30 15:03:39,058 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 15:03:39,060 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 15:03:39,199 DEBUG: Looking up time zone info from registry
+2025-04-30 15:03:39,203 INFO: Scheduler started
+2025-04-30 15:03:39,204 DEBUG: Looking for jobs to run
+2025-04-30 15:03:39,204 DEBUG: No jobs; waiting until a job is added
+2025-04-30 15:03:39,578 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.222:5000
+2025-04-30 15:03:39,579 INFO: [33mPress CTRL+C to quit[0m
+2025-04-30 15:03:39,580 INFO:  * Restarting with stat
+2025-04-30 15:03:40,229 DEBUG: matplotlib data path: C:\Users\marou\AppData\Local\Programs\Python\Python313\Lib\site-packages\matplotlib\mpl-data
+2025-04-30 15:03:40,236 DEBUG: CONFIGDIR=C:\Users\marou\.matplotlib
+2025-04-30 15:03:40,237 DEBUG: interactive is False
+2025-04-30 15:03:40,237 DEBUG: platform is win32
+2025-04-30 15:03:40,282 DEBUG: CACHEDIR=C:\Users\marou\.matplotlib
+2025-04-30 15:03:40,284 DEBUG: Using fontManager instance from C:\Users\marou\.matplotlib\fontlist-v390.json
+2025-04-30 15:03:40,431 DEBUG: Looking up time zone info from registry
+2025-04-30 15:03:40,436 INFO: Scheduler started
+2025-04-30 15:03:40,436 DEBUG: Looking for jobs to run
+2025-04-30 15:03:40,437 DEBUG: No jobs; waiting until a job is added
+2025-04-30 15:03:40,783 WARNING:  * Debugger is active!
+2025-04-30 15:03:40,786 INFO:  * Debugger PIN: 127-276-711
+2025-04-30 15:05:03,824 INFO:  * Detected change in 'C:\\Users\\marou\\Desktop\\QQQ\\app\\__init__.py', reloading
+2025-04-30 15:05:04,542 INFO:  * Restarting with stat

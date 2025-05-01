@@ -211,6 +211,13 @@
             margin-top: 5px;
         }
 
+        #loading {
+            margin-top: 10px;
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+        }
+
         @media (max-width: 600px) {
             h1 {
                 font-size: 2rem;
@@ -271,7 +278,9 @@
 
 <!-- Form Container -->
 <div class="form-container shadow-sm rounded">
-    <form id="iperfForm">
+    <form id="iperfForm" action="/run_iperf" method="POST">
+        <!-- Hidden input for trafficType -->
+        <input type="hidden" id="trafficType" name="trafficType" value="wlan5">
 
         <!-- Server Control Section -->
         <div class="form-section">
@@ -386,90 +395,56 @@
 
         <button type="submit">Start Test</button>
     </form>
+    <div id="loading" style="display: none;">Running test, please wait...</div>
 </div>
 
 <script>
     $(document).ready(function () {
-        // Initialize traffic type selection
-        let selectedTrafficType = 'wlan5'; // Default selection
-        
-        // Set up traffic type selection
+        let selectedTrafficType = 'wlan5';
+
         $('.traffic-type-btn').on('click', function() {
             $('.traffic-type-btn').removeClass('active');
             $(this).addClass('active');
             selectedTrafficType = $(this).data('type');
+            $('#trafficType').val(selectedTrafficType);
         });
 
-        // Toggle SSH inputs visibility
         $('#serverControl').change(function () {
             $('#sshInputs').toggle($(this).val() === 'ssh');
         });
 
-        // Toggle duration input visibility
         $('#setDuration').change(function () {
             $('#durationInput').toggle(this.checked);
         });
 
-        // Toggle data size input visibility
         $('#setDataSize').change(function () {
             $('#dataSizeInput').toggle(this.checked);
         });
 
         $('#iperfForm').on('submit', function(e) {
-            e.preventDefault();
-
-            var formData = {
-                serverControl: $('#serverControl').val(),
-                remoteServerIp: $('#remoteServerIp').val(),
-                sshUsername: $('#sshUsername').val(),
-                sshPassword: $('#sshPassword').val(),
-                serverIp: $('#serverIp').val(),
-                clientIp: $('#clientIp').val(),
-                port: $('#port').val(),
-                dscp: $('#dscp').val(),
-                protocol: $('#protocol').val(),
-                direction: $('#direction').val(),
-                duration: $('#duration').val(),
-                taille: $('#dataSize').val() ? $('#dataSize').val() + $('#dataUnit').val() : '',
-                autoTelnet: true,
-                trafficType: selectedTrafficType // Add traffic type to form data
-            };
-
-            // Validation for SSH fields
-            if (formData.serverControl === 'ssh') {
-                if (!formData.remoteServerIp || !formData.sshUsername || !formData.sshPassword) {
+            // Client-side validation
+            if ($('#serverControl').val() === 'ssh') {
+                if (!$('#remoteServerIp').val() || !$('#sshUsername').val() || !$('#sshPassword').val()) {
                     alert('Please provide all SSH credentials (Remote Server IP, Username, Password)!');
+                    e.preventDefault();
                     return;
                 }
             }
 
-            // Validation for optional fields
-            if ($('#setDuration').prop('checked') && !formData.duration) {
+            if ($('#setDuration').prop('checked') && !$('#duration').val()) {
                 alert('Please enter a valid duration!');
+                e.preventDefault();
                 return;
             }
 
-            if ($('#setDataSize').prop('checked') && !formData.taille) {
+            if ($('#setDataSize').prop('checked') && !$('#dataSize').val()) {
                 alert('Please enter valid data size and unit!');
+                e.preventDefault();
                 return;
             }
 
-            $.ajax({
-                type: 'POST',
-                url: 'run_iperf',
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
-                success: function(response) {
-                    if (response.status === 'success') {
-                        window.location.href = response.redirect_url;
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert('An error occurred: ' + xhr.responseText);
-                }
-            });
+            // Show loading message
+            $('#loading').show();
         });
     });
 </script>

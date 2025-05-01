@@ -10,12 +10,12 @@ import ipaddress
 import time
 import psutil
 import paramiko
+from ..validation.routes import simple_telnet
 
 # Global queue to store iPerf results
 iperf_result_queue = queue.Queue()
 
-# Default iPerf3 path on remote server
-REMOTE_IPERF_PATH = "/usr/bin/iperf3"  # Replace with the actual path on your remote server
+REMOTE_IPERF_PATH = "/usr/bin/iperf3"  
 
 @iperf_bp.route('/index')
 def index():
@@ -41,9 +41,13 @@ def index222():
 
 @iperf_bp.route('/index3')
 def index3():
-    result = session.get("iperf_result", "No results available.")
+    result = session.get("iperf_result", {
+        "iperf_result": "No iPerf results available.",
+        "telnet_result": ["No Telnet results available."],
+        "traffic_type": "unknown"
+    })
     device_id = "ID_DU_DISPOSITIF"
-    print(f"Rendering index3.html with iperf_result: {result[:100]}...")  # Log first 100 chars
+    print(f"Rendering index3.html with result: {result}")
     return render_template('index3.html', result=result, device_id=device_id)
 
 @iperf_bp.route('/index33')
@@ -143,8 +147,8 @@ def run_iperf_command(cmd, result_queue):
 
 @iperf_bp.route('/run_iperf', methods=['POST'])
 def run_iperf():
-    data = request.get_json()
-    print(f"Received data: {data}")
+    data = request.form  # Regular form submission
+    # Removed print(f"Received data: {dict(data)}") to avoid logging form data
 
     server_ip = data.get('serverIp')
     client_ip = data.get('clientIp')
@@ -158,17 +162,28 @@ def run_iperf():
     remote_server_ip = data.get('remoteServerIp')
     ssh_username = data.get('sshUsername')
     ssh_password = data.get('sshPassword')
+    traffic_type = data.get('trafficType')
 
+    # Initialize result_data with defaults
+    result_data = {
+        "iperf_result": "No iPerf results available.",
+        "telnet_result": ["No Telnet results available."],
+        "traffic_type": traffic_type or "unknown"
+    }
+
+    # Validate inputs
     if not server_ip or not client_ip or not port.isdigit():
-        error_msg = "Invalid input. Server and Client IPs and a valid port are required"
-        print(error_msg)
-        return jsonify({"status": "error", "message": error_msg}), 400
+        result_data["iperf_result"] = "Invalid input. Server and Client IPs and a valid port are required"
+        print(result_data["iperf_result"])
+        session["iperf_result"] = result_data
+        return render_template('index3.html', result=result_data, device_id="ID_DU_DISPOSITIF")
 
     iperf_path = r"C:\Users\marou\Downloads\iperf3\iperf-3.1.3-win64\iperf3.exe"
     if not os.path.exists(iperf_path):
-        error_msg = f"iperf3 executable not found at {iperf_path}"
-        print(error_msg)
-        return jsonify({"status": "error", "message": error_msg}), 500
+        result_data["iperf_result"] = f"iPerf3 executable not found at {iperf_path}"
+        print(result_data["iperf_result"])
+        session["iperf_result"] = result_data
+        return render_template('index3.html', result=result_data, device_id="ID_DU_DISPOSITIF")
 
     # Start iPerf server if SSH control is selected
     server_process_list = []
@@ -176,9 +191,10 @@ def run_iperf():
         server_process = run_iperf_server(port, server_process_list, server_control, remote_server_ip, ssh_username, ssh_password)
         if not server_process:
             terminate_server_processes(server_process_list)
-            error_msg = "Failed to start iPerf server via SSH"
-            print(error_msg)
-            return jsonify({"status": "error", "message": error_msg}), 500
+            result_data["iperf_result"] = "Failed to start iPerf server via SSH"
+            print(result_data["iperf_result"])
+            session["iperf_result"] = result_data
+            return render_template('index3.html', result=result_data, device_id="ID_DU_DISPOSITIF")
     else:
         print(f"Manual server control: assuming iPerf3 server is running on {server_ip}:{port}")
 
@@ -202,26 +218,56 @@ def run_iperf():
     if duration:
         cmd.extend(["-t", str(duration)])
 
+    # Run iPerf command
     thread = threading.Thread(target=run_iperf_command, args=(cmd, iperf_result_queue))
     thread.start()
     thread.join()
 
-    if iperf_result_queue.empty():
-        error_msg = "No results received from iPerf3 client"
-        print(error_msg)
-        terminate_server_processes(server_process_list)
-        return jsonify({"status": "error", "message": error_msg}), 500
+    # Get iPerf result
+    if not iperf_result_queue.empty():
+        iperf_result = iperf_result_queue.get()
+        print(f"Client iPerf result: {iperf_result[:100]}...")
+        result_data["iperf_result"] = iperf_result
+    else:
+        result_data["iperf_result"] = "No results received from iPerf3 client"
+        print(result_data["iperf_result"])
 
-    result = iperf_result_queue.get()
-    print(f"Client result: {result[:100]}...")  # Log first 100 chars
-
-
+    # Cleanup iPerf server
     if server_control == 'ssh':
         terminate_server_processes(server_process_list)
 
-    session["iperf_result"] = result
-    print("Stored results in session, redirecting to index3")
-    return jsonify({"status": "success", "redirect_url": url_for('iperf.index3')})
+    # Run Telnet command based on trafficType
+    try:
+        if traffic_type == 'wlan5':
+            telnet_command = 'wlctl -i wl0 pktq_stats'
+        elif traffic_type == 'wlan2':
+            telnet_command = 'wlctl -i wl1 pktq_stats'
+        elif traffic_type == 'lan':
+            telnet_command = 'bs /b/e egress_tm |grep -i lan0'
+        else:
+            telnet_command = None
+            result_data["telnet_result"] = ["Invalid traffic type specified."]
+
+        if telnet_command:
+            telnet_output = simple_telnet(
+                host="192.168.1.1",
+                port=23,
+                username="root",
+                password="sah",
+                command=telnet_command
+            )
+            result_data["telnet_result"] = telnet_output
+    except Exception as e:
+        result_data["telnet_result"] = [f"Telnet error: {str(e)}"]
+        print(f"Telnet error: {str(e)}")
+
+    session["iperf_result"] = result_data
+    print("Stored results in session, rendering index3")
+
+    # Always render index3.html
+    return render_template('index3.html', result=result_data, device_id="ID_DU_DISPOSITIF")
+
+
 
 @iperf_bp.route('/run_iperf_two_clients', methods=['POST'])
 def run_iperf_two_clients():
@@ -709,26 +755,33 @@ def run_iperf_three_clients():
 
 
 def parse_iperf_output(output):
+    # Updated regex to handle variable whitespace and decimals
     pattern = re.compile(
-        r'\[\s*\d+\]\s+(\d+\.\d+-\d+\.\d+)\s+sec\s+([\d.]+)\s+(MBytes|KBytes|GBytes)\s+([\d.]+)\s+(Mbits/sec|Kbits/sec|Gbits/sec)'
+        r'\[\s*\d+\]\s+(\d+\.\d+-\d+\.\d+)\s+sec\s+([\d.]+)\s+(MBytes|KBytes|GBytes)\s+([\d.]+)\s+(Mbits/sec|Kbits/sec|Gbits/sec)\s*'
     )
     intervals = []
     bandwidths = []
 
     for line in output.splitlines():
-        match = pattern.search(line)
+        match = pattern.search(line.strip())
         if match:
-            interval = match.group(1)
-            bandwidth = float(match.group(4))
-            unit = match.group(5)
-            if unit == "Gbits/sec":
+            interval = match.group(1)  # e.g., 0.00-1.00
+            bandwidth = float(match.group(4))  # e.g., 3.80
+            bandwidth_unit = match.group(5)  # e.g., Gbits/sec
+            # Convert to Mbits/sec
+            if bandwidth_unit == "Gbits/sec":
                 bandwidth *= 1000
-            elif unit == "Kbits/sec":
+            elif bandwidth_unit == "Kbits/sec":
                 bandwidth /= 1000
+            # Else, already in Mbits/sec
             intervals.append(interval)
             bandwidths.append(bandwidth)
 
+    if not intervals:
+        print("No valid iPerf intervals found in output")
+
     return json.dumps({"intervals": intervals, "bandwidths": bandwidths})
+
 
 def parse_iperf_output_multi(outputs):
     all_intervals = []
@@ -759,11 +812,18 @@ def parse_iperf_output_multi(outputs):
 
 @iperf_bp.route('/generate_graph_data')
 def generate_graph_data():
-    output = session.get("iperf_result", "")
+    result = session.get("iperf_result", {})
+    output = result.get("iperf_result", "")
     if not output:
-        return jsonify({"status": "error", "message": "No data available"}), 400
-    graph_data = parse_iperf_output(output)
-    return jsonify(json.loads(graph_data))
+        print("No iPerf output available in session")
+        return jsonify({"status": "error", "message": "No data available", "intervals": [], "bandwidths": []}), 400
+    try:
+        graph_data = parse_iperf_output(output)
+        return jsonify(json.loads(graph_data))
+    except Exception as e:
+        print(f"Error parsing iPerf output: {e}")
+        return jsonify({"status": "error", "message": str(e), "intervals": [], "bandwidths": []}), 400
+    
 
 @iperf_bp.route('/generate_graph_data_two_clients')
 def generate_graph_data_two_clients():

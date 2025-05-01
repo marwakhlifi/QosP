@@ -1,5 +1,7 @@
 from flask import Flask
 from .extensions import mongo, mail
+import logging
+
 
 def create_app():
     app = Flask(__name__)
@@ -8,6 +10,8 @@ def create_app():
     mongo.init_app(app)
     mail.init_app(app)
 
+    logging.basicConfig(level=logging.DEBUG)
+    app.logger.setLevel(logging.DEBUG)
 
     from .auth.routes import auth_bp  
     from .iperf import iperf_bp
