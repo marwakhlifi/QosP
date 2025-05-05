@@ -10,6 +10,7 @@ import os
 import json
 import threading
 import queue
+from werkzeug.security import generate_password_hash, check_password_hash
 auth_bp = Blueprint('auth', __name__, template_folder='../../../templates')
 
 
@@ -46,26 +47,33 @@ def login():
     if username == "admin" and password == "admin123":
         session['user_id'] = "admin"
         session['is_admin'] = True
-        flash('Admin login successful!', 'success')  # 
+        # No login_time needed for admin
+        flash('Admin login successful!', 'success')
         return redirect(url_for('auth.admin_dashboard'))
 
-    user = users_collection.find_one({'username': username, 'password': password})
-    if user:
+    user = users_collection.find_one({'username': username})
+    if user and check_password_hash(user['password'], password):
         session['user_id'] = user['username']
         session['is_admin'] = False
-        session['login_time'] = datetime.now().timestamp()
-        flash(f'Welcome back, {username}!', 'success')  
+        session['login_time'] = datetime.now().timestamp()  # Only for regular users
+        flash(f'Welcome back, {username}!', 'success')
         return redirect(url_for('auth.network_page'))
     else:
         flash('Invalid credentials, please try again.', 'error')
-        return redirect(url_for('home'))
+        return redirect(url_for('auth.home'))
+    
     
 @auth_bp.before_app_request
 def check_session_expiry():
-    # Skip for static files and login page
-    if request.endpoint in ['static', 'auth.login']:
+    # Skip for static files and login-related endpoints
+    if request.endpoint in ['static', 'auth.login', 'auth.login_page']:
         return
     
+    # Admin users bypass all session expiry checks
+    if session.get('is_admin'):
+        return
+    
+    # Regular user session check
     if 'user_id' in session and 'login_time' in session:
         current_time = datetime.now().timestamp()
         login_time = session['login_time']
@@ -93,11 +101,12 @@ def check_session_expiry():
             flash('Your session has expired after 30 minutes of inactivity.', 'warning')
             return redirect(url_for('auth.home'))
     
-    # For routes that require authentication
-    elif not request.endpoint in ['auth.home', 'auth.login_page']:
+    # For routes that require authentication but user isn't logged in
+    elif not request.endpoint in ['auth.home']:
         return redirect(url_for('auth.home'))
+
     
-@auth_bp.route('/admin_dashboard')
+@auth_bp.route('/admin_dashboard/') 
 def admin_dashboard():
     if not session.get('is_admin'):
         return redirect(url_for('auth.home'))
@@ -179,7 +188,7 @@ def admin_logout():
 @auth_bp.route('/add_user', methods=['POST'])
 def add_user():
     if not session.get('is_admin'):
-        flash('Unauthorized access!', 'error')  #
+        flash('Unauthorized access!', 'error')
         return redirect(url_for('auth.home'))
 
     username = request.form['username']
@@ -187,11 +196,18 @@ def add_user():
 
     existing_user = users_collection.find_one({'username': username})
     if existing_user:
-        flash(f'User "{username}" already exists!', 'error')  # 
+        flash(f'User "{username}" already exists!', 'error')
     else:
-        users_collection.insert_one({'username': username, 'password': password, 'is_admin': False})
-        flash(f'User "{username}" added successfully!', 'success')  # 
+        # Hash the password before storing
+        hashed_password = generate_password_hash(password)
+        users_collection.insert_one({
+            'username': username,
+            'password': hashed_password,  # Store hashed version
+            'is_admin': False
+        })
+        flash(f'User "{username}" added successfully!', 'success')
     return redirect(url_for('auth.admin_dashboard'))
+
 
 @auth_bp.route('/add_device', methods=['POST'])
 def add_device():
@@ -229,15 +245,21 @@ def edit_user():
 
     user = users_collection.find_one({'username': original_username})
     if user:
+        # Hash the new password before storing
+        hashed_password = generate_password_hash(password)
         users_collection.update_one(
             {'username': original_username},
-            {'$set': {'username': username, 'password': password}}
+            {'$set': {
+                'username': username,
+                'password': hashed_password  # Store hashed version
+            }}
         )
         flash(f'User "{original_username}" updated successfully!', 'success')
     else:
         flash('User not found!', 'error')
 
     return redirect(url_for('auth.admin_dashboard'))
+
 
 @auth_bp.route('/edit_device', methods=['POST'])
 def edit_device():

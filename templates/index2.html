@@ -290,7 +290,7 @@
             </div>
             <label for="serverControl">Server Control Method:</label>
             <select id="serverControl" name="serverControl">
-                <option value="manual">Manual (Server Already Running)</option>
+                <option value="manual">Manual </option>
                 <option value="ssh">SSH Controlled Server</option>
             </select>
         </div>
@@ -298,8 +298,8 @@
         <!-- SSH Inputs -->
         <div id="sshInputs" class="optional-input">
             <div class="form-section">
-                <label for="remoteServerIp">Remote Server IP (for SSH):</label>
-                <input type="text" id="remoteServerIp" name="remoteServerIp" placeholder="Enter remote server IP">
+                <label for="remoteServerIp">Server IP :</label>
+                <input type="text" id="remoteServerIp" name="remoteServerIp" placeholder="Enter server IP">
             </div>
             <div class="form-section">
                 <label for="sshUsername">SSH Username:</label>
@@ -312,12 +312,12 @@
         </div>
 
         <!-- Network Configuration -->
-        <div class="form-section">
+        <div id="serverIpSection" class="form-section">
             <div class="form-header">
                 <i class="fas fa-network-wired"></i>
                 <strong>Network Configuration</strong>
             </div>
-            <label for="serverIp">Server IP (for iPerf):</label>
+            <label for="serverIp">Server IP :</label>
             <input type="text" id="serverIp" name="serverIp" required placeholder="Enter the server IP">
         </div>
 
@@ -410,7 +410,14 @@
         });
 
         $('#serverControl').change(function () {
-            $('#sshInputs').toggle($(this).val() === 'ssh');
+            const isSsh = $(this).val() === 'ssh';
+            $('#sshInputs').toggle(isSsh);
+            $('#serverIpSection').toggle(!isSsh);
+            if (isSsh) {
+                $('#serverIp').removeAttr('required');
+            } else {
+                $('#serverIp').attr('required', 'required');
+            }
         });
 
         $('#setDuration').change(function () {
@@ -425,10 +432,22 @@
             // Client-side validation
             if ($('#serverControl').val() === 'ssh') {
                 if (!$('#remoteServerIp').val() || !$('#sshUsername').val() || !$('#sshPassword').val()) {
-                    alert('Please provide all SSH credentials (Remote Server IP, Username, Password)!');
+                    alert('Please provide all SSH credentials (Server IP, Username, Password)!');
                     e.preventDefault();
                     return;
                 }
+            } else {
+                if (!$('#serverIp').val()) {
+                    alert('Please provide the Server IP for iPerf!');
+                    e.preventDefault();
+                    return;
+                }
+            }
+
+            if ($('#clientIp').val().trim() === '') {
+                alert('Please provide the Client IP!');
+                e.preventDefault();
+                return;
             }
 
             if ($('#setDuration').prop('checked') && !$('#duration').val()) {

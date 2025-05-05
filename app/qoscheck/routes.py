@@ -164,8 +164,8 @@ def run_queuing_test():
 
     try:
         duration = int(duration)
-        if duration < 5 or duration > 300:
-            return jsonify({"status": "error", "message": "Duration must be between 5 and 300 seconds"}), 400
+        if duration < 2 or duration > 3000:
+            return jsonify({"status": "error", "message": "Duration must be between 2 and 3000 seconds"}), 400
     except ValueError:
         return jsonify({"status": "error", "message": "Invalid duration format"}), 400
 

@@ -69,35 +69,59 @@ def count():
 def run_iperf_server(port, server_process_list, server_control='manual', remote_server_ip=None, ssh_username=None, ssh_password=None):
     if server_control != 'ssh':
         print(f"Manual server control selected. Assuming iPerf3 server is running on port {port}.")
-        return True  # Indicate success without starting a server
+        return True
 
     if not remote_server_ip or not ssh_username or not ssh_password:
         print("Missing SSH credentials for server startup.")
         return None
 
     try:
-        #  SSH client
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        
         print(f"Verifying SSH connectivity to {remote_server_ip}")
-        ssh.connect(remote_server_ip, username=ssh_username, password=ssh_password, timeout=5)
-        
-        cmd = f"{REMOTE_IPERF_PATH} -s -p {port} & echo $!"
-        print(f"Starting iPerf server on remote host {remote_server_ip}: {cmd}")
+        ssh.connect(
+            remote_server_ip,
+            username=ssh_username,
+            password=ssh_password,
+            timeout=10,
+            allow_agent=False,
+            look_for_keys=False
+        )
+        print(f"SSH connectivity verified to {remote_server_ip}")
+
+        # Check if port is free
+        check_cmd = f"ss -tuln | grep :{port} || echo 'Port free'"
+        stdin, stdout, stderr = ssh.exec_command(check_cmd)
+        check_output = stdout.read().decode().strip()
+        stderr_output = stderr.read().decode()
+        if 'Port free' not in check_output:
+            print(f"Port {port} is already in use on {remote_server_ip}: {check_output}")
+            ssh.close()
+            return None
+
+        # Start iPerf3 server
+        cmd = f"{REMOTE_IPERF_PATH} -s -p {port} --daemon"
+        print(f"Starting iPerf server on remote host {remote_server_ip} with port {port}: {cmd}")
         stdin, stdout, stderr = ssh.exec_command(cmd)
-        
+        stderr_output = stderr.read().decode().strip()
+        time.sleep(3)  # Ensure server starts
+        if stderr_output:
+            print(f"Error starting iPerf server on port {port}: {stderr_output}")
+            ssh.close()
+            return None
+
+        # Get PID
+        pid_cmd = f"pgrep -f 'iperf3.*-p {port}'"
+        stdin, stdout, stderr = ssh.exec_command(pid_cmd)
         pid = stdout.read().decode().strip()
         stderr_output = stderr.read().decode()
         if not pid.isdigit():
             print(f"Failed to get PID for iPerf server on port {port}: {stderr_output}")
             ssh.close()
             return None
-        
+
         print(f"iPerf server started with PID {pid} on port {port}")
-        # Store SSH client and PID for cleanup
         server_process_list.append((ssh, pid))
-        time.sleep(2)  # Increased to ensure server is ready
         return (ssh, pid)
     except Exception as e:
         print(f"Error starting iPerf server on port {port}: {e}")
@@ -111,7 +135,7 @@ def terminate_server_processes(server_process_list):
             cmd = f"kill -9 {pid}"
             print(f"Terminating iPerf server process {pid}")
             stdin, stdout, stderr = ssh.exec_command(cmd)
-            stdout.read()  # Wait for command to complete
+            stdout.read()
             stderr_output = stderr.read().decode()
             if stderr_output:
                 print(f"Error during termination of PID {pid}: {stderr_output}")
@@ -145,11 +169,10 @@ def run_iperf_command(cmd, result_queue):
         print(f"Error executing client command: {e}")
         result_queue.put(f"Error: {e}")
 
+
 @iperf_bp.route('/run_iperf', methods=['POST'])
 def run_iperf():
-    data = request.form  # Regular form submission
-    # Removed print(f"Received data: {dict(data)}") to avoid logging form data
-
+    data = request.form
     server_ip = data.get('serverIp')
     client_ip = data.get('clientIp')
     port = str(data.get('port'))
@@ -164,14 +187,16 @@ def run_iperf():
     ssh_password = data.get('sshPassword')
     traffic_type = data.get('trafficType')
 
-    # Initialize result_data with defaults
+    # Use remoteServerIp as serverIp for SSH mode if serverIp is not provided
+    if server_control == 'ssh' and not server_ip:
+        server_ip = remote_server_ip
+
     result_data = {
         "iperf_result": "No iPerf results available.",
         "telnet_result": ["No Telnet results available."],
         "traffic_type": traffic_type or "unknown"
     }
 
-    # Validate inputs
     if not server_ip or not client_ip or not port.isdigit():
         result_data["iperf_result"] = "Invalid input. Server and Client IPs and a valid port are required"
         print(result_data["iperf_result"])
@@ -185,7 +210,6 @@ def run_iperf():
         session["iperf_result"] = result_data
         return render_template('index3.html', result=result_data, device_id="ID_DU_DISPOSITIF")
 
-    # Start iPerf server if SSH control is selected
     server_process_list = []
     if server_control == 'ssh':
         server_process = run_iperf_server(port, server_process_list, server_control, remote_server_ip, ssh_username, ssh_password)
@@ -208,22 +232,19 @@ def run_iperf():
     if is_ipv6(server_ip) or is_ipv6(client_ip):
         cmd.append("-6")
     cmd.extend(["-c", server_ip, "-p", port, "-S", dscp_tos])
-    
     if direction == "downlink":
         cmd.append("-R")
     if protocol == "udp":
         cmd.append("-u")
     if taille and taille.strip():
-        cmd.extend(["-n", taille])
+        cmd.extend(["-b", taille])
     if duration:
         cmd.extend(["-t", str(duration)])
 
-    # Run iPerf command
     thread = threading.Thread(target=run_iperf_command, args=(cmd, iperf_result_queue))
     thread.start()
     thread.join()
 
-    # Get iPerf result
     if not iperf_result_queue.empty():
         iperf_result = iperf_result_queue.get()
         print(f"Client iPerf result: {iperf_result[:100]}...")
@@ -232,11 +253,9 @@ def run_iperf():
         result_data["iperf_result"] = "No results received from iPerf3 client"
         print(result_data["iperf_result"])
 
-    # Cleanup iPerf server
     if server_control == 'ssh':
         terminate_server_processes(server_process_list)
 
-    # Run Telnet command based on trafficType
     try:
         if traffic_type == 'wlan5':
             telnet_command = 'wlctl -i wl0 pktq_stats'
@@ -247,7 +266,6 @@ def run_iperf():
         else:
             telnet_command = None
             result_data["telnet_result"] = ["Invalid traffic type specified."]
-
         if telnet_command:
             telnet_output = simple_telnet(
                 host="192.168.1.1",
@@ -263,8 +281,6 @@ def run_iperf():
 
     session["iperf_result"] = result_data
     print("Stored results in session, rendering index3")
-
-    # Always render index3.html
     return render_template('index3.html', result=result_data, device_id="ID_DU_DISPOSITIF")
 
 
@@ -343,7 +359,7 @@ def run_iperf_two_clients():
             cmd.append("-u")
             cmd.extend(["-b", "10M"])  # Bandwidth limit for UDP
         if taille and taille.strip():
-            cmd.extend(["-n", taille])
+            cmd.extend(["-b", taille])
         if duration:
             cmd.extend(["-t", str(duration)])
         cmd.extend(["-i", "1"])
@@ -586,7 +602,7 @@ def run_iperf_three_clients():
             cmd.append("-u")
             cmd.extend(["-b", "10M"])  # Bandwidth limit for UDP
         if taille and taille.strip():
-            cmd.extend(["-n", taille])
+            cmd.extend(["b", taille])
         if duration:
             cmd.extend(["-t", str(duration)])
         cmd.extend(["-i", "1"])
@@ -840,4 +856,3 @@ def generate_graph_data_three_clients():
         return jsonify({"status": "error", "message": "No data available"}), 400
     graph_data = parse_iperf_output_multi(outputs)
     return jsonify(json.loads(graph_data))
-

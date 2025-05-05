@@ -6,7 +6,7 @@
   <title>QoS Tracer - Control Packets Prioritization</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
     body {
       background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
@@ -72,7 +72,19 @@
     .metrics-card { background: #ffffff; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
     .metrics-card.ok { border-left: 5px solid #10b981; }
     .metrics-card.degraded { border-left: 5px solid #dc3545; }
-    .chart-container { max-width: 100%; margin-top: 20px; }
+    .table-modern {
+      border-collapse: collapse; width: 100%; margin-top: 20px;
+    }
+    .table-modern th, .table-modern td {
+      border: 1px solid #ddd; padding: 12px; text-align: left; font-size: 14px;
+    }
+    .table-modern th {
+      background-color: #f2f2f2; font-weight: bold; color: #333;
+    }
+    .table-modern tr:nth-child(even) { background-color: #f9f9f9; }
+    .table-modern tr:hover { background-color: #f1f1f1; }
+    .high-priority { background-color: #ffcccc !important; }
+    .default-priority { background-color: #ccffcc !important; }
   </style>
 </head>
 <body>
@@ -81,7 +93,6 @@
       <div class="col-lg-8">
         <div class="card">
           <h2 class="text-center"><i class="fas fa-network-wired me-2"></i>Control Packets Prioritization</h2>
-          
           <!-- Protocol Selection -->
           <div class="mb-4">
             <h5 class="mb-3">Select Control Protocols to Test:</h5>
@@ -123,7 +134,6 @@
                   </div>
                 </div>
               </div>
-              
               <!-- DHCP Protocol Card -->
               <div class="col-md-6 mb-3">
                 <div class="protocol-card" id="dhcp-card" onclick="toggleProtocol('dhcp')">
@@ -154,7 +164,6 @@
                   </div>
                 </div>
               </div>
-              
               <!-- ICMP Protocol Card -->
               <div class="col-md-6 mb-3">
                 <div class="protocol-card" id="icmp-card" onclick="toggleProtocol('icmp')">
@@ -193,7 +202,6 @@
               </div>
             </div>
           </div>
-          
           <!-- Background Traffic Parameters -->
           <div class="mb-4">
             <h5 class="mb-3">Background Traffic Parameters</h5>
@@ -231,28 +239,17 @@
               </div>
             </div>
           </div>
-          
           <!-- Start Test Button -->
           <div class="text-center mt-4">
             <button class="btn btn-custom btn-lg" id="start-test-btn">
               <i class="fas fa-play me-2"></i>Start Test
             </button>
           </div>
-          
           <!-- Progress Indicator -->
           <div class="progress-container mt-4 d-none" id="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
           </div>
-          
-          <!-- Metrics Display -->
-          <div class="mt-4 d-none" id="metrics-display">
-            <h5 class="mb-3">Control Traffic Metrics</h5>
-            <div id="metrics-container"></div>
-            <div class="chart-container">
-              <canvas id="latency-chart"></canvas>
-            </div>
-          </div>
-          
+
           <!-- Status Display -->
           <div class="mt-4 d-none" id="status-display">
             <h5 class="mb-3">Test Status</h5>
@@ -263,247 +260,223 @@
             <div class="result-box" id="console-output">
               // Test output will appear here...
             </div>
+            <h5 class="mt-4">DSCP Values for Control Packets</h5>
+            <table class="table-modern" id="packet-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Protocol</th>
+                  <th>Source IP</th>
+                  <th>Destination IP</th>
+                  <th>DSCP Value</th>
+                  <th>Priority</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Filled by JavaScript -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
   </div>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     const selectedProtocols = { dns: false, dhcp: false, icmp: false };
-    
+    let tableUpdateInterval = null;
+
     function toggleProtocol(protocol) {
-      selectedProtocols[protocol] = !selectedProtocols[protocol];
-      const card = document.getElementById(`${protocol}-card`);
-      const params = document.getElementById(`${protocol}-params`);
-      if (selectedProtocols[protocol]) {
-        card.classList.add('selected');
-        params.style.display = 'block';
-      } else {
-        card.classList.remove('selected');
-        params.style.display = 'none';
-      }
-    }
-    
-    document.getElementById('icmp-continuous').addEventListener('change', function() {
-      document.getElementById('icmp-count-container').style.display = this.checked ? 'none' : 'block';
-    });
-    
-    const latencyChart = new Chart(document.getElementById('latency-chart'), {
-      type: 'line',
-      data: {
-        labels: [],
-        datasets: [
-          { label: 'DNS Latency (ms)', data: [], borderColor: '#3b82f6', fill: false },
-          { label: 'ICMP Latency (ms)', data: [], borderColor: '#10b981', fill: false }
-        ]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          x: { title: { display: true, text: 'Time (s)' } },
-          y: { title: { display: true, text: 'Latency (ms)' }, beginAtZero: true }
+        selectedProtocols[protocol] = !selectedProtocols[protocol];
+        const card = document.getElementById(`${protocol}-card`);
+        const params = document.getElementById(`${protocol}-params`);
+        if (selectedProtocols[protocol]) {
+            card.classList.add('selected');
+            params.style.display = 'block';
+        } else {
+            card.classList.remove('selected');
+            params.style.display = 'none';
         }
-      }
+    }
+
+    document.getElementById('icmp-continuous').addEventListener('change', function() {
+        document.getElementById('icmp-count-container').style.display = this.checked ? 'none' : 'block';
+    });
+
+    function updateTable() {
+        $.getJSON("/api/packets", function(data) {
+            const tableBody = $("#packet-table tbody");
+            tableBody.empty();
+            $.each(data, function(i, packet) {
+                const rowClass = packet.priority === "High" ? "high-priority" : "default-priority";
+                tableBody.append(
+                    `<tr class="${rowClass}">
+                        <td>${packet.timestamp}</td>
+                        <td>${packet.protocol}</td>
+                        <td>${packet.src}</td>
+                        <td>${packet.dst}</td>
+                        <td>${packet.dscp}</td>
+                        <td>${packet.priority}</td>
+                    </tr>`
+                );
+            });
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error fetching packets:", textStatus, errorThrown);
+            const tableBody = $("#packet-table tbody");
+            tableBody.empty();
+            tableBody.append('<tr><td colspan="6">Error fetching packet data. Please check server logs.</td></tr>');
+        });
+    }
+
+    function startTableUpdates() {
+        updateTable();
+        tableUpdateInterval = setInterval(updateTable, 2000); // Refresh every 2 seconds
+    }
+
+    function stopTableUpdates() {
+        if (tableUpdateInterval) {
+            clearInterval(tableUpdateInterval);
+            tableUpdateInterval = null;
+        }
+    }
+
+    $(document).ready(function() {
+        // Don't start table updates until test begins
     });
 
     document.getElementById('start-test-btn').addEventListener('click', function() {
-      const btn = this;
-      const statusIndicator = document.getElementById('status-indicator');
-      const statusText = document.getElementById('status-text');
-      const consoleOutput = document.getElementById('console-output');
-      const progressContainer = document.getElementById('progress-container');
-      const progressBar = document.getElementById('progress-bar');
-      const metricsDisplay = document.getElementById('metrics-display');
-      const metricsContainer = document.getElementById('metrics-container');
-      
-      if (!Object.values(selectedProtocols).some(val => val)) {
-        alert('Please select at least one protocol to test!');
-        return;
-      }
-      
-      const testConfig = {
-        background: {
-          type: document.getElementById('background-traffic').value,
-          server: document.getElementById('iperf-server').value,
-          port: document.getElementById('iperf-port').value,
-          duration: document.getElementById('test-duration').value,
-          interface: document.getElementById('network-interface').value
-        },
-        protocols: {}
-      };
-      
-      if (selectedProtocols.dns) {
-        testConfig.protocols.dns = {
-          server: document.getElementById('dns-server').value,
-          domain: document.getElementById('dns-domain').value,
-          query_type: document.getElementById('dns-query-type').value,
-          interval: document.getElementById('dns-interval').value
+        const btn = this;
+        const statusIndicator = document.getElementById('status-indicator');
+        const statusText = document.getElementById('status-text');
+        const consoleOutput = document.getElementById('console-output');
+        const progressContainer = document.getElementById('progress-container');
+        if (!Object.values(selectedProtocols).some(val => val)) {
+            alert('Please select at least one protocol to test!');
+            return;
+        }
+        const testConfig = {
+            background: {
+                type: document.getElementById('background-traffic').value,
+                server: document.getElementById('iperf-server').value,
+                port: document.getElementById('iperf-port').value,
+                duration: document.getElementById('test-duration').value,
+                interface: document.getElementById('network-interface').value
+            },
+            protocols: {}
         };
-      }
-      
-      if (selectedProtocols.dhcp) {
-        testConfig.protocols.dhcp = {
-          interface: document.getElementById('dhcp-interface').value,
-          server: document.getElementById('dhcp-server').value || null,
-          renew: document.getElementById('dhcp-renew').checked
-        };
-      }
-      
-      if (selectedProtocols.icmp) {
-        testConfig.protocols.icmp = {
-          target: document.getElementById('icmp-target').value,
-          size: document.getElementById('icmp-size').value,
-          interval: document.getElementById('icmp-interval').value,
-          continuous: document.getElementById('icmp-continuous').checked,
-          count: document.getElementById('icmp-continuous').checked ? null : document.getElementById('icmp-count').value
-        };
-      }
-      
-      btn.classList.add('running');
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Running Test...';
-      btn.disabled = true;
-      
-      statusIndicator.classList.remove('status-ready');
-      statusIndicator.classList.add('status-running');
-      statusText.textContent = 'Test in progress...';
-      document.getElementById('status-display').classList.remove('d-none');
-      progressContainer.classList.remove('d-none');
-      metricsDisplay.classList.remove('d-none');
-      consoleOutput.innerHTML = '';
-      metricsContainer.innerHTML = '';
-      
-      latencyChart.data.labels = [];
-      latencyChart.data.datasets[0].data = [];
-      latencyChart.data.datasets[1].data = [];
-      latencyChart.update();
-
-      fetch('/start_test', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(testConfig)
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'success') {
-          let startTime = Date.now();
-          const pollInterval = setInterval(() => {
-            fetch('/test_status')
-              .then(response => {
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                return response.json();
-              })
-              .then(data => {
-                progressBar.style.width = `${data.progress}%`;
-                if (data.console_output && data.console_output.length > 0) {
-                  consoleOutput.innerHTML = data.console_output.join('\n');
-                  consoleOutput.scrollTop = consoleOutput.scrollHeight;
-                }
-                fetch('/test_metrics')
-                  .then(response => response.json())
-                  .then(metrics => {
-                    metricsContainer.innerHTML = '';
+        if (selectedProtocols.dns) {
+            testConfig.protocols.dns = {
+                server: document.getElementById('dns-server').value,
+                domain: document.getElementById('dns-domain').value,
+                query_type: document.getElementById('dns-query-type').value,
+                interval: document.getElementById('dns-interval').value
+            };
+        }
+        if (selectedProtocols.dhcp) {
+            testConfig.protocols.dhcp = {
+                interface: document.getElementById('dhcp-interface').value,
+                server: document.getElementById('dhcp-server').value || null,
+                renew: document.getElementById('dhcp-renew').checked
+            };
+        }
+        if (selectedProtocols.icmp) {
+            testConfig.protocols.icmp = {
+                target: document.getElementById('icmp-target').value,
+                size: document.getElementById('icmp-size').value,
+                interval: document.getElementById('icmp-interval').value,
+                continuous: document.getElementById('icmp-continuous').checked,
+                count: document.getElementById('icmp-continuous').checked ? null : document.getElementById('icmp-count').value
+            };
+        }
+        btn.classList.add('running');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Running Test...';
+        btn.disabled = true;
+        statusIndicator.classList.remove('status-ready');
+        statusIndicator.classList.add('status-running');
+        statusText.textContent = 'Test in progress...';
+        document.getElementById('status-display').classList.remove('d-none');
+        progressContainer.classList.remove('d-none');
+        consoleOutput.innerHTML = '';
+        $("#packet-table tbody").empty();
+        startTableUpdates();
+        fetch('/start_test', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(testConfig)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                let startTime = Date.now();
+                const pollInterval = setInterval(() => {
+                    fetch('/test_status')
+                        .then(response => {
+                            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                            return response.json();
+                        })
+                        .then(data => {
+                            progressBar.style.width = `${data.progress}%`;
+                            if (data.console_output && data.console_output.length > 0) {
+                                consoleOutput.innerHTML = data.console_output.join('\n');
+                                consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                            }
+                            if (!data.running) {
+                                clearInterval(pollInterval);
+                                stopTableUpdates();
+                                testComplete();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error polling test status:', error);
+                            clearInterval(pollInterval);
+                            stopTableUpdates();
+                            resetUI();
+                            alert('Error polling test status: ' + error.message + '. Test may have failed.');
+                        });
+                }, 1000);
+                function testComplete() {
+                    btn.classList.remove('running');
+                    btn.innerHTML = '<i class="fas fa-check me-2"></i>Test Complete';
+                    btn.disabled = false;
+                    statusIndicator.classList.remove('status-running');
+                    statusIndicator.classList.add('status-complete');
+                    statusText.textContent = 'Test completed successfully';
+                    consoleOutput.innerHTML += '\n=== Verification Results ===\n';
                     if (selectedProtocols.dns) {
-                      const dnsMetrics = metrics.dns;
-                      const status = data.performance_status?.dns || 'unknown';
-                      metricsContainer.innerHTML += `
-                        <div class="metrics-card ${status === 'ok' ? 'ok' : 'degraded'}">
-                          <h6>DNS Metrics</h6>
-                          <p>Latency: ${dnsMetrics.average_latency_ms} ms</p>
-                          <p>Packet Loss: ${dnsMetrics.packet_loss_percent}%</p>
-                          <p>Jitter: ${dnsMetrics.jitter_ms} ms</p>
-                          <p>Status: ${status === 'ok' ? 'OK ✅' : 'Degraded ❌'}</p>
-                        </div>
-                      `;
-                      latencyChart.data.labels.push(((Date.now() - startTime) / 1000).toFixed(1));
-                      latencyChart.data.datasets[0].data.push(dnsMetrics.average_latency_ms);
-                      latencyChart.update();
+                        consoleOutput.innerHTML += 'DNS: Queries sent to ' + testConfig.protocols.dns.server + '\n';
+                    }
+                    if (selectedProtocols.dhcp) {
+                        consoleOutput.innerHTML += 'DHCP: Interface ' + testConfig.protocols.dhcp.interface + '\n';
                     }
                     if (selectedProtocols.icmp) {
-                      const icmpMetrics = metrics.icmp;
-                      const status = data.performance_status?.icmp || 'unknown';
-                      metricsContainer.innerHTML += `
-                        <div class="metrics-card ${status === 'ok' ? 'ok' : 'degraded'}">
-                          <h6>ICMP Metrics</h6>
-                          <p>Latency: ${icmpMetrics.average_latency_ms} ms</p>
-                          <p>Packet Loss: ${icmpMetrics.packet_loss_percent}%</p>
-                          <p>Jitter: ${icmpMetrics.jitter_ms} ms</p>
-                          <p>Status: ${status === 'ok' ? 'OK ✅' : 'Degraded ❌'}</p>
-                        </div>
-                      `;
-                      latencyChart.data.datasets[1].data.push(icmpMetrics.average_latency_ms);
-                      latencyChart.update();
+                        consoleOutput.innerHTML += 'ICMP: Ping to ' + testConfig.protocols.icmp.target + '\n';
                     }
-                    if (selectedProtocols.dhcp && metrics.dhcp.duration_s > 0) {
-                      const dhcpMetrics = metrics.dhcp;
-                      const status = data.performance_status?.dhcp || 'unknown';
-                      metricsContainer.innerHTML += `
-                        <div class="metrics-card ${status === 'ok' ? 'ok' : 'degraded'}">
-                          <h6>DHCP Metrics</h6>
-                          <p>Success: ${dhcpMetrics.success ? 'Yes' : 'No'}</p>
-                          <p>Duration: ${dhcpMetrics.duration_s} s</p>
-                          <p>Status: ${status === 'ok' ? 'OK ✅' : 'Degraded ❌'}</p>
-                        </div>
-                      `;
-                    }
-                  });
-                
-                if (!data.running) {
-                  clearInterval(pollInterval);
-                  testComplete();
+                    consoleOutput.innerHTML += 'Background: ' +
+                        (testConfig.background.type === 'none' ? 'None' :
+                         testConfig.background.type + ' to ' + testConfig.background.server) + '\n';
                 }
-              })
-              .catch(error => {
-                console.error('Error polling test status:', error);
-                clearInterval(pollInterval);
+            } else {
+                stopTableUpdates();
+                alert(`Error: ${data.message}`);
                 resetUI();
-                alert('Error polling test status: ' + error.message + '. Test may have failed.');
-              });
-          }, 1000);
-          
-          function testComplete() {
+            }
+        })
+        .catch(error => {
+            console.error('Error starting test:', error);
+            stopTableUpdates();
+            resetUI();
+            alert('Error starting test: ' + error.message + '. Please try again.');
+        });
+        function resetUI() {
             btn.classList.remove('running');
-            btn.innerHTML = '<i class="fas fa-check me-2"></i>Test Complete';
+            btn.innerHTML = '<i class="fas fa-play me-2"></i>Start Test';
             btn.disabled = false;
             statusIndicator.classList.remove('status-running');
-            statusIndicator.classList.add('status-complete');
-            statusText.textContent = 'Test completed successfully';
-            consoleOutput.innerHTML += '\n=== Verification Results ===\n';
-            if (selectedProtocols.dns) {
-              consoleOutput.innerHTML += 'DNS: Queries sent to ' + testConfig.protocols.dns.server + '\n';
-            }
-            if (selectedProtocols.dhcp) {
-              consoleOutput.innerHTML += 'DHCP: Interface ' + testConfig.protocols.dhcp.interface + '\n';
-            }
-            if (selectedProtocols.icmp) {
-              consoleOutput.innerHTML += 'ICMP: Ping to ' + testConfig.protocols.icmp.target + '\n';
-            }
-            consoleOutput.innerHTML += 'Background: ' + 
-              (testConfig.background.type === 'none' ? 'None' : 
-               testConfig.background.type + ' to ' + testConfig.background.server) + '\n';
-          }
-        } else {
-          alert(`Error: ${data.message}`);
-          resetUI();
+            statusIndicator.classList.add('status-ready');
+            statusText.textContent = 'Ready to start test';
+            stopTableUpdates();
         }
-      })
-      .catch(error => {
-        console.error('Error starting test:', error);
-        resetUI();
-        alert('Error starting test: ' + error.message + '. Please try again.');
-      });
-      
-      function resetUI() {
-        btn.classList.remove('running');
-        btn.innerHTML = '<i class="fas fa-play me-2"></i>Start Test';
-        btn.disabled = false;
-        statusIndicator.classList.remove('status-running');
-        statusIndicator.classList.add('status-ready');
-        statusText.textContent = 'Ready to start test';
-        metricsDisplay.classList.add('d-none');
-      }
     });
-  </script>
+</script>
 </body>
 </html>

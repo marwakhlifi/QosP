@@ -1,16 +1,25 @@
-from . import bp  
-
+from . import bp
 from flask import jsonify, request
-import subprocess
-from ..utils.decorators import login_required, admin_required
+from ..validation.routes import simple_telnet
 
-@bp.route('/info', methods=['POST'])
-@admin_required
+from . import debug_bp
+
+@debug_bp.route('/get_debug_info', methods=['POST'])
 def get_debug_info():
     hgw_ip = "192.168.1.1"
-    command = f"ssh admin@{hgw_ip} getDebugInformation -A"
+    command = "getDebugInformation -A"
     try:
-        result = subprocess.check_output(command, shell=True)
-        return f"<pre>{result.decode()}</pre>"
-    except subprocess.CalledProcessError as e:
-        return f"Error executing command: {e}"
+        # Use Telnet to execute the command
+        output = simple_telnet(
+            host=hgw_ip,
+            port=23,
+            username="root",
+            password="sah",
+            command=command
+        )
+        # Join output lines and wrap in <pre> tags
+        result = "\n".join(output)
+        return f"<pre>{result}</pre>"
+    except Exception as e:
+        return f"Error executing Telnet command: {str(e)}"
+    

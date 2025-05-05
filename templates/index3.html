@@ -34,16 +34,20 @@
             text-align: center;
         }
         .result {
-            background-color: #f7f7f7;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: monospace;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            text-align: left;
-            margin-bottom: 20px;
-        }
+    background-color: #f7f7f7;
+    white-space: pre;
+    overflow-x: auto;
+    word-wrap: normal;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    text-align: left;
+    margin-bottom: 20px;
+    max-height: 600px; 
+    overflow-y: auto;
+}
         .btn {
             background-color: #3498db;
             color: white;
@@ -137,11 +141,13 @@
             <pre>{{ result.iperf_result | default('No iPerf results available.') }}</pre>
         </div>
 
-        <!-- Telnet Results -->
-        <h2>HGW Packet Queue Stats ({{ result.traffic_type | capitalize | default('Unknown') }})</h2>
-        <div class="result" id="telnetResult">
-            <pre>{{ result.telnet_result | join('\n') | default('No Telnet results available.') }}</pre>
+        <div class="container">
+            <h2>HGW Packet Queue Stats ({{ result.traffic_type | capitalize | default('Unknown') }})</h2>
+            <div class="result" id="telnetResult">
+                <pre>{{ result.telnet_result | join('\n') | default('No Telnet results available.') }}</pre>
+            </div>
         </div>
+        
 
         <!-- Visualization Buttons -->
         <button class="btn" onclick="showGraph()">Show Visualization</button>
