@@ -24,6 +24,7 @@ def create_app():
     from .validation import validation_bp
     from .telnet import telnet_bp
     from .control import control_bp
+    from .debug import debug_bp
 
  
     
@@ -41,6 +42,8 @@ def create_app():
     app.register_blueprint(validation_bp)
     app.register_blueprint(telnet_bp)
     app.register_blueprint(control_bp)
+    app.register_blueprint(debug_bp)
+
     
 
 

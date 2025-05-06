@@ -12,7 +12,6 @@ import psutil
 import paramiko
 from ..validation.routes import simple_telnet
 
-# Global queue to store iPerf results
 iperf_result_queue = queue.Queue()
 
 REMOTE_IPERF_PATH = "/usr/bin/iperf3"  
@@ -44,11 +43,13 @@ def index3():
     result = session.get("iperf_result", {
         "iperf_result": "No iPerf results available.",
         "telnet_result": ["No Telnet results available."],
-        "traffic_type": "unknown"
+        "traffic_type": "unknown",
+        "parsed_hgw_lines": [],
+        "dscp_value": "0"
     })
     device_id = "ID_DU_DISPOSITIF"
     print(f"Rendering index3.html with result: {result}")
-    return render_template('index3.html', result=result, device_id=device_id)
+    return render_template('index3.html', result=result, device_id=device_id, DSCP_TRAFFIC_MAP=DSCP_TRAFFIC_MAP)
 
 @iperf_bp.route('/index33')
 def index33():
@@ -89,7 +90,6 @@ def run_iperf_server(port, server_process_list, server_control='manual', remote_
         )
         print(f"SSH connectivity verified to {remote_server_ip}")
 
-        # Check if port is free
         check_cmd = f"ss -tuln | grep :{port} || echo 'Port free'"
         stdin, stdout, stderr = ssh.exec_command(check_cmd)
         check_output = stdout.read().decode().strip()
@@ -99,7 +99,6 @@ def run_iperf_server(port, server_process_list, server_control='manual', remote_
             ssh.close()
             return None
 
-        # Start iPerf3 server
         cmd = f"{REMOTE_IPERF_PATH} -s -p {port} --daemon"
         print(f"Starting iPerf server on remote host {remote_server_ip} with port {port}: {cmd}")
         stdin, stdout, stderr = ssh.exec_command(cmd)
@@ -187,15 +186,16 @@ def run_iperf():
     ssh_password = data.get('sshPassword')
     traffic_type = data.get('trafficType')
 
-    # Use remoteServerIp as serverIp for SSH mode if serverIp is not provided
     if server_control == 'ssh' and not server_ip:
         server_ip = remote_server_ip
 
     result_data = {
-        "iperf_result": "No iPerf results available.",
-        "telnet_result": ["No Telnet results available."],
-        "traffic_type": traffic_type or "unknown"
-    }
+    "iperf_result": "No iPerf results available.",
+    "telnet_result": ["No Telnet results available."],
+    "traffic_type": traffic_type or "unknown",
+    "parsed_hgw_lines": [],
+    "dscp_value": dscp_tos or "0"
+}
 
     if not server_ip or not client_ip or not port.isdigit():
         result_data["iperf_result"] = "Invalid input. Server and Client IPs and a valid port are required"
@@ -275,8 +275,11 @@ def run_iperf():
                 command=telnet_command
             )
             result_data["telnet_result"] = telnet_output
+            parsed_lines = parse_hgw_output(telnet_output, dscp_tos)
+            result_data["parsed_hgw_lines"] = parsed_lines
     except Exception as e:
         result_data["telnet_result"] = [f"Telnet error: {str(e)}"]
+        result_data["parsed_hgw_lines"] = []
         print(f"Telnet error: {str(e)}")
 
     session["iperf_result"] = result_data
@@ -357,7 +360,7 @@ def run_iperf_two_clients():
             cmd.append("-R")
         if protocol == "udp":
             cmd.append("-u")
-            cmd.extend(["-b", "10M"])  # Bandwidth limit for UDP
+            cmd.extend(["-b", "10M"])  
         if taille and taille.strip():
             cmd.extend(["-b", taille])
         if duration:
@@ -368,7 +371,6 @@ def run_iperf_two_clients():
     server_process_list = []
     ssh_client = None
     if server_control == 'ssh':
-        # Verify SSH connectivity once
         try:
             ssh_client = paramiko.SSHClient()
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -388,10 +390,8 @@ def run_iperf_two_clients():
                 ssh_client.close()
             return jsonify({"status": "error", "message": f"Failed to verify SSH connectivity: {str(e)}"}), 500
 
-        # Threaded server startup
         def start_server_thread(port, server_process_list, ssh_client):
             try:
-                # Check if port is free
                 check_cmd = f"ss -tuln | grep :{port} || echo 'Port free'"
                 stdin, stdout, stderr = ssh_client.exec_command(check_cmd)
                 check_output = stdout.read().decode().strip()
@@ -400,7 +400,6 @@ def run_iperf_two_clients():
                     print(f"Port {port} is already in use on {remote_server_ip}: {check_output}")
                     return None
 
-                # Start iPerf3 server
                 cmd = f"{REMOTE_IPERF_PATH} -s -p {port} --daemon"
                 print(f"Starting iPerf server on remote host {remote_server_ip} with port {port}: {cmd}")
                 stdin, stdout, stderr = ssh_client.exec_command(cmd)
@@ -409,7 +408,6 @@ def run_iperf_two_clients():
                 if stderr_output:
                     print(f"Error starting iPerf server on port {port}: {stderr_output}")
                     return None
-                # Get PID
                 pid_cmd = f"pgrep -f 'iperf3.*-p {port}'"
                 stdin, stdout, stderr = ssh_client.exec_command(pid_cmd)
                 pid = stdout.read().decode().strip()
@@ -423,7 +421,6 @@ def run_iperf_two_clients():
                 print(f"Error starting iPerf server on port {port}: {e}")
                 return None
 
-        # Start servers in parallel
         print(f"Launching iPerf servers on ports {port1} and {port2}")
         server_thread1 = threading.Thread(target=start_server_thread, args=(port1, server_process_list, ssh_client))
         server_thread2 = threading.Thread(target=start_server_thread, args=(port2, server_process_list, ssh_client))
@@ -434,7 +431,6 @@ def run_iperf_two_clients():
         server_thread1.join()
         server_thread2.join()
 
-        # Check if both servers started
         if len(server_process_list) != 2:
             print(f"Failed to start all iPerf servers: only {len(server_process_list)} started")
             if ssh_client:
@@ -450,7 +446,6 @@ def run_iperf_two_clients():
     else:
         print(f"Manual server control: assuming iPerf3 servers are running on {server_ip}:{port1} and {server_ip}:{port2}")
 
-    # Launch clients in parallel
     result_queue1 = queue.Queue()
     result_queue2 = queue.Queue()
 
@@ -467,7 +462,6 @@ def run_iperf_two_clients():
     thread1.start()
     thread2.start()
 
-    # Wait for clients with timeout
     timeout = max(float(duration1 or 10), float(duration2 or 10)) + 10
     start_time = time.time()
     for thread in [thread1, thread2]:
@@ -500,7 +494,6 @@ def run_iperf_two_clients():
 
 
 
-    # Cleanup
     if server_control == 'ssh' and ssh_client:
         for _, pid in server_process_list:
             try:
@@ -510,7 +503,6 @@ def run_iperf_two_clients():
                 print(f"Error killing PID {pid}: {e}")
         ssh_client.close()
 
-    # Store results and redirect
     session["iperf_results"] = results
     print("Stored results in session, redirecting to index33")
     return jsonify({"status": "success", "redirect_url": url_for('iperf.index33')})
@@ -548,7 +540,6 @@ def run_iperf_three_clients():
     ssh_username = data.get('sshUsername')
     ssh_password = data.get('sshPassword')
 
-    # Validate inputs
     if not server_ip or not client_ip1 or not client_ip2 or not client_ip3:
         error_msg = "Invalid input. Server and all Client IPs are required"
         print(error_msg)
@@ -600,7 +591,7 @@ def run_iperf_three_clients():
             cmd.append("-R")
         if protocol == "udp":
             cmd.append("-u")
-            cmd.extend(["-b", "10M"])  # Bandwidth limit for UDP
+            cmd.extend(["-b", "10M"])  
         if taille and taille.strip():
             cmd.extend(["b", taille])
         if duration:
@@ -611,7 +602,6 @@ def run_iperf_three_clients():
     server_process_list = []
     ssh_client = None
     if server_control == 'ssh':
-        # Verify SSH connectivity once
         try:
             ssh_client = paramiko.SSHClient()
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -631,10 +621,8 @@ def run_iperf_three_clients():
                 ssh_client.close()
             return jsonify({"status": "error", "message": f"Failed to verify SSH connectivity: {str(e)}"}), 500
 
-        # Threaded server startup
         def start_server_thread(port, server_process_list, ssh_client):
             try:
-                # Check if port is free
                 check_cmd = f"ss -tuln | grep :{port} || echo 'Port free'"
                 stdin, stdout, stderr = ssh_client.exec_command(check_cmd)
                 check_output = stdout.read().decode().strip()
@@ -643,7 +631,6 @@ def run_iperf_three_clients():
                     print(f"Port {port} is already in use on {remote_server_ip}: {check_output}")
                     return None
 
-                # Start iPerf3 server
                 cmd = f"{REMOTE_IPERF_PATH} -s -p {port} --daemon"
                 print(f"Starting iPerf server on remote host {remote_server_ip} with port {port}: {cmd}")
                 stdin, stdout, stderr = ssh_client.exec_command(cmd)
@@ -652,7 +639,6 @@ def run_iperf_three_clients():
                 if stderr_output:
                     print(f"Error starting iPerf server on port {port}: {stderr_output}")
                     return None
-                # Get PID
                 pid_cmd = f"pgrep -f 'iperf3.*-p {port}'"
                 stdin, stdout, stderr = ssh_client.exec_command(pid_cmd)
                 pid = stdout.read().decode().strip()
@@ -666,7 +652,6 @@ def run_iperf_three_clients():
                 print(f"Error starting iPerf server on port {port}: {e}")
                 return None
 
-        # Start servers in parallel
         print(f"Launching iPerf servers on ports {port1}, {port2}, and {port3}")
         server_thread1 = threading.Thread(target=start_server_thread, args=(port1, server_process_list, ssh_client))
         server_thread2 = threading.Thread(target=start_server_thread, args=(port2, server_process_list, ssh_client))
@@ -680,7 +665,6 @@ def run_iperf_three_clients():
         server_thread2.join()
         server_thread3.join()
 
-        # Check if all servers started
         if len(server_process_list) != 3:
             print(f"Failed to start all iPerf servers: only {len(server_process_list)} started")
             if ssh_client:
@@ -696,7 +680,6 @@ def run_iperf_three_clients():
     else:
         print(f"Manual server control: assuming iPerf3 servers are running on {server_ip}:{port1}, {server_ip}:{port2}, and {server_ip}:{port3}")
 
-    # Launch clients in parallel
     result_queue1 = queue.Queue()
     result_queue2 = queue.Queue()
     result_queue3 = queue.Queue()
@@ -718,7 +701,6 @@ def run_iperf_three_clients():
     thread2.start()
     thread3.start()
 
-    # Wait for clients with timeout
     timeout = max(float(duration1 or 10), float(duration2 or 10), float(duration3 or 10)) + 10
     start_time = time.time()
     for thread in [thread1, thread2, thread3]:
@@ -729,7 +711,6 @@ def run_iperf_three_clients():
         thread.join(remaining)
     print("Client threads completed")
 
-    # Collect results
     results = []
     client_configs = [
         (result_queue1, client_ip1, port1, "client1"),
@@ -762,7 +743,6 @@ def run_iperf_three_clients():
                 print(f"Error killing PID {pid}: {e}")
         ssh_client.close()
 
-    # Store results and redirect
     session["iperf_results"] = results
     print("Stored results in session, redirecting to index333")
     return jsonify({"status": "success", "redirect_url": url_for('iperf.index333')})
@@ -771,7 +751,6 @@ def run_iperf_three_clients():
 
 
 def parse_iperf_output(output):
-    # Updated regex to handle variable whitespace and decimals
     pattern = re.compile(
         r'\[\s*\d+\]\s+(\d+\.\d+-\d+\.\d+)\s+sec\s+([\d.]+)\s+(MBytes|KBytes|GBytes)\s+([\d.]+)\s+(Mbits/sec|Kbits/sec|Gbits/sec)\s*'
     )
@@ -856,3 +835,83 @@ def generate_graph_data_three_clients():
         return jsonify({"status": "error", "message": "No data available"}), 400
     graph_data = parse_iperf_output_multi(outputs)
     return jsonify(json.loads(graph_data))
+
+DSCP_TRAFFIC_MAP = {
+    '184': 'VO',
+    '136': 'VO',
+    '104': 'VI',
+    '40': 'VI',
+    '0': 'BE',
+    '32': 'BK'
+}
+
+def parse_hgw_output(telnet_output, dscp_tos):
+    """
+    Parse Telnet output into a list of dictionaries for HGW packet queue stats.
+    Handles comma-separated lines like '00: BK         0,       0,       0,       0,       0,       0,       0,        0,    0,      0.00,      0.00,  -/ -/ -/ -,   0.0,    0.0'.
+    Colors only the row with the highest rqstd value (green if queue_type matches expected DSCP traffic type, red if not).
+    All other rows have color: 'none'.
+    """
+    parsed_lines = []
+    expected_traffic = DSCP_TRAFFIC_MAP.get(dscp_tos, 'UNKNOWN')
+
+    for line in telnet_output:
+        line = line.strip()
+        if not line or 'common queue' in line or 'prec:(AC)' in line:
+            print(f"Skipping header or empty line: {line}")
+            continue
+
+        match = re.match(r'(\d+): (\S+)\s+(.+)', line)
+        if not match:
+            print(f"Skipping malformed line: {line}")
+            continue
+
+        queue_id, queue_type, fields = match.groups()
+        parts = [p.strip() for p in fields.split(',')]
+
+        if len(parts) < 11:
+            print(f"Skipping line with insufficient fields: {line}")
+            continue
+
+        try:
+            rqstd = int(parts[0]) if parts[0] != '-' else 0
+            stored = int(parts[1]) if parts[1] != '-' else 0
+            dropped = int(parts[2]) if parts[2] != '-' else 0
+            retried = int(parts[3]) if parts[3] != '-' else 0
+            rtsfail = int(parts[4]) if parts[4] != '-' else 0
+            rtrydrop = int(parts[5]) if parts[5] != '-' else 0
+            psretry = int(parts[6]) if parts[6] != '-' else 0
+            acked = int(parts[7]) if parts[7] != '-' else 0
+            data_mbits = float(parts[9]) if parts[9] != '-' else 0.0
+            phy_mbits = float(parts[10]) if parts[10] != '-' else 0.0
+
+            parsed_lines.append({
+                'queue_id': queue_id,
+                'queue_type': queue_type,
+                'rqstd': str(rqstd),
+                'stored': str(stored),
+                'dropped': str(dropped),
+                'retried': str(retried),
+                'rtsfail': str(rtsfail),
+                'rtrydrop': str(rtrydrop),
+                'psretry': str(psretry),
+                'acked': str(acked),
+                'data_mbits': str(data_mbits),
+                'phy_mbits': str(phy_mbits),
+                'color': 'none'  
+            })
+        except (ValueError, IndexError) as e:
+            print(f"Error parsing line '{line}': {e}")
+            continue
+
+    if parsed_lines:
+        max_line = max(parsed_lines, key=lambda x: int(x['rqstd']))
+        max_rqstd = int(max_line['rqstd'])
+        if max_rqstd > 0:
+            max_line['color'] = 'green' if max_line['queue_type'] == expected_traffic else 'red'
+            print(f"Colored line with highest rqstd ({max_rqstd}): {max_line}")
+        else:
+            print(f"No line with rqstd > 0, no coloring applied")
+
+    print(f"Parsed HGW lines: {parsed_lines}")
+    return parsed_lines

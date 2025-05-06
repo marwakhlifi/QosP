@@ -23,31 +23,95 @@
             color: #323841;
             margin-bottom: 20px;
             text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        .main-container {
+            width: 95%;
+            max-width: 1200px;
         }
         .container {
             background-color: #ffffff;
             border-radius: 10px;
             padding: 20px;
-            width: 90%;
-            max-width: 800px;
+            margin-bottom: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
         .result {
-    background-color: #f7f7f7;
-    white-space: pre;
-    overflow-x: auto;
-    word-wrap: normal;
-    font-family: 'Courier New', monospace;
-    font-size: 0.95rem;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    text-align: left;
-    margin-bottom: 20px;
-    max-height: 600px; 
-    overflow-y: auto;
-}
+            background-color: #f7f7f7;
+            white-space: pre;
+            overflow-x: auto;
+            word-wrap: normal;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            text-align: left;
+            margin-bottom: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .hgw-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .hgw-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Arial', sans-serif;
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+        .hgw-table th {
+            background-color: #e9ecef;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            color: #323841;
+        }
+        .hgw-table td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .hgw-table tr.green {
+            background-color: #d4edda;
+        }
+        .hgw-table tr.red {
+            background-color: #f8d7da;
+        }
+        .hgw-table tr:hover {
+            background-color: #e9ecef;
+            transition: background-color 0.2s;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        .legend div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend .color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+        .legend .green {
+            background-color: #d4edda;
+        }
+        .legend .red {
+            background-color: #f8d7da;
+        }
         .btn {
             background-color: #3498db;
             color: white;
@@ -57,9 +121,14 @@
             cursor: pointer;
             border-radius: 5px;
             margin: 10px;
+            transition: background-color 0.2s;
         }
         .btn:hover {
             background-color: #2980b9;
+        }
+        .btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
         }
         canvas {
             max-width: 100%;
@@ -68,36 +137,6 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
             display: none;
-        }
-        .results-container {
-            width: 100%;
-            margin-top: 20px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: monospace;
-            font-size: 0.9rem;
-        }
-        .results-table th {
-            background-color: #e9ecef;
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #dee2e6;
-        }
-        .results-table td {
-            padding: 8px;
-            border-bottom: 1px solid #dee2e6;
-        }
-        .results-table tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-        .results-table tr:hover {
-            background-color: #e9ecef;
         }
         .status-message {
             padding: 10px;
@@ -122,6 +161,7 @@
             cursor: pointer;
             font-size: 16px;
             margin-top: 10px;
+            transition: background-color 0.2s;
         }
         .close-ssh-btn:hover {
             background-color: #c82333;
@@ -130,54 +170,193 @@
             background-color: #6c757d;
             cursor: not-allowed;
         }
+        .button-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .debug {
+            background-color: #eaeaea;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
-    <h1>QoS Test Results</h1>
-    <div class="container">
+    <div class="main-container">
+        <h1>QoS Test Results</h1>
+
         <!-- iPerf Results -->
-        <h2>iPerf Test Results</h2>
-        <div class="result" id="iperfResult">
-            <pre>{{ result.iperf_result | default('No iPerf results available.') }}</pre>
-        </div>
-
         <div class="container">
-            <h2>HGW Packet Queue Stats ({{ result.traffic_type | capitalize | default('Unknown') }})</h2>
-            <div class="result" id="telnetResult">
-                <pre>{{ result.telnet_result | join('\n') | default('No Telnet results available.') }}</pre>
+            <h2>iPerf Test Results</h2>
+            <div class="result" id="iperfResult">
+                <pre>{{ result.iperf_result | default('No iPerf results available.') }}</pre>
             </div>
-        </div>
-        
 
-        <!-- Visualization Buttons -->
-        <button class="btn" onclick="showGraph()">Show Visualization</button>
-        <button class="btn" onclick="hideGraph()" style="display: none;">Hide Visualization</button>
-        <canvas id="iperfGraph" width="800" height="400"></canvas>
+            <!-- Visualization Buttons -->
+            <button class="btn" onclick="showGraph()">Show Visualization</button>
+            <button class="btn" onclick="hideGraph()" style="display: none;">Hide Visualization</button>
+            <canvas id="iperfGraph" width="800" height="400"></canvas>
+        </div>
+
+        <!-- HGW Results -->
+        <div class="container">
+            <h2>HGW Packet Queue Stats ({{ result.traffic_type | capitalize | default('Unknown') }}, DSCP: {{ result.dscp_value | default('0') }})</h2>
+
+            <div class="legend">
+                <div><span class="color-box green"></span> Correct DSCP Traffic Type</div>
+                <div><span class="color-box red"></span> Incorrect DSCP Traffic Type</div>
+            </div>
+
+            <div class="hgw-container">
+                {% if result.parsed_hgw_lines %}
+                    <table class="hgw-table">
+                        <thead>
+                            <tr>
+                                <th>Queue ID</th>
+                                <th>Queue Type</th>
+                                <th>Requested</th>
+                                <th>Stored</th>
+                                <th>Dropped</th>
+                                <th>Retried</th>
+                                <th>RTS Fail</th>
+                                <th>Retry Drop</th>
+                                <th>PS Retry</th>
+                                <th>Acked</th>
+                                <th>Data (Mbits)</th>
+                                <th>Phy (Mbits)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for line in result.parsed_hgw_lines %}
+                                <tr class="{{ line.color }}">
+                                    <td>{{ line.queue_id }}</td>
+                                    <td>{{ line.queue_type }}</td>
+                                    <td>{{ line.rqstd }}</td>
+                                    <td>{{ line.stored }}</td>
+                                    <td>{{ line.dropped }}</td>
+                                    <td>{{ line.retried }}</td>
+                                    <td>{{ line.rtsfail }}</td>
+                                    <td>{{ line.rtrydrop }}</td>
+                                    <td>{{ line.psretry }}</td>
+                                    <td>{{ line.acked }}</td>
+                                    <td>{{ line.data_mbits }}</td>
+                                    <td>{{ line.phy_mbits }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+
+            <div id="trafficNote" class="status-message" style="margin-top: 10px;"></div>
+        </div>
+
+        <!-- Debug Output Container (Initially Hidden) -->
+        <div id="debugOutputContainer" class="container" style="display: none;">
+            <h2>HGW Debug Information</h2>
+            <div class="result" id="debugOutput"></div>
+        </div>
 
         <!-- Navigation Buttons -->
         <div class="button-container">
-            <button class="btn btn-secondary" onclick="window.history.back()">Back to Test Setup</button>
-            <form action="/get_debug_info" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-primary">Get HGW Debug Info</button>
-            </form>
+            <button class="btn" onclick="window.history.back()">Back to Test Setup</button>
+            <button id="getDebugInfoBtn" class="btn" onclick="fetchDebugInfo()">Get HGW Debug Info</button>
+            <button class="close-ssh-btn" onclick="closeSSHSession()">Close SSH Session</button>
         </div>
 
-        <!-- Manual QoS Check -->
-        <button id="runQosCheck" class="btn btn-primary">Run QoS Check</button>
         <div id="telnetTestResult" class="status-message" style="margin-top: 10px;"></div>
-        <div id="qosResultsContainer" class="results-container" style="display: none;">
+        <div id="qosResultsContainer" class="container" style="display: none;">
             <h3>Manual QoS Packet Queue Statistics</h3>
             <div id="qosResults"></div>
-            <table id="resultsTable" class="results-table"></table>
+            <table id="resultsTable" class="result"></table>
         </div>
 
-        <!-- SSH Close Button -->
-        <button class="close-ssh-btn" onclick="closeSSHSession()">Close SSH Session</button>
+        <a href="{{ url_for('auth.logout_and_release_devices') }}" class="btn" style="margin-top: 20px;">Logout</a>
     </div>
 
-    <a href="{{ url_for('auth.logout_and_release_devices') }}" class="btn" style="margin-top: 20px;">Logout</a>
-
     <script>
+        // Process and display traffic note on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const parsedLines = {{ result.parsed_hgw_lines | tojson | safe }};
+            const trafficNote = document.getElementById('trafficNote');
+
+            if (parsedLines && parsedLines.length > 0) {
+                let maxLine = null;
+
+                // Find the line with max rqstd
+                parsedLines.forEach(line => {
+                    if (line.color !== 'none' && (!maxLine || parseInt(line.rqstd) > parseInt(maxLine.rqstd))) {
+                        maxLine = line;
+                    }
+                });
+
+                // Add note about expected traffic
+                if (maxLine) {
+                    const expectedTraffic = maxLine.color === 'green' ? 'correct' : 'incorrect';
+                    const trafficType = "{{ result.traffic_type | default('unknown') }}".toUpperCase();
+                    const dscpValue = "{{ result.dscp_value | default('0') }}";
+                    trafficNote.textContent = ` for the DSCP ${dscpValue} the Classification is ${expectedTraffic}.`;
+                    trafficNote.className = `status-message ${maxLine.color === 'green' ? 'success' : 'error'}`;
+                }
+            }
+        });
+
+        // Fetch debug info via AJAX and display output dynamically
+        async function fetchDebugInfo() {
+            const button = document.getElementById('getDebugInfoBtn');
+            const debugOutputContainer = document.getElementById('debugOutputContainer');
+            const debugOutput = document.getElementById('debugOutput');
+
+            // Disable button and show loading state
+            button.disabled = true;
+            button.textContent = 'Loading...';
+
+            try {
+                const response = await fetch('/get_debug_info', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server responded with status ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Clear previous output
+                debugOutput.innerHTML = '';
+
+                // Create pre element for output
+                const pre = document.createElement('pre');
+                pre.textContent = data.debug_output || 'No debug info received';
+
+                // Append output and show container
+                debugOutput.appendChild(pre);
+                debugOutputContainer.style.display = 'block';
+            } catch (error) {
+                // Clear previous output
+                debugOutput.innerHTML = '';
+
+                // Create pre element for error
+                const pre = document.createElement('pre');
+                pre.textContent = `Error: ${error.message}`;
+
+                // Append error and show container
+                debugOutput.appendChild(pre);
+                debugOutputContainer.style.display = 'block';
+            } finally {
+                // Re-enable button
+                button.disabled = false;
+                button.textContent = 'Get HGW Debug Info';
+            }
+        }
+
         async function closeSSHSession() {
             const button = document.querySelector('.close-ssh-btn');
             button.disabled = true;
@@ -261,7 +440,7 @@
                                 }
                             },
                             scales: {
-                                x: {
+                                xWiki: {
                                     title: {
                                         display: true,
                                         text: 'Interval (seconds)'
@@ -289,20 +468,19 @@
             showButton.style.display = 'inline-block';
             hideButton.style.display = 'none';
         }
-        
 
         document.getElementById('runQosCheck').addEventListener('click', function() {
             console.log("Run QoS Check button clicked!");
-            
+
             const telnetResultDiv = document.getElementById('telnetTestResult');
             const qosResultsContainer = document.getElementById('qosResultsContainer');
             const qosResultsDiv = document.getElementById('qosResults');
             const resultsTable = document.getElementById('resultsTable');
-            
+
             telnetResultDiv.textContent = 'Testing Telnet connection...';
             telnetResultDiv.className = 'status-message';
             qosResultsContainer.style.display = 'none';
-            
+
             fetch('/test_telnet', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
@@ -320,22 +498,22 @@
                 if (data.status === 'success') {
                     telnetResultDiv.textContent = '✓ Telnet connection successful! Running QoS check...';
                     telnetResultDiv.className = 'status-message success';
-                    
+
                     qosResultsContainer.style.display = 'block';
-                    
+
                     if (data.output && data.output.length > 0) {
                         const headers = data.output[1].split(',').map(h => h.trim());
-                        
+
                         let tableHtml = '<thead><tr>';
                         headers.forEach(header => {
                             tableHtml += `<th>${header}</th>`;
                         });
                         tableHtml += '</tr></thead><tbody>';
-                        
+
                         for (let i = 2; i < data.output.length; i++) {
                             const row = data.output[i];
                             if (row.trim() === '') continue;
-                            
+
                             const cells = row.split(',');
                             tableHtml += '<tr>';
                             cells.forEach(cell => {
@@ -343,15 +521,15 @@
                             });
                             tableHtml += '</tr>';
                         }
-                        
+
                         tableHtml += '</tbody>';
                         resultsTable.innerHTML = tableHtml;
-                        
+
                         qosResultsDiv.innerHTML = '<pre>' + data.output.join('\n') + '</pre>';
                     } else {
                         qosResultsDiv.textContent = 'No QoS data received';
                     }
-                    
+
                     telnetResultDiv.textContent = '✓ QoS check completed successfully!';
                 } else {
                     throw new Error(data.message || 'Telnet test failed');
@@ -361,7 +539,7 @@
                 console.error("Error:", error);
                 telnetResultDiv.textContent = `✗ Error: ${error.message}`;
                 telnetResultDiv.className = 'status-message error';
-                
+
                 qosResultsContainer.style.display = 'block';
                 qosResultsDiv.textContent = `Error details: ${error.message}`;
             });
