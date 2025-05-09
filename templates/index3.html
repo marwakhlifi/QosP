@@ -205,7 +205,11 @@
         <!-- HGW Results -->
         <div class="container">
             <h2>HGW Packet Queue Stats ({{ result.traffic_type | capitalize | default('Unknown') }}, DSCP: {{ result.dscp_value | default('0') }})</h2>
-
+            <!-- Debug Output -->
+            <div class="debug">
+                <strong>Debug Telnet Result:</strong><br>
+                <pre>{{ result.telnet_result | join('\n') | default('No Telnet output') }}</pre>
+            </div>
             <div class="legend">
                 <div><span class="color-box green"></span> Correct DSCP Traffic Type</div>
                 <div><span class="color-box red"></span> Incorrect DSCP Traffic Type</div>
