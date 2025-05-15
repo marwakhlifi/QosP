@@ -101,7 +101,7 @@
       border-radius: 12px;
       padding: 20px;
       margin-bottom: 20px;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       border-left: 4px solid;
       background: white;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
@@ -121,6 +121,30 @@
     
     .traffic-card.BE {
       border-color: var(--be-color);
+    }
+    
+    .traffic-card-hidden {
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    
+    .traffic-card-visible {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+      animation: fadeInUp 0.3s ease-in-out;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
     .traffic-icon {
@@ -286,6 +310,53 @@
       margin-bottom: 0;
     }
 
+    .optional-input {
+      display: none;
+      margin-top: 10px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .optional-input.visible {
+      display: block;
+      opacity: 1;
+    }
+
+    .traffic-selection {
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .traffic-selection label {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background-color 0.2s ease;
+    }
+
+    .traffic-selection label:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .traffic-selection input[type="checkbox"] {
+      margin-right: 8px;
+    }
+
+    .traffic-selection .traffic-icon {
+      font-size: 18px;
+      margin-right: 8px;
+    }
+
     @media (max-width: 768px) {
       .ssh-fields {
         flex-direction: column;
@@ -294,6 +365,20 @@
 
       .ssh-fields .form-control {
         margin-bottom: 15px;
+      }
+
+      .flow-config .row.g-2 > div {
+        margin-bottom: 10px;
+      }
+
+      .traffic-selection {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .traffic-selection label {
+        width: 100%;
+        padding: 10px;
       }
     }
   </style>
@@ -324,7 +409,6 @@
               </div>
               <!-- SSH Credential Fields -->
               <div class="col-md-12 ssh-fields" id="sshFields">
-                <input type="text" class="form-control" id="remoteServerIp" placeholder="Enter Remote Server IP">
                 <input type="text" class="form-control" id="sshUsername" placeholder="Enter SSH Username">
                 <input type="password" class="form-control" id="sshPassword" placeholder="Enter SSH Password">
               </div>
@@ -347,18 +431,49 @@
                   <option value="udp">UDP</option>
                 </select>
               </div>
+              <div class="col-md-6">
+                <label for="direction" class="form-label">Traffic Direction</label>
+                <select class="form-select" id="direction">
+                  <option value="uplink">Uplink</option>
+                  <option value="downlink">Downlink</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Traffic Classes Selection -->
+          <div class="mb-4">
+            <h5 class="mb-3"><i class="fas fa-check-circle me-2"></i>Select Traffic Classes</h5>
+            <p class="text-muted mb-3">Choose which traffic classes to include in the test:</p>
+            <div class="traffic-selection">
+              <label>
+                <i class="fas fa-phone-alt traffic-icon VO"></i>
+                <input type="checkbox" class="traffic-select-checkbox" value="VO" checked> Voice (VO)
+              </label>
+              <label>
+                <i class="fas fa-video traffic-icon VI"></i>
+                <input type="checkbox" class="traffic-select-checkbox" value="VI" checked> Video (VI)
+              </label>
+              <label>
+                <i class="fas fa-cloud-download-alt traffic-icon BK"></i>
+                <input type="checkbox" class="traffic-select-checkbox" value="BK" checked> Background (BK)
+              </label>
+              <label>
+                <i class="fas fa-globe traffic-icon BE"></i>
+                <input type="checkbox" class="traffic-select-checkbox" value="BE" checked> Best Effort (BE)
+              </label>
             </div>
           </div>
           
           <!-- Traffic Classes Configuration -->
-          <div class="mb-4">
-            <h5 class="mb-3"><i class="fas fa-traffic-light me-2"></i>Traffic Classes</h5>
-            <p class="text-muted mb-3">Configure the four standard QoS traffic classes:</p>
+          <div class="mb-4" id="traffic-config-container">
+            <h5 class="mb-3"><i class="fas fa-traffic-light me-2"></i>Traffic Classes Configuration</h5>
+            <p class="text-muted mb-3">Configure the selected QoS traffic classes:</p>
             
             <div class="row">
               <!-- Voice (VO) -->
               <div class="col-md-6 mb-3">
-                <div class="traffic-card VO">
+                <div class="traffic-card VO traffic-card-hidden" data-traffic="VO">
                   <div class="d-flex align-items-center mb-2">
                     <i class="fas fa-phone-alt traffic-icon VO"></i>
                     <div>
@@ -370,11 +485,29 @@
                     <div class="row g-2">
                       <div class="col-6">
                         <label class="form-label">DSCP Value</label>
-                        <input type="number" class="form-control vo-dscp" value="46" min="0" max="63">
+                        <input type="number" class="form-control vo-dscp" value="46" min="0" max="255">
                       </div>
                       <div class="col-6">
                         <label class="form-label">Port</label>
                         <input type="number" class="form-control vo-port" value="5001" min="1" max="65535">
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label">
+                          <input type="checkbox" class="vo-delay-checkbox"> Set Delay Before Start (seconds)
+                        </label>
+                        <div class="optional-input vo-delay-input">
+                          <label class="form-label">Delay (seconds)</label>
+                          <input type="number" class="form-control vo-delay" min="0" step="0.1" placeholder="e.g., 5">
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label">
+                          <input type="checkbox" class="vo-data-size-checkbox"> Set Data Rate (Mbps)
+                        </label>
+                        <div class="optional-input vo-data-size-input">
+                          <label class="form-label">Data Rate (Mbps)</label>
+                          <input type="number" class="form-control vo-data-size" min="0" step="0.1" placeholder="e.g., 10">
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -383,7 +516,7 @@
               
               <!-- Video (VI) -->
               <div class="col-md-6 mb-3">
-                <div class="traffic-card VI">
+                <div class="traffic-card VI traffic-card-hidden" data-traffic="VI">
                   <div class="d-flex align-items-center mb-2">
                     <i class="fas fa-video traffic-icon VI"></i>
                     <div>
@@ -395,11 +528,29 @@
                     <div class="row g-2">
                       <div class="col-6">
                         <label class="form-label">DSCP Value</label>
-                        <input type="number" class="form-control vi-dscp" value="34" min="0" max="63">
+                        <input type="number" class="form-control vi-dscp" value="34" min="0" max="255">
                       </div>
                       <div class="col-6">
                         <label class="form-label">Port</label>
                         <input type="number" class="form-control vi-port" value="5002" min="1" max="65535">
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label">
+                          <input type="checkbox" class="vi-delay-checkbox"> Set Delay Before Start (seconds)
+                        </label>
+                        <div class="optional-input vi-delay-input">
+                          <label class="form-label">Delay (seconds)</label>
+                          <input type="number" class="form-control vi-delay" min="0" step="0.1" placeholder="e.g., 5">
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label">
+                          <input type="checkbox" class="vi-data-size-checkbox"> Set Data Rate (Mbps)
+                        </label>
+                        <div class="optional-input vi-data-size-input">
+                          <label class="form-label">Data Rate (Mbps)</label>
+                          <input type="number" class="form-control vi-data-size" min="0" step="0.1" placeholder="e.g., 10">
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -408,7 +559,7 @@
               
               <!-- Background (BK) -->
               <div class="col-md-6 mb-3">
-                <div class="traffic-card BK">
+                <div class="traffic-card BK traffic-card-hidden" data-traffic="BK">
                   <div class="d-flex align-items-center mb-2">
                     <i class="fas fa-cloud-download-alt traffic-icon BK"></i>
                     <div>
@@ -420,11 +571,29 @@
                     <div class="row g-2">
                       <div class="col-6">
                         <label class="form-label">DSCP Value</label>
-                        <input type="number" class="form-control bk-dscp" value="10" min="0" max="63">
+                        <input type="number" class="form-control bk-dscp" value="10" min="0" max="255">
                       </div>
                       <div class="col-6">
                         <label class="form-label">Port</label>
                         <input type="number" class="form-control bk-port" value="5003" min="1" max="65535">
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label">
+                          <input type="checkbox" class="bk-delay-checkbox"> Set Delay Before Start (seconds)
+                        </label>
+                        <div class="optional-input bk-delay-input">
+                          <label class="form-label">Delay (seconds)</label>
+                          <input type="number" class="form-control bk-delay" min="0" step="0.1" placeholder="e.g., 5">
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label">
+                          <input type="checkbox" class="bk-data-size-checkbox"> Set Data Rate (Mbps)
+                        </label>
+                        <div class="optional-input bk-data-size-input">
+                          <label class="form-label">Data Rate (Mbps)</label>
+                          <input type="number" class="form-control bk-data-size" min="0" step="0.1" placeholder="e.g., 100">
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -433,7 +602,7 @@
               
               <!-- Best Effort (BE) -->
               <div class="col-md-6 mb-3">
-                <div class="traffic-card BE">
+                <div class="traffic-card BE traffic-card-hidden" data-traffic="BE">
                   <div class="d-flex align-items-center mb-2">
                     <i class="fas fa-globe traffic-icon BE"></i>
                     <div>
@@ -445,11 +614,29 @@
                     <div class="row g-2">
                       <div class="col-6">
                         <label class="form-label">DSCP Value</label>
-                        <input type="number" class="form-control be-dscp" value="0" min="0" max="63">
+                        <input type="number" class="form-control be-dscp" value="0" min="0" max="255">
                       </div>
                       <div class="col-6">
                         <label class="form-label">Port</label>
                         <input type="number" class="form-control be-port" value="5004" min="1" max="65535">
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label">
+                          <input type="checkbox" class="be-delay-checkbox"> Set Delay Before Start (seconds)
+                        </label>
+                        <div class="optional-input be-delay-input">
+                          <label class="form-label">Delay (seconds)</label>
+                          <input type="number" class="form-control be-delay" min="0" step="0.1" placeholder="e.g., 5">
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label">
+                          <input type="checkbox" class="be-data-size-checkbox"> Set Data Rate (Mbps)
+                        </label>
+                        <div class="optional-input be-data-size-input">
+                          <label class="form-label">Data Rate (Mbps)</label>
+                          <input type="number" class="form-control be-data-size" min="0" step="0.1" placeholder="e.g., 100">
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -500,6 +687,65 @@
       }
     });
 
+    // Toggle delay and data size input visibility for each traffic class
+    function setupToggle(checkboxClass, inputClass) {
+      const checkbox = document.querySelector('.' + checkboxClass);
+      if (checkbox) {
+        checkbox.addEventListener('change', function() {
+          const input = document.querySelector('.' + inputClass);
+          if (input) {
+            if (this.checked) {
+              input.classList.add('visible');
+            } else {
+              input.classList.remove('visible');
+            }
+          }
+        });
+      }
+    }
+
+    // Setup toggles for delay inputs
+    setupToggle('vo-delay-checkbox', 'vo-delay-input');
+    setupToggle('vi-delay-checkbox', 'vi-delay-input');
+    setupToggle('bk-delay-checkbox', 'bk-delay-input');
+    setupToggle('be-delay-checkbox', 'be-delay-input');
+
+    // Setup toggles for data size inputs
+    setupToggle('vo-data-size-checkbox', 'vo-data-size-input');
+    setupToggle('vi-data-size-checkbox', 'vi-data-size-input');
+    setupToggle('bk-data-size-checkbox', 'bk-data-size-input');
+    setupToggle('be-data-size-checkbox', 'be-data-size-input');
+
+    // Toggle traffic card visibility based on checkbox selection
+    document.querySelectorAll('.traffic-select-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const trafficType = this.value;
+        const trafficCard = document.querySelector(`.traffic-card[data-traffic="${trafficType}"]`);
+        if (trafficCard) {
+          if (this.checked) {
+            trafficCard.classList.remove('traffic-card-hidden');
+            trafficCard.classList.add('traffic-card-visible');
+          } else {
+            trafficCard.classList.remove('traffic-card-visible');
+            trafficCard.classList.add('traffic-card-hidden');
+          }
+        }
+      });
+    });
+
+    // Initialize traffic card visibility based on default checkbox state
+    document.querySelectorAll('.traffic-select-checkbox').forEach(checkbox => {
+      const trafficType = checkbox.value;
+      const trafficCard = document.querySelector(`.traffic-card[data-traffic="${trafficType}"]`);
+      if (checkbox.checked) {
+        trafficCard.classList.remove('traffic-card-hidden');
+        trafficCard.classList.add('traffic-card-visible');
+      } else {
+        trafficCard.classList.remove('traffic-card-visible');
+        trafficCard.classList.add('traffic-card-hidden');
+      }
+    });
+
     document.getElementById('start-test-btn').addEventListener('click', function() {
       const btn = this;
       const statusIndicator = document.getElementById('status-indicator');
@@ -509,37 +755,64 @@
       const progressBar = document.getElementById('progress-bar');
       const statusDisplay = document.getElementById('status-display');
       
+      // Get selected traffic classes
+      const selectedClasses = Array.from(document.querySelectorAll('.traffic-select-checkbox:checked')).map(cb => cb.value);
+      
+      // Validate at least one traffic class is selected
+      if (selectedClasses.length === 0) {
+        alert('Please select at least one traffic class to test');
+        return;
+      }
+
       // Get test configuration
       const testConfig = {
         serverIp: document.getElementById('server-ip').value,
         clientIp: document.getElementById('client-ip').value,
         duration: document.getElementById('test-duration').value,
         protocol: document.getElementById('protocol-type').value,
+        direction: document.getElementById('direction').value,
         serverControl: document.getElementById('serverControl').value,
         remoteServerIp: document.getElementById('server-ip').value, // Same as serverIp
         sshUsername: document.getElementById('sshUsername').value,
-        sshPassword: document.getElementById('sshPassword').value,
+        sshPassword: document.getElementById('sshPassword').value
+      };
+
+      // Add configurations for selected traffic classes
+      const trafficConfigs = {
         VO: {
-          port: document.querySelector('.vo-port').value,
-          dscp: document.querySelector('.vo-dscp').value,
-          protocol: document.getElementById('protocol-type').value
+          port: document.querySelector('.vo-port')?.value || '5001',
+          dscp: document.querySelector('.vo-dscp')?.value || '46',
+          protocol: document.getElementById('protocol-type').value,
+          delay: document.querySelector('.vo-delay-checkbox')?.checked ? document.querySelector('.vo-delay')?.value : '0',
+          dataSize: document.querySelector('.vo-data-size-checkbox')?.checked ? document.querySelector('.vo-data-size')?.value : '0'
         },
         VI: {
-          port: document.querySelector('.vi-port').value,
-          dscp: document.querySelector('.vi-dscp').value,
-          protocol: document.getElementById('protocol-type').value
+          port: document.querySelector('.vi-port')?.value || '5002',
+          dscp: document.querySelector('.vi-dscp')?.value || '34',
+          protocol: document.getElementById('protocol-type').value,
+          delay: document.querySelector('.vi-delay-checkbox')?.checked ? document.querySelector('.vi-delay')?.value : '0',
+          dataSize: document.querySelector('.vi-data-size-checkbox')?.checked ? document.querySelector('.vi-data-size')?.value : '0'
         },
         BK: {
-          port: document.querySelector('.bk-port').value,
-          dscp: document.querySelector('.bk-dscp').value,
-          protocol: document.getElementById('protocol-type').value
+          port: document.querySelector('.bk-port')?.value || '5003',
+          dscp: document.querySelector('.bk-dscp')?.value || '10',
+          protocol: document.getElementById('protocol-type').value,
+          delay: document.querySelector('.bk-delay-checkbox')?.checked ? document.querySelector('.bk-delay')?.value : '0',
+          dataSize: document.querySelector('.bk-data-size-checkbox')?.checked ? document.querySelector('.bk-data-size')?.value : '0'
         },
         BE: {
-          port: document.querySelector('.be-port').value,
-          dscp: document.querySelector('.be-dscp').value,
-          protocol: document.getElementById('protocol-type').value
+          port: document.querySelector('.be-port')?.value || '5004',
+          dscp: document.querySelector('.be-dscp')?.value || '0',
+          protocol: document.getElementById('protocol-type').value,
+          delay: document.querySelector('.be-delay-checkbox')?.checked ? document.querySelector('.be-delay')?.value : '0',
+          dataSize: document.querySelector('.be-data-size-checkbox')?.checked ? document.querySelector('.be-data-size')?.value : '0'
         }
       };
+
+      // Include only selected traffic classes
+      selectedClasses.forEach(cls => {
+        testConfig[cls] = trafficConfigs[cls];
+      });
       
       // Validate inputs
       if (!testConfig.serverIp || !testConfig.clientIp) {
@@ -554,8 +827,46 @@
 
       // Validate SSH credentials when SSH is selected
       if (testConfig.serverControl === 'ssh') {
-        if (!testConfig.remoteServerIp || !testConfig.sshUsername || !testConfig.sshPassword) {
-          alert('All SSH credentials (Remote Server IP, SSH Username, SSH Password) are required for SSH Controlled Server');
+        if (!testConfig.sshUsername || !testConfig.sshPassword) {
+          alert('SSH Username and SSH Password are required for SSH Controlled Server');
+          return;
+        }
+      }
+
+      // Validate ports
+      const ports = selectedClasses.map(cls => testConfig[cls].port);
+      if (new Set(ports).size !== ports.length) {
+        alert('All ports must be unique');
+        return;
+      }
+      for (let port of ports) {
+        if (!port || isNaN(port) || port < 1 || port > 65535) {
+          alert('Ports must be numbers between 1 and 65535');
+          return;
+        }
+      }
+
+      // Validate DSCP values
+      for (let cls of selectedClasses) {
+        const dscp = testConfig[cls].dscp;
+        if (!dscp || isNaN(dscp) || dscp < 0 || dscp > 255) {
+          alert(`${cls} DSCP value must be between 0 and 63`);
+          return;
+        }
+      }
+
+      // Validate delays
+      for (let cls of selectedClasses) {
+        if (testConfig[cls].delay && (isNaN(testConfig[cls].delay) || testConfig[cls].delay < 0)) {
+          alert(`${cls} delay must be a non-negative number`);
+          return;
+        }
+      }
+
+      // Validate data sizes
+      for (let cls of selectedClasses) {
+        if (testConfig[cls].dataSize && (isNaN(testConfig[cls].dataSize) || testConfig[cls].dataSize < 0)) {
+          alert(`${cls} data rate must be a non-negative number`);
           return;
         }
       }

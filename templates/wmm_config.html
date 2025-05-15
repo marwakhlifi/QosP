@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMM Testing Configuration</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --vo-color: #4e73df;
+            --vi-color: #1cc88a;
+            --be-color: #f6c23e;
+            --bk-color: #e74a3b;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        .card {
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 600;
+        }
+        
+        .traffic-config {
+            border-left: 0.25rem solid;
+            margin-bottom: 1rem;
+        }
+        
+        .traffic-vo {
+            border-left-color: var(--vo-color);
+        }
+        
+        .traffic-vi {
+            border-left-color: var(--vi-color);
+        }
+        
+        .traffic-be {
+            border-left-color: var(--be-color);
+        }
+        
+        .traffic-bk {
+            border-left-color: var(--bk-color);
+        }
+        
+        .progress {
+            height: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-bar-vo {
+            background-color: var(--vo-color);
+        }
+        
+        .progress-bar-vi {
+            background-color: var(--vi-color);
+        }
+        
+        .progress-bar-be {
+            background-color: var(--be-color);
+        }
+        
+        .progress-bar-bk {
+            background-color: var(--bk-color);
+        }
+        
+        .status-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        .status-idle {
+            background-color: #858796;
+        }
+        
+        .status-capturing {
+            background-color: #1cc88a;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-error {
+            background-color: #e74a3b;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .traffic-visualization {
+            height: 200px;
+            background-color: #fff;
+            border-radius: 0.35rem;
+            margin-bottom: 20px;
+        }
+        
+        .metric-card {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .metric-label {
+            font-size: 0.8rem;
+            color: #858796;
+        }
+
+        .tagging-table {
+            margin-top: 20px;
+        }
+        
+        .tagging-table th {
+            background-color: #f8f9fc;
+            color: #4e73df;
+            font-weight: 600;
+        }
+        
+        .tagging-table .vo-row td {
+            border-left: 4px solid var(--vo-color);
+        }
+        
+        .tagging-table .vi-row td {
+            border-left: 4px solid var(--vi-color);
+        }
+        
+        .tagging-table .be-row td {
+            border-left: 4px solid var(--be-color);
+        }
+        
+        .tagging-table .bk-row td {
+            border-left: 4px solid var(--bk-color);
+        }
+        
+        .tagging-table .confirmed {
+            color: #1cc88a;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <h1 class="h3 mb-0 text-gray-800">WMM Testing Configuration</h1>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Configuration Panel -->
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Test Configuration</h6>
+                    </div>
+                    <div class="card-body">
+                        <form id="testConfigForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="testType" class="form-label">Test Type</label>
+                                    <select class="form-select" id="testType">
+                                        <option value="basic">Basic Verification</option>
+                                        <option value="stress">Stress Test</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="channelSelect" class="form-label">Channel</label>
+                                    <select class="form-select" id="channelSelect">
+                                        <option value="auto">Auto Select</option>
+                                        <option value="1">Channel 1 (2.412 GHz)</option>
+                                        <option value="6">Channel 6 (2.437 GHz)</option>
+                                        <option value="11">Channel 11 (2.462 GHz)</option>
+                                        <option value="36">Channel 36 (5.180 GHz)</option>
+                                        <option value="149">Channel 149 (5.745 GHz)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="interferenceLevel" class="form-label">Interference Level</label>
+                                    <select class="form-select" id="interferenceLevel">
+                                        <option value="none">None</option>
+                                        <option value="low">Low</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="dutConnection" class="form-label">DUT Connection</label>
+                                    <select class="form-select" id="dutConnection">
+                                        <option value="wifi5">Wi-Fi 5 (802.11ac)</option>
+                                        <option value="wifi6" selected>Wi-Fi 6 (802.11ax)</option>
+                                        <option value="wifi6e">Wi-Fi 6E</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="card mb-3 traffic-config traffic-vo">
+                                <div class="card-body">
+                                    <h6 class="font-weight-bold text-uppercase mb-3">
+                                        <i class="fas fa-phone-alt me-2" style="color: var(--vo-color);"></i>
+                                        VO (Voice) Traffic
+                                    </h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="voPercentage" class="form-label">Percentage</label>
+                                            <input type="range" class="form-range" min="0" max="100" step="5" id="voPercentage" value="20">
+                                            <div class="d-flex justify-content-between">
+                                                <span>0%</span>
+                                                <span id="voPercentageValue">20%</span>
+                                                <span>100%</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="voTargetRate" class="form-label">Target Rate (Mbps)</label>
+                                            <input type="number" class="form-control" id="voTargetRate" min="0.1" max="10" step="0.1" value="1.5">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card mb-3 traffic-config traffic-vi">
+                                <div class="card-body">
+                                    <h6 class="font-weight-bold text-uppercase mb-3">
+                                        <i class="fas fa-video me-2" style="color: var(--vi-color);"></i>
+                                        VI (Video) Traffic
+                                    </h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="viPercentage" class="form-label">Percentage</label>
+                                            <input type="range" class="form-range" min="0" max="100" step="5" id="viPercentage" value="30">
+                                            <div class="d-flex justify-content-between">
+                                                <span>0%</span>
+                                                <span id="viPercentageValue">30%</span>
+                                                <span>100%</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="viTargetRate" class="form-label">Target Rate (Mbps)</label>
+                                            <input type="number" class="form-control" id="viTargetRate" min="0.1" max="20" step="0.1" value="4.0">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card mb-3 traffic-config traffic-be">
+                                <div class="card-body">
+                                    <h6 class="font-weight-bold text-uppercase mb-3">
+                                        <i class="fas fa-globe me-2" style="color: var(--be-color);"></i>
+                                        BE (Best Effort) Traffic
+                                    </h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="bePercentage" class="form-label">Percentage</label>
+                                            <input type="range" class="form-range" min="0" max="100" step="5" id="bePercentage" value="40">
+                                            <div class="d-flex justify-content-between">
+                                                <span>0%</span>
+                                                <span id="bePercentageValue">40%</span>
+                                                <span>100%</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="beTargetRate" class="form-label">Target Rate (Mbps)</label>
+                                            <input type="number" class="form-control" id="beTargetRate" min="0.1" max="20" step="0.1" value="2.0">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card mb-4 traffic-config traffic-bk">
+                                <div class="card-body">
+                                    <h6 class="font-weight-bold text-uppercase mb-3">
+                                        <i class="fas fa-download me-2" style="color: var(--bk-color);"></i>
+                                        BK (Background) Traffic
+                                    </h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="bkPercentage" class="form-label">Percentage</label>
+                                            <input type="range" class="form-range" min="0" max="100" step="5" id="bkPercentage" value="10">
+                                            <div class="d-flex justify-content-between">
+                                                <span>0%</span>
+                                                <span id="bkPercentageValue">10%</span>
+                                                <span>100%</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="bkTargetRate" class="form-label">Target Rate (Mbps)</label>
+                                            <input type="number" class="form-control" id="bkTargetRate" min="0.1" max="20" step="0.1" value="0.5">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="progress mb-4">
+                                <div class="progress-bar progress-bar-vo" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar progress-bar-vi" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar progress-bar-be" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar progress-bar-bk" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="button" class="btn btn-secondary me-md-2" id="advancedBtn">
+                                    <i class="fas fa-cog me-1"></i> Advanced Parameters
+                                </button>
+                                <button type="button" class="btn btn-primary" id="saveProfileBtn">
+                                    <i class="fas fa-save me-1"></i> Save Profile
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Test Execution Panel -->
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Test Execution</h6>
+                        <div>
+                            <span class="status-indicator status-idle" id="statusIndicator"></span>
+                            <span id="statusText">Idle</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4">
+                            <button type="button" class="btn btn-success me-md-2" id="startTestBtn">
+                                <i class="fas fa-play me-1"></i> Start Test
+                            </button>
+                            <button type="button" class="btn btn-warning me-md-2" id="pauseTestBtn" disabled>
+                                <i class="fas fa-pause me-1"></i> Pause
+                            </button>
+                            <button type="button" class="btn btn-danger" id="stopTestBtn" disabled>
+                                <i class="fas fa-stop me-1"></i> Stop
+                            </button>
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Traffic Visualization</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="traffic-visualization" id="trafficChart">
+                                    <canvas id="trafficCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4 tagging-table">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">WMM Tagging</h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered" id="taggingTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Traffic Type</th>
+                                            <th>TID</th>
+                                            <th>UP</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card metric-card">
+                                    <div class="metric-value" id="voLatency">--</div>
+                                    <div class="metric-label">VO Latency (ms)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card metric-card">
+                                    <div class="metric-value" id="viThroughput">--</div>
+                                    <div class="metric-label">VI Throughput (Mbps)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card metric-card">
+                                    <div class="metric-value" id="beJitter">--</div>
+                                    <div class="metric-label">BE Jitter (ms)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card metric-card">
+                                    <div class="metric-value" id="bkLoss">--</div>
+                                    <div class="metric-label">BK Loss (%)</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Capture Status:</span>
+                                <span id="captureStatus">Not capturing</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" id="captureProgress" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Parameters Modal -->
+    <div class="modal fade" id="advancedModal" tabindex="-1" aria-labelledby="advancedModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="advancedModalLabel">Advanced WMM Parameters</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6>VO (Voice) Parameters</h6>
+                            <div class="mb-3">
+                                <label for="voAifs" class="form-label">AIFS</label>
+                                <input type="number" class="form-control" id="voAifs" value="2" min="1" max="15">
+                            </div>
+                            <div class="mb-3">
+                                <label for="voCwMin" class="form-label">CWmin</label>
+                                <input type="number" class="form-control" id="voCwMin" value="3" min="1" max="15">
+                            </div>
+                            <div class="mb-3">
+                                <label for="voCwMax" class="form-label">CWmax</label>
+                                <input type="number" class="form-control" id="voCwMax" value="7" min="1" max="1023">
+                            </div>
+                            <div class="mb-3">
+                                <label for="voTxop" class="form-label">TXOP Limit (μs)</label>
+                                <input type="number" class="form-control" id="voTxop" value="1504" min="0" max="65535">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>VI (Video) Parameters</h6>
+                            <div class="mb-3">
+                                <label for="viAifs" class="form-label">AIFS</label>
+                                <input type="number" class="form-control" id="viAifs" value="2" min="1" max="15">
+                            </div>
+                            <div class="mb-3">
+                                <label for="viCwMin" class="form-label">CWmin</label>
+                                <input type="number" class="form-control" id="viCwMin" value="7" min="1" max="15">
+                            </div>
+                            <div class="mb-3">
+                                <label for="viCwMax" class="form-label">CWmax</label>
+                                <input type="number" class="form-control" id="viCwMax" value="15" min="1" max="1023">
+                            </div>
+                            <div class="mb-3">
+                                <label for="viTxop" class="form-label">TXOP Limit (μs)</label>
+                                <input type="number" class="form-control" id="viTxop" value="3008" min="0" max="65535">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>BE (Best Effort) Parameters</h6>
+                            <div class="mb-3">
+                                <label for="beAifs" class="form-label">AIFS</label>
+                                <input type="number" class="form-control" id="beAifs" value="3" min="1" max="15">
+                            </div>
+                            <div class="mb-3">
+                                <label for="beCwMin" class="form-label">CWmin</label>
+                                <input type="number" class="form-control" id="beCwMin" value="15" min="1" max="15">
+                            </div>
+                            <div class="mb-3">
+                                <label for="beCwMax" class="form-label">CWmax</label>
+                                <input type="number" class="form-control" id="beCwMax" value="63" min="1" max="1023">
+                            </div>
+                            <div class="mb-3">
+                                <label for="beTxop" class="form-label">TXOP Limit (μs)</label>
+                                <input type="number" class="form-control" id="beTxop" value="0" min="0" max="65535">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>BK (Background) Parameters</h6>
+                            <div class="mb-3">
+                                <label for="bkAifs" class="form-label">AIFS</label>
+                                <input type="number" class="form-control" id="bkAifs" value="7" min="1" max="15">
+                            </div>
+                            <div class="mb-3">
+                                <label for="bkCwMin" class="form-label">CWmin</label>
+                                <input type="number" class="form-control" id="bkCwMin" value="15" min="1" max="15">
+                            </div>
+                            <div class="mb-3">
+                                <label for="bkCwMax" class="form-label">CWmax</label>
+                                <input type="number" class="form-control" id="bkCwMax" value="1023" min="1" max="1023">
+                            </div>
+                            <div class="mb-3">
+                                <label for="bkTxop" class="form-label">TXOP Limit (μs)</label>
+                                <input type="number" class="form-control" id="bkTxop" value="0" min="0" max="65535">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveAdvancedBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // DOM Elements
+        const voPercentage = document.getElementById('voPercentage');
+        const viPercentage = document.getElementById('viPercentage');
+        const bePercentage = document.getElementById('bePercentage');
+        const bkPercentage = document.getElementById('bkPercentage');
+        const voPercentageValue = document.getElementById('voPercentageValue');
+        const viPercentageValue = document.getElementById('viPercentageValue');
+        const bePercentageValue = document.getElementById('bePercentageValue');
+        const bkPercentageValue = document.getElementById('bkPercentageValue');
+        const progressBars = document.querySelectorAll('.progress-bar');
+        
+        // Traffic chart
+        let trafficChart;
+        const ctx = document.getElementById('trafficCanvas').getContext('2d');
+        
+        // Test execution elements
+        const startTestBtn = document.getElementById('startTestBtn');
+        const pauseTestBtn = document.getElementById('pauseTestBtn');
+        const stopTestBtn = document.getElementById('stopTestBtn');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        const captureStatus = document.getElementById('captureStatus');
+        const captureProgress = document.getElementById('captureProgress');
+        
+        // Metric displays
+        const voLatency = document.getElementById('voLatency');
+        const viThroughput = document.getElementById('viThroughput');
+        const beJitter = document.getElementById('beJitter');
+        const bkLoss = document.getElementById('bkLoss');
+        
+        // Advanced parameters modal
+        const advancedBtn = document.getElementById('advancedBtn');
+        const advancedModal = new bootstrap.Modal(document.getElementById('advancedModal'));
+        const saveAdvancedBtn = document.getElementById('saveAdvancedBtn');
+
+        // WMM Tagging table
+        const taggingTableBody = document.querySelector('#taggingTable tbody');
+        
+        // Initialize the traffic chart
+        function initTrafficChart() {
+            trafficChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 60}, (_, i) => i + 1),
+                    datasets: [
+                        {
+                            label: 'VO Traffic',
+                            data: Array(60).fill(0),
+                            borderColor: 'rgba(78, 115, 223, 1)',
+                            backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                            borderWidth: 2,
+                            tension: 0.1,
+                            fill: true
+                        },
+                        {
+                            label: 'VI Traffic',
+                            data: Array(60).fill(0),
+                            borderColor: 'rgba(28, 200, 138, 1)',
+                            backgroundColor: 'rgba(28, 200, 138, 0.05)',
+                            borderWidth: 2,
+                            tension: 0.1,
+                            fill: true
+                        },
+                        {
+                            label: 'BE Traffic',
+                            data: Array(60).fill(0),
+                            borderColor: 'rgba(246, 194, 62, 1)',
+                            backgroundColor: 'rgba(246, 194, 62, 0.05)',
+                            borderWidth: 2,
+                            tension: 0.1,
+                            fill: true
+                        },
+                        {
+                            label: 'BK Traffic',
+                            data: Array(60).fill(0),
+                            borderColor: 'rgba(231, 74, 59, 1)',
+                            backgroundColor: 'rgba(231, 74, 59, 0.05)',
+                            borderWidth: 2,
+                            tension: 0.1,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Throughput (Mbps)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time (seconds)'
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 0
+                    },
+                    elements: {
+                        point: {
+                            radius: 0
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update progress bars based on traffic percentages
+        function updateProgressBars() {
+            const vo = parseInt(voPercentage.value);
+            const vi = parseInt(viPercentage.value);
+            const be = parseInt(bePercentage.value);
+            const bk = parseInt(bkPercentage.value);
+            
+            progressBars[0].style.width = `${vo}%`;
+            progressBars[0].setAttribute('aria-valuenow', vo);
+            progressBars[1].style.width = `${vi}%`;
+            progressBars[1].setAttribute('aria-valuenow', vi);
+            progressBars[2].style.width = `${be}%`;
+            progressBars[2].setAttribute('aria-valuenow', be);
+            progressBars[3].style.width = `${bk}%`;
+            progressBars[3].setAttribute('aria-valuenow', bk);
+        }
+        
+        // Update percentage display values
+        function updatePercentageValues() {
+            voPercentageValue.textContent = `${voPercentage.value}%`;
+            viPercentageValue.textContent = `${viPercentage.value}%`;
+            bePercentageValue.textContent = `${bePercentage.value}%`;
+            bkPercentageValue.textContent = `${bkPercentage.value}%`;
+        }
+
+        // Populate WMM Tagging table with static data
+        function populateTaggingTable() {
+            const taggingData = [
+                { type: 'VO', tid: '6', up: '6', status: 'Confirmed', class: 'vo-row' },
+                { type: 'VI', tid: '4', up: '4', status: 'Confirmed', class: 'vi-row' },
+                { type: 'BE', tid: '0', up: '0', status: 'Confirmed', class: 'be-row' },
+                { type: 'BK', tid: '1', up: '1', status: 'Confirmed', class: 'bk-row' }
+            ];
+
+            // Clear existing rows
+            taggingTableBody.innerHTML = '';
+
+            // Add new rows
+            taggingData.forEach(data => {
+                const row = document.createElement('tr');
+                row.className = data.class;
+                row.innerHTML = `
+                    <td>${data.type}</td>
+                    <td>${data.tid}</td>
+                    <td>${data.up}</td>
+                    <td class="confirmed">${data.status}</td>
+                `;
+                taggingTableBody.appendChild(row);
+            });
+        }
+        
+        // Simulate test execution
+        function simulateTest() {
+            let time = 0;
+            let isPaused = false;
+            let testInterval;
+            
+            // Reset chart
+            trafficChart.data.datasets.forEach(dataset => {
+                dataset.data = Array(60).fill(0);
+            });
+            trafficChart.update();
+            
+            // Clear tagging table
+            taggingTableBody.innerHTML = '';
+            
+            // Update status
+            statusIndicator.className = 'status-indicator status-capturing';
+            statusText.textContent = 'Running';
+            captureStatus.textContent = 'Capturing packets...';
+            
+            // Enable/disable buttons
+            startTestBtn.disabled = true;
+            pauseTestBtn.disabled = false;
+            stopTestBtn.disabled = false;
+            
+            // Start test
+            testInterval = setInterval(() => {
+                if (!isPaused) {
+                    time++;
+                    
+                    // Update capture progress
+                    const progress = Math.min(100, (time / 60) * 100);
+                    captureProgress.style.width = `${progress}%`;
+                    captureProgress.setAttribute('aria-valuenow', progress);
+                    
+                    if (time >= 60) {
+                        // Test complete
+                        clearInterval(testInterval);
+                        statusIndicator.className = 'status-indicator status-idle';
+                        statusText.textContent = 'Completed';
+                        captureStatus.textContent = 'Capture complete';
+                        startTestBtn.disabled = false;
+                        pauseTestBtn.disabled = true;
+                        stopTestBtn.disabled = true;
+                        
+                        // Populate WMM Tagging table
+                        populateTaggingTable();
+                        return;
+                    }
+                    
+                    // Generate random traffic data based on configured percentages
+                    const voTarget = parseFloat(document.getElementById('voTargetRate').value);
+                    const viTarget = parseFloat(document.getElementById('viTargetRate').value);
+                    const beTarget = parseFloat(document.getElementById('beTargetRate').value);
+                    const bkTarget = parseFloat(document.getElementById('bkTargetRate').value);
+                    
+                    // Add some randomness to simulate real traffic
+                    const voValue = voTarget * (0.9 + Math.random() * 0.2);
+                    const viValue = viTarget * (0.8 + Math.random() * 0.4);
+                    const beValue = beTarget * (0.7 + Math.random() * 0.6);
+                    const bkValue = bkTarget * (0.6 + Math.random() * 0.8);
+                    
+                    // Update chart data
+                    trafficChart.data.datasets[0].data.shift();
+                    trafficChart.data.datasets[0].data.push(voValue);
+                    trafficChart.data.datasets[1].data.shift();
+                    trafficChart.data.datasets[1].data.push(viValue);
+                    trafficChart.data.datasets[2].data.shift();
+                    trafficChart.data.datasets[2].data.push(beValue);
+                    trafficChart.data.datasets[3].data.shift();
+                    trafficChart.data.datasets[3].data.push(bkValue);
+                    trafficChart.update();
+                    
+                    // Update metrics
+                    voLatency.textContent = (20 + Math.random() * 30).toFixed(1);
+                    viThroughput.textContent = viValue.toFixed(1);
+                    beJitter.textContent = (5 + Math.random() * 15).toFixed(1);
+                    bkLoss.textContent = (Math.random() * 5).toFixed(1);
+                }
+            }, 1000);
+            
+            // Pause button handler
+            pauseTestBtn.onclick = function() {
+                isPaused = !isPaused;
+                if (isPaused) {
+                    pauseTestBtn.innerHTML = '<i class="fas fa-play me-1"></i> Resume';
+                    statusIndicator.className = 'status-indicator status-idle';
+                    statusText.textContent = 'Paused';
+                    captureStatus.textContent = 'Capture paused';
+                } else {
+                    pauseTestBtn.innerHTML = '<i class="fas fa-pause me-1"></i> Pause';
+                    statusIndicator.className = 'status-indicator status-capturing';
+                    statusText.textContent = 'Running';
+                    captureStatus.textContent = 'Capturing packets...';
+                }
+            };
+            
+            // Stop button handler
+            stopTestBtn.onclick = function() {
+                clearInterval(testInterval);
+                statusIndicator.className = 'status-indicator status-idle';
+                statusText.textContent = 'Stopped';
+                captureStatus.textContent = 'Capture stopped';
+                captureProgress.style.width = '0%';
+                captureProgress.setAttribute('aria-valuenow', 0);
+                startTestBtn.disabled = false;
+                pauseTestBtn.disabled = true;
+                stopTestBtn.disabled = true;
+                pauseTestBtn.innerHTML = '<i class="fas fa-pause me-1"></i> Pause';
+                // Clear tagging table
+                taggingTableBody.innerHTML = '';
+            };
+        }
+        
+        // Event Listeners
+        voPercentage.addEventListener('input', function() {
+            voPercentageValue.textContent = `${this.value}%`;
+            updateProgressBars();
+        });
+        
+        viPercentage.addEventListener('input', function() {
+            viPercentageValue.textContent = `${this.value}%`;
+            updateProgressBars();
+        });
+        
+        bePercentage.addEventListener('input', function() {
+            bePercentageValue.textContent = `${this.value}%`;
+            updateProgressBars();
+        });
+        
+        bkPercentage.addEventListener('input', function() {
+            bkPercentageValue.textContent = `${this.value}%`;
+            updateProgressBars();
+        });
+        
+        startTestBtn.addEventListener('click', simulateTest);
+        
+        advancedBtn.addEventListener('click', function() {
+            advancedModal.show();
+        });
+        
+        saveAdvancedBtn.addEventListener('click', function() {
+            advancedModal.hide();
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initTrafficChart();
+            updatePercentageValues();
+            updateProgressBars();
+        });
+    </script>
+</body>
+</html>

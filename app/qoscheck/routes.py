@@ -8,28 +8,29 @@ import re
 import time
 import psutil
 import paramiko
-
-from . import qos_bp
+from . import qos_bp 
 
 def parse_iperf_output(output):
-    """Parse iperf output to extract metrics"""
+    """Parse iPerf output to extract metrics, per-second data, and summary."""
     metrics = {
         'throughput': 0,
         'jitter': 0,
         'packet_loss': 0,
         'raw_output': output
     }
-    
+    per_second = []
+    summary = {}
+
     # Throughput (Mbps)
     throughput_match = re.search(r'(\d+\.\d+)\s+Mbits/sec', output, re.MULTILINE)
     if throughput_match:
         metrics['throughput'] = float(throughput_match.group(1))
-    
+
     # Jitter (ms) - only for UDP
     jitter_match = re.search(r'(\d+\.\d+)\s+ms', output, re.MULTILINE)
     if jitter_match:
         metrics['jitter'] = float(jitter_match.group(1))
-    
+
     # Packet Loss (%) - improved for UDP
     loss_match = re.search(r'(\d+\.\d+)%', output, re.MULTILINE)
     if not loss_match:
@@ -38,37 +39,67 @@ def parse_iperf_output(output):
             metrics['packet_loss'] = float(loss_match.group(2))
     elif loss_match:
         metrics['packet_loss'] = float(loss_match.group(1))
-    
-    return metrics
 
-def run_iperf_command(cmd, result_queue):
+    # Per-second data (e.g., [  4]   0.00-1.00   sec  1.25 MBytes  10.5 Mbits/sec)
+    per_second_matches = re.findall(
+        r'\[\s*\d+\]\s+(\d+\.\d+)-(\d+\.\d+)\s+sec\s+([\d\.]+\s+\w+)\s+(\d+\.\d+)\s+Mbits/sec',
+        output, re.MULTILINE
+    )
+    for match in per_second_matches:
+        per_second.append({
+            'start': float(match[0]),
+            'end': float(match[1]),
+            'transfer': match[2],
+            'bandwidth': float(match[3])
+        })
+
+    # Summary (e.g., [  4]   0.00-10.00  sec  12.5 MBytes  10.5 Mbits/sec)
+    summary_match = re.search(
+        r'\[\s*\d+\]\s+(\d+\.\d+)-(\d+\.\d+)\s+sec\s+([\d\.]+\s+\w+)\s+(\d+\.\d+)\s+Mbits/sec\s*(?:sender|receiver)?$',
+        output, re.MULTILINE
+    )
+    if summary_match:
+        summary = {
+            'duration': float(summary_match.group(2)) - float(summary_match.group(1)),
+            'transfer': summary_match.group(3),
+            'bandwidth': float(summary_match.group(4))
+        }
+
+    return metrics, per_second, summary
+
+def run_iperf_command(cmd, result_queue, delay=0):
+    """Run iPerf command after specified delay."""
     try:
+        if delay > 0:
+            print(f"Delaying iPerf command by {delay} seconds: {' '.join(cmd)}")
+            time.sleep(delay)
         print(f"Executing iPerf command: {' '.join(cmd)}")
         result = subprocess.run(
             cmd,
             capture_output=True,
             text=True,
             check=True,
-            timeout=60  # Timeout after 60 seconds
+            timeout=60
         )
-        parsed = parse_iperf_output(result.stdout)
-        print(f"iPerf command succeeded: Throughput={parsed['throughput']} Mbps, Jitter={parsed['jitter']} ms, Packet Loss={parsed['packet_loss']}%")
-        result_queue.put(parsed)
+        metrics, per_second, summary = parse_iperf_output(result.stdout)
+        print(f"iPerf command succeeded: Throughput={metrics['throughput']} Mbps, Jitter={metrics['jitter']} ms, Packet Loss={metrics['packet_loss']}%")
+        result_queue.put((metrics, per_second, summary))
     except subprocess.CalledProcessError as e:
         print(f"iPerf command failed: {e.stderr}")
-        parsed = parse_iperf_output(e.stderr)
-        parsed['error'] = True
-        result_queue.put(parsed)
+        metrics, per_second, summary = parse_iperf_output(e.stderr)
+        metrics['error'] = True
+        result_queue.put((metrics, per_second, summary))
     except subprocess.TimeoutExpired as e:
         print(f"iPerf command timed out: {e.stderr}")
-        parsed = {'throughput': 0, 'jitter': 0, 'packet_loss': 0, 'raw_output': str(e.stderr), 'error': True}
-        result_queue.put(parsed)
+        metrics = {'throughput': 0, 'jitter': 0, 'packet_loss': 0, 'raw_output': str(e.stderr), 'error': True}
+        result_queue.put((metrics, [], None))
     except Exception as e:
         print(f"Unexpected error in iPerf command: {e}")
-        parsed = {'throughput': 0, 'jitter': 0, 'packet_loss': 0, 'raw_output': str(e), 'error': True}
-        result_queue.put(parsed)
+        metrics = {'throughput': 0, 'jitter': 0, 'packet_loss': 0, 'raw_output': str(e), 'error': True}
+        result_queue.put((metrics, [], None))
 
 def run_iperf_server(port, server_process_list):
+    """Start iPerf server on specified port."""
     try:
         iperf_path = r"C:\Users\marou\Downloads\iperf3\iperf-3.1.3-win64\iperf3.exe"
         if not os.path.exists(iperf_path):
@@ -96,6 +127,7 @@ def run_iperf_server(port, server_process_list):
         return None
 
 def terminate_server_processes(server_process_list):
+    """Terminate all iPerf server processes."""
     for process in server_process_list:
         try:
             parent = psutil.Process(process.pid)
@@ -108,6 +140,98 @@ def terminate_server_processes(server_process_list):
         except Exception as e:
             print(f"Error terminating server process {process.pid}: {e}")
     server_process_list.clear()
+
+def analyze_prioritization(test_config, iperf_results):
+    """Analyze iPerf results to verify traffic prioritization based on DSCP values."""
+    prioritization_results = []
+    traffic_classes = [cls for cls in ['VO', 'VI', 'BK', 'BE'] if cls in test_config]
+    
+    # Sort traffic classes by DSCP value (descending) to determine priority order
+    traffic_priority = sorted(
+        [(cls, int(test_config[cls]['dscp'])) for cls in traffic_classes],
+        key=lambda x: x[1],
+        reverse=True
+    )
+    
+    # Parse iPerf results for each traffic class
+    parsed_results = {}
+    for cls in traffic_classes:
+        metrics, per_second, summary = parse_iperf_output(iperf_results.get(cls, ""))
+        parsed_results[cls] = {
+            "per_second": per_second,
+            "summary": summary,
+            "delay": float(test_config[cls].get('delay', 0)),
+            "duration": float(test_config['duration']),
+            "data_size": float(test_config[cls].get('dataSize', 0))
+        }
+    
+    # Analyze prioritization for each lower-priority traffic
+    for i in range(1, len(traffic_priority)):
+        lower_cls, lower_dscp = traffic_priority[i]
+        lower_data = parsed_results.get(lower_cls)
+        if not lower_data:
+            continue
+        
+        # Get baseline bandwidth (average of first few seconds before any higher-priority traffic)
+        baseline_seconds = min(5, len(lower_data['per_second']))  # Use first 5 seconds or less
+        baseline_bandwidth = sum(
+            entry['bandwidth'] for entry in lower_data['per_second'][:baseline_seconds]
+        ) / baseline_seconds if baseline_seconds > 0 else lower_data['summary'].get('bandwidth', 0)
+        
+        for j in range(i):
+            higher_cls, higher_dscp = traffic_priority[j]
+            higher_data = parsed_results.get(higher_cls)
+            if not higher_data:
+                continue
+            
+            # Determine overlap period
+            higher_start = higher_data['delay']
+            higher_end = higher_start + higher_data['duration']
+            lower_start = lower_data['delay']
+            lower_end = lower_start + lower_data['duration']
+            
+            overlap_start = max(lower_start, higher_start)
+            overlap_end = min(lower_end, higher_end)
+            
+            if overlap_start >= overlap_end:
+                continue  # No overlap
+            
+            # Convert to iPerf line indices (1-second intervals)
+            overlap_start_idx = int(overlap_start - lower_start)
+            overlap_end_idx = int(overlap_end - lower_start)
+            
+            # Calculate average bandwidth during overlap
+            overlap_bandwidth = 0
+            overlap_count = 0
+            for entry in lower_data['per_second']:
+                if overlap_start_idx <= entry['start'] < overlap_end_idx:
+                    overlap_bandwidth += entry['bandwidth']
+                    overlap_count += 1
+            
+            avg_overlap_bandwidth = overlap_bandwidth / overlap_count if overlap_count > 0 else baseline_bandwidth
+            
+            # Expected reduction (approximate bandwidth of higher-priority traffic)
+            higher_bandwidth = higher_data['data_size'] if higher_data['data_size'] > 0 else higher_data['summary'].get('bandwidth', 0)
+            reduction = baseline_bandwidth - avg_overlap_bandwidth
+            
+            # Threshold: Reduction should be at least 10% of baseline or close to higher traffic's bandwidth
+            min_reduction = max(0.1 * baseline_bandwidth, higher_bandwidth * 0.5)
+            
+            if reduction >= min_reduction:
+                status = "success"
+                message = f"{higher_cls} traffic (DSCP {higher_dscp}) is prioritized over {lower_cls} traffic (DSCP {lower_dscp})"
+            else:
+                status = "danger"
+                message = f"{higher_cls} traffic (DSCP {higher_dscp}) is not prioritized over {lower_cls} traffic (DSCP {lower_dscp})"
+            
+            prioritization_results.append({
+                "higher": higher_cls,
+                "lower": lower_cls,
+                "status": status,
+                "message": message
+            })
+    
+    return prioritization_results
 
 @qos_bp.route('/queuing')
 def queuing():
@@ -134,31 +258,45 @@ def queuingresult():
         }
     }
     
+    iperf_details = []
     for result in results:
+        metrics, per_second, summary = parse_iperf_output(result['metrics'].get('raw_output', ''))
         chart_data['types'].append(result['type'])
-        chart_data['throughputs'].append(result['metrics']['throughput'])
-        chart_data['jitters'].append(result['metrics']['jitter'])
-        chart_data['packet_losses'].append(result['metrics']['packet_loss'])
+        chart_data['throughputs'].append(metrics['throughput'])
+        chart_data['jitters'].append(metrics['jitter'])
+        chart_data['packet_losses'].append(metrics['packet_loss'])
+        iperf_details.append({
+            'type': result['type'],
+            'port': result['port'],
+            'dscp': result['dscp'],
+            'per_second': per_second,
+            'summary': summary
+        })
+    
+    test_config = session.get('test_config', {})
+    iperf_results = {result['type']: result['metrics']['raw_output'] for result in results}
+    prioritization_results = analyze_prioritization(test_config, iperf_results)
     
     return render_template('queuingresult.html', 
                          results=results, 
-                         chart_data=chart_data)
+                         chart_data=chart_data,
+                         prioritization_results=prioritization_results,
+                         iperf_details=iperf_details)
 
 @qos_bp.route('/run_queuing_test', methods=['POST'])
 def run_queuing_test():
     data = request.get_json()
     print(f"Received data: {data}")
 
-    # Extract input data
     server_ip = data.get('serverIp')
     client_ip = data.get('clientIp')
     duration = data.get('duration')
+    direction = data.get('direction', 'uplink')
     server_control = data.get('serverControl', 'manual')
     remote_server_ip = data.get('remoteServerIp')
     ssh_username = data.get('sshUsername')
     ssh_password = data.get('sshPassword')
 
-    # Validate basic inputs
     if not server_ip or not client_ip or not duration:
         return jsonify({"status": "error", "message": "Server IP, Client IP, and duration are required"}), 400
 
@@ -169,42 +307,54 @@ def run_queuing_test():
     except ValueError:
         return jsonify({"status": "error", "message": "Invalid duration format"}), 400
 
-    # Get flow configurations
+    if direction not in ['uplink', 'downlink']:
+        return jsonify({"status": "error", "message": "Invalid direction: must be 'uplink' or 'downlink'"}), 400
+
     flows = []
     for flow_type in ['VO', 'VI', 'BK', 'BE']:
-        flow_data = data.get(flow_type, {})
+        flow_data = data.get(flow_type)
         if flow_data:
+            try:
+                delay = float(flow_data.get('delay', '0'))
+                if delay < 0:
+                    return jsonify({"status": "error", "message": f"Delay for {flow_type} must be non-negative"}), 400
+                data_size = float(flow_data.get('dataSize', '0'))
+                if data_size < 0:
+                    return jsonify({"status": "error", "message": f"Data rate for {flow_type} must be non-negative"}), 400
+            except ValueError:
+                return jsonify({"status": "error", "message": f"Invalid delay or data rate format for {flow_type}"}), 400
             flows.append({
                 'type': flow_type,
                 'port': flow_data.get('port'),
                 'dscp': flow_data.get('dscp', '0'),
-                'protocol': flow_data.get('protocol', 'tcp').lower()
+                'protocol': flow_data.get('protocol', 'tcp').lower(),
+                'delay': delay,
+                'dataSize': data_size
             })
 
-    if len(flows) != 4:
-        return jsonify({"status": "error", "message": "Configuration for all 4 flows (VO, VI, BK, BE) is required"}), 400
+    if len(flows) == 0:
+        return jsonify({"status": "error", "message": "At least one traffic class must be selected"}), 400
 
-    # Validate ports
     for flow in flows:
         port = flow['port']
         if not port or not str(port).isdigit() or int(port) < 1 or int(port) > 65535:
             return jsonify({"status": "error", "message": f"Invalid port for {flow['type']} flow: must be a number between 1 and 65535"}), 400
+        dscp = flow['dscp']
+        if not str(dscp).isdigit() or int(dscp) < 0 or int(dscp) > 200:
+            return jsonify({"status": "error", "message": f"Invalid DSCP for {flow['type']} flow: must be a number between 0 and 200"}), 400
 
-    # Ensure all ports are different
     ports = [flow['port'] for flow in flows]
-    if len(set(ports)) != 4:
+    if len(set(ports)) != len(ports):
         return jsonify({"status": "error", "message": "All flow ports must be different"}), 400
 
     iperf_path = r"C:\Users\marou\Downloads\iperf3\iperf-3.1.3-win64\iperf3.exe"
     if not os.path.exists(iperf_path):
         return jsonify({"status": "error", "message": f"iperf3 executable not found at {iperf_path}"}), 500
 
-    # Check iperf3 executable permissions
     if not os.access(iperf_path, os.X_OK):
         print(f"iPerf3 executable at {iperf_path} is not executable")
         return jsonify({"status": "error", "message": f"iPerf3 executable at {iperf_path} is not executable"}), 500
 
-    # Check if IP is IPv6
     def is_ipv6(ip):
         try:
             return isinstance(ipaddress.ip_address(ip), ipaddress.IPv6Address)
@@ -216,20 +366,25 @@ def run_queuing_test():
         if is_ipv6(server_ip) or is_ipv6(client_ip):
             cmd.append("-6")
         cmd.extend(["-c", server_ip, "-p", str(flow['port']), "-S", str(flow['dscp'])])
+        if direction == "downlink":
+            cmd.append("-R")
         if flow['protocol'] == "udp":
             cmd.append("-u")
-            cmd.extend(["-b", "10M"])
+            if flow['dataSize'] > 0:
+                cmd.extend(["-b", f"{flow['dataSize']}M"])
+            else:
+                cmd.extend(["-b", "10M" if flow['type'] == 'VI' else "3M"])
+        elif flow['dataSize'] > 0:
+            cmd.extend(["-b", f"{flow['dataSize']}M"])
         cmd.extend(["-t", str(duration), "-i", "1"])
         return cmd
 
     server_process_list = []
     ssh_client = None
     if server_control == 'ssh':
-        # Validate SSH inputs
         if not remote_server_ip or not ssh_username or not ssh_password:
             return jsonify({"status": "error", "message": "Remote Server IP, SSH Username, and SSH Password are required for SSH control"}), 400
 
-        # Verify SSH connectivity
         try:
             ssh_client = paramiko.SSHClient()
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -249,11 +404,9 @@ def run_queuing_test():
                 ssh_client.close()
             return jsonify({"status": "error", "message": f"Failed to verify SSH connectivity: {str(e)}"}), 500
 
-        # Threaded server startup via SSH
-        REMOTE_IPERF_PATH = "/usr/bin/iperf3"  # Adjust if needed
+        REMOTE_IPERF_PATH = "/usr/bin/iperf3"
         def start_ssh_server_thread(port, flow_type, server_process_list, ssh_client):
             try:
-                # Check if port is free
                 check_cmd = f"ss -tuln | grep :{port} || echo 'Port free'"
                 stdin, stdout, stderr = ssh_client.exec_command(check_cmd)
                 check_output = stdout.read().decode().strip()
@@ -262,16 +415,14 @@ def run_queuing_test():
                     print(f"Port {port} is already in use on {remote_server_ip} for {flow_type}: {check_output}")
                     return None
 
-                # Start iPerf3 server
                 cmd = f"{REMOTE_IPERF_PATH} -s -p {port} --daemon"
                 print(f"Starting iPerf server on remote host {remote_server_ip} for {flow_type} on port {port}: {cmd}")
                 stdin, stdout, stderr = ssh_client.exec_command(cmd)
                 stderr_output = stderr.read().decode().strip()
-                time.sleep(3)  # Increased to ensure server starts
+                time.sleep(3)
                 if stderr_output:
                     print(f"Error starting iPerf server on port {port} for {flow_type}: {stderr_output}")
                     return None
-                # Get PID
                 pid_cmd = f"pgrep -f 'iperf3.*-p {port}'"
                 stdin, stdout, stderr = ssh_client.exec_command(pid_cmd)
                 pid = stdout.read().decode().strip()
@@ -285,7 +436,6 @@ def run_queuing_test():
                 print(f"Error starting iPerf server on port {port} for {flow_type}: {e}")
                 return None
 
-        # Start servers in parallel
         server_threads = []
         for flow in flows:
             thread = threading.Thread(
@@ -295,12 +445,10 @@ def run_queuing_test():
             server_threads.append(thread)
             thread.start()
 
-        # Wait for all server threads to complete
         for thread in server_threads:
             thread.join()
 
-        # Check if all servers started
-        if len(server_process_list) != 4:
+        if len(server_process_list) != len(flows):
             print(f"Failed to start all iPerf servers: only {len(server_process_list)} started")
             if ssh_client:
                 for _, pid in server_process_list:
@@ -310,41 +458,40 @@ def run_queuing_test():
                     except Exception as e:
                         print(f"Error killing PID {pid}: {e}")
                 ssh_client.close()
-            return jsonify({"status": "error", "message": f"Failed to start all iPerf servers: only {len(server_process_list)} of 4 started"}), 500
+            return jsonify({"status": "error", "message": f"Failed to start all iPerf servers: only {len(server_process_list)} of {len(flows)} started"}), 500
 
     else:
-        # Manual mode
         print(f"Manual server control: assuming iPerf3 servers are running on {server_ip} at ports {', '.join(str(flow['port']) for flow in flows)}")
 
-    # Launch clients in parallel
-    result_queues = [queue.Queue() for _ in range(4)]
+    result_queues = [queue.Queue() for _ in range(len(flows))]
     client_threads = []
+    delays = [flow['delay'] for flow in flows]
+    min_delay = min([d for d in delays if d > 0], default=0)
 
     for i, flow in enumerate(flows):
         cmd = build_iperf_command(flow)
-        print(f"Preparing client command for {flow['type']} flow: {' '.join(cmd)}")
+        print(f"Preparing client command for {flow['type']} flow with delay {flow['delay']}s: {' '.join(cmd)}")
         thread = threading.Thread(
             target=run_iperf_command,
-            args=(cmd, result_queues[i])
+            args=(cmd, result_queues[i], flow['delay'])
         )
         client_threads.append(thread)
         thread.start()
 
-    # Wait for all client threads to complete with timeout
-    timeout = duration + 10  # Allow extra time
+    timeout = duration + max(delays, default=0) + 10
     start_time = time.time()
     for thread in client_threads:
         remaining = timeout - (time.time() - start_time)
         if remaining <= 0:
+            print("Client thread timeout reached")
             break
         thread.join(remaining)
 
-    # Check if all clients returned results
     results = []
     for i, flow in enumerate(flows):
         try:
             if not result_queues[i].empty():
-                metrics = result_queues[i].get_nowait()
+                metrics, per_second, summary = result_queues[i].get_nowait()
                 print(f"Collected results for {flow['type']}: Throughput={metrics['throughput']} Mbps, Jitter={metrics['jitter']} ms, Packet Loss={metrics['packet_loss']}%")
                 results.append({
                     "type": flow['type'],
@@ -390,7 +537,6 @@ def run_queuing_test():
                 }
             })
 
-    # Cleanup SSH servers
     if server_control == 'ssh' and ssh_client:
         for _, pid in server_process_list:
             try:
@@ -400,10 +546,14 @@ def run_queuing_test():
                 print(f"Error killing PID {pid}: {e}")
         ssh_client.close()
 
-    # Store results and redirect
     session["iperf_results"] = results
+    session["test_config"] = data
     print("Stored results in session, redirecting to queuingresult")
     return jsonify({
         "status": "success",
         "redirect_url": url_for('qos.queuingresult')
     })
+
+@qos_bp.route('/close_ssh_session', methods=['POST'])
+def close_ssh_session():
+    return jsonify({"status": "success", "message": "SSH session closed (placeholder)"})

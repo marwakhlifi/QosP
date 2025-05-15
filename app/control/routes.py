@@ -16,7 +16,7 @@ from collections import deque
 from . import control_bp
 
 # Global variables for test state and packet capture
-dscp_packets = deque(maxlen=500)  # Store the last 50 packets with DSCP info
+dscp_packets = deque(maxlen=500)  # Store the last 500 packets with DSCP info
 packet_sniffer_running = False
 sniffer_thread = None
 test_thread_lock = threading.Lock()
@@ -26,7 +26,8 @@ test_progress = 0
 test_metrics = {
     'dns': {'latencies': [], 'sent': 0, 'received': 0, 'jitter': 0},
     'icmp': {'latencies': [], 'sent': 0, 'received': 0, 'jitter': 0},
-    'dhcp': {'success': False, 'duration': 0}
+    'dhcp': {'success': False, 'duration': 0},
+    'ntp': {'latencies': [], 'sent': 0, 'received': 0, 'jitter': 0}
 }
 sent_timestamps = {}
 test_process = None
@@ -84,6 +85,20 @@ def packet_handler(packet):
         protocol = "DHCP"
         with test_thread_lock:
             test_metrics['dhcp']['success'] = True
+    elif UDP in packet and (packet[UDP].sport == 123 or packet[UDP].dport == 123):
+        protocol = "NTP"
+        with test_thread_lock:
+            packet_id = packet[UDP].sport if packet[UDP].dport == 123 else packet[UDP].dport
+            if packet_id in sent_timestamps.get('ntp', {}):
+                sent_time = sent_timestamps['ntp'].pop(packet_id, None)
+                if sent_time:
+                    latency = (current_time - sent_time) * 1000  # ms
+                    test_metrics['ntp']['latencies'].append(latency)
+                    test_metrics['ntp']['received'] += 1
+                    if len(test_metrics['ntp']['latencies']) > 1:
+                        diffs = [abs(test_metrics['ntp']['latencies'][i] - test_metrics['ntp']['latencies'][i-1])
+                                 for i in range(1, len(test_metrics['ntp']['latencies']))]
+                        test_metrics['ntp']['jitter'] = statistics.mean(diffs) if diffs else 0
 
     if protocol:
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -110,6 +125,8 @@ def start_packet_sniffer(protocols, interface):
         filters.append("port 67 or port 68")
     if 'icmp' in protocols:
         filters.append("icmp")
+    if 'ntp' in protocols:
+        filters.append("port 123")
     filter_str = " or ".join(filters) if filters else "ip"
 
     sniff_interface = None
@@ -278,7 +295,8 @@ def start_test():
         test_metrics = {
             'dns': {'latencies': [], 'sent': 0, 'received': 0, 'jitter': 0},
             'icmp': {'latencies': [], 'sent': 0, 'received': 0, 'jitter': 0},
-            'dhcp': {'success': False, 'duration': 0}
+            'dhcp': {'success': False, 'duration': 0},
+            'ntp': {'latencies': [], 'sent': 0, 'received': 0, 'jitter': 0}
         }
         sent_timestamps = {}
         dscp_packets.clear()
@@ -316,6 +334,13 @@ def start_test():
                 duration
             ))
             protocol_threads.append(icmp_thread)
+        if 'ntp' in protocols:
+            ntp_thread = threading.Thread(target=run_ntp_traffic, args=(
+                protocols['ntp']['server'],
+                float(protocols['ntp']['interval']),
+                duration
+            ))
+            protocol_threads.append(ntp_thread)
 
         for thread in protocol_threads:
             thread.start()
@@ -360,10 +385,13 @@ def start_test():
             test_output.append(f"DHCP: {('Full process' if protocols['dhcp']['renew'] else 'Request only')} on interface {protocols['dhcp']['interface']}")
         if 'icmp' in protocols:
             test_output.append(f"ICMP: Ping to {protocols['icmp']['target']} ({'continuous' if protocols['icmp']['continuous'] else protocols['icmp']['count'] + ' packets'})")
+        if 'ntp' in protocols:
+            test_output.append(f"NTP: Queries sent to {protocols['ntp']['server']} at interval {protocols['ntp']['interval']}s")
         test_output.append(f"Background: {background_type if background_type != 'none' else 'None'} to {iperf_server}:{iperf_port}")
         test_output.append("Control packets prioritized successfully (based on successful execution during background traffic).")
 
     return jsonify({'status': 'success'})
+
 def run_dns_traffic(server, domain, query_type, interval, duration):
     global test_output, test_metrics, sent_timestamps
     try:
@@ -382,6 +410,36 @@ def run_dns_traffic(server, domain, query_type, interval, duration):
     except Exception as e:
         with test_thread_lock:
             test_output.append(f"Error in DNS traffic: {str(e)}")
+
+def run_ntp_traffic(server, interval, duration):
+    global test_output, test_metrics, sent_timestamps, test_running
+    try:
+        start_time = time.time()
+        packet_id = 0
+        client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        client.settimeout(5)
+        ntp_packet = b'\x1b' + 47 * b'\0'  # Basic NTP client request (LI=0, VN=3, Mode=3)
+        while time.time() - start_time < duration and test_running:
+            print(f"Sending NTP query to {server}:123")
+            with test_thread_lock:
+                test_metrics['ntp']['sent'] += 1
+                sent_timestamps.setdefault('ntp', {})[packet_id] = time.time()
+            client.sendto(ntp_packet, (server, 123))
+            try:
+                data, _ = client.recvfrom(1024)
+                with test_thread_lock:
+                    test_output.append(f"NTP response received from {server}")
+            except socket.timeout:
+                with test_thread_lock:
+                    test_output.append(f"NTP timeout for {server}")
+            time.sleep(interval)
+            packet_id += 1
+        client.close()
+    except Exception as e:
+        with test_thread_lock:
+            test_output.append(f"Error in NTP traffic: {str(e)}")
+        if 'client' in locals():
+            client.close()
 
 def run_background_traffic(traffic_type, iperf_server, iperf_port, duration):
     global test_output, test_process
@@ -531,7 +589,6 @@ def run_icmp_traffic(target, size, interval, continuous, count, duration):
         print(error_msg)
         with test_thread_lock:
             test_output.append(error_msg)
-            
 
 def cleanup_test():
     global test_running, test_process, test_progress, packet_sniffer_running, sniffer_thread
@@ -558,12 +615,12 @@ def test_status():
             'progress': test_progress,
             'console_output': test_output
         })
-    
+
 @control_bp.route('/test_metrics')
 def test_metrics():
     with test_thread_lock:
         metrics = {}
-        for proto in ['dns', 'icmp']:
+        for proto in ['dns', 'icmp', 'ntp']:
             avg_latency = statistics.mean(test_metrics[proto]['latencies']) if test_metrics[proto]['latencies'] else 0
             packet_loss = ((test_metrics[proto]['sent'] - test_metrics[proto]['received']) / test_metrics[proto]['sent']) * 100 if test_metrics[proto]['sent'] else 0
             jitter = test_metrics[proto]['jitter']

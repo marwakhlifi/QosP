@@ -191,38 +191,87 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    
+    .prioritization-alert {
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    .iperf-results-table {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    .iperf-results-table h5 {
+      color: #2563eb;
+      margin-bottom: 15px;
+    }
+    
+    .iperf-results-table table {
+      width: 100%;
+      font-size: 0.9rem;
+    }
+    
+    .iperf-results-table th,
+    .iperf-results-table td {
+      padding: 8px;
+      text-align: center;
+    }
+    
+    .iperf-results-table th {
+      background-color: #f8f9fa;
+      color: #1f2937;
+      font-weight: 600;
+    }
+    
+    .iperf-results-table.VO { border-left: 4px solid var(--vo-color); }
+    .iperf-results-table.VI { border-left: 4px solid var(--vi-color); }
+    .iperf-results-table.BK { border-left: 4px solid var(--bk-color); }
+    .iperf-results-table.BE { border-left: 4px solid var(--be-color); }
+    
     body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #333;
-        }
-        .result-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .close-ssh-btn {
-            background-color: #dc3545;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        .close-ssh-btn:hover {
-            background-color: #c82333;
-        }
-        .close-ssh-btn:disabled {
-            background-color: #6c757d;
-            cursor: not-allowed;
-        }
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    
+    h1 {
+      color: #333;
+    }
+    
+    .result-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    .close-ssh-btn {
+      background-color: #dc3545;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    
+    .close-ssh-btn:hover {
+      background-color: #c82333;
+    }
+    
+    .close-ssh-btn:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
@@ -248,6 +297,68 @@
               </div>
             </div>
           </div>
+          
+          <!-- Prioritization Validation Section -->
+          <h4><i class="fas fa-check-circle me-2"></i>Prioritization Validation</h4>
+          {% if prioritization_results %}
+            {% for result in prioritization_results %}
+              <div class="alert {% if result.status == 'success' %}alert-success{% else %}alert-danger{% endif %} prioritization-alert" role="alert">
+                <i class="fas {% if result.status == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
+                {{ result.message }}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="alert alert-warning prioritization-alert" role="alert">
+              <i class="fas fa-info-circle me-2"></i>
+              No prioritization results available.
+            </div>
+          {% endif %}
+          
+          <!-- Detailed iPerf Results Section -->
+          <h4><i class="fas fa-table me-2"></i>Detailed iPerf Results</h4>
+          {% if iperf_details %}
+            {% for detail in iperf_details %}
+              <div class="iperf-results-table {{ detail.type }}">
+                <h5>
+                  <i class="fas 
+                    {% if detail.type == 'VO' %}fa-phone-alt 
+                    {% elif detail.type == 'VI' %}fa-video 
+                    {% elif detail.type == 'BK' %}fa-cloud-download-alt 
+                    {% else %}fa-globe{% endif %} 
+                    traffic-icon {{ detail.type }}"></i>
+                  {{ detail.type }} Traffic (Port {{ detail.port }}, DSCP {{ detail.dscp }})
+                </h5>
+                {% if detail.per_second %}
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Time Interval (sec)</th>
+                        <th>Bandwidth (Mbps)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for entry in detail.per_second %}
+                        <tr>
+                          <td>{{ entry.start|round(2) }}-{{ entry.end|round(2) }}</td>
+                          <td>{{ entry.bandwidth|round(2) }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                {% else %}
+                  <p class="text-muted">No per-second data available.</p>
+                {% endif %}
+                {% if detail.summary %}
+                  <p><strong>Summary:</strong> Duration: {{ detail.summary.duration|round(2) }} sec, Transfer: {{ detail.summary.transfer }}, Bandwidth: {{ detail.summary.bandwidth|round(2) }} Mbits/sec</p>
+                {% endif %}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="alert alert-warning prioritization-alert" role="alert">
+              <i class="fas fa-info-circle me-2"></i>
+              No iPerf results available.
+            </div>
+          {% endif %}
           
           <div class="d-flex justify-content-between mb-4">
             <a href="/queuing" class="btn btn-primary"><i class="fas fa-arrow-left me-2"></i>Run Another Test</a>
@@ -345,54 +456,50 @@
       </div>
     </div>
     <button class="close-ssh-btn" onclick="closeSSHSession()">Close SSH Session</button>
-
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-        async function closeSSHSession() {
-            const button = document.querySelector('.close-ssh-btn');
-            button.disabled = true;
-            button.textContent = 'Closing...';
+    async function closeSSHSession() {
+      const button = document.querySelector('.close-ssh-btn');
+      button.disabled = true;
+      button.textContent = 'Closing...';
 
-            try {
-                const response = await fetch('/close_ssh_session', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                // Log raw response for debugging
-                const rawText = await response.text();
-                console.log('Raw response:', rawText);
+      try {
+        const response = await fetch('/close_ssh_session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        // Log raw response for debugging
+        const rawText = await response.text();
+        console.log('Raw response:', rawText);
 
-                // Attempt to parse as JSON
-                let data;
-                try {
-                    data = JSON.parse(rawText);
-                } catch (e) {
-                    console.error('JSON parse error:', e);
-                    throw new Error('Invalid JSON response from server');
-                }
-
-                if (data.status === 'success') {
-                    alert('SSH session closed successfully.');
-                    button.textContent = 'SSH Session Closed';
-                } else {
-                    alert('Error: ' + data.message);
-                    button.disabled = false;
-                    button.textContent = 'Close SSH Session';
-                }
-            } catch (error) {
-                console.error('Fetch error:', error);
-                alert('Error closing SSH session: ' + error.message);
-                button.disabled = false;
-                button.textContent = 'Close SSH Session';
-            }
+        // Attempt to parse as JSON
+        let data;
+        try {
+          data = JSON.parse(rawText);
+        } catch (e) {
+          console.error('JSON parse error:', e);
+          throw new Error('Invalid JSON response from server');
         }
 
-
-        
+        if (data.status === 'success') {
+          alert('SSH session closed successfully.');
+          button.textContent = 'SSH Session Closed';
+        } else {
+          alert('Error: ' + data.message);
+          button.disabled = false;
+          button.textContent = 'Close SSH Session';
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        alert('Error closing SSH session: ' + error.message);
+        button.disabled = false;
+        button.textContent = 'Close SSH Session';
+      }
+    }
 
     let currentChartType = 'bar';
     let charts = {};
@@ -513,4 +620,4 @@
     initializeCharts();
   </script>
 </body>
-</html>
+</html> 

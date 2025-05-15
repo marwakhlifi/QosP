@@ -4,6 +4,8 @@ import subprocess
 import threading
 import queue
 import os
+import time
+
 import json
 import re
 import ipaddress
@@ -288,6 +290,7 @@ def run_iperf():
 
 
 
+
 @iperf_bp.route('/run_iperf_two_clients', methods=['POST'])
 def run_iperf_two_clients():
     data = request.get_json()
@@ -312,6 +315,7 @@ def run_iperf_two_clients():
     remote_server_ip = data.get('remoteServerIp')
     ssh_username = data.get('sshUsername')
     ssh_password = data.get('sshPassword')
+    delay2 = data.get('delay2', '0')  # Get delay for Client 2
 
     # Validate inputs
     if not server_ip or not client_ip1 or not client_ip2:
@@ -331,6 +335,17 @@ def run_iperf_two_clients():
 
     if port1 == port2:
         error_msg = "Port 1 and Port 2 must be different"
+        print(error_msg)
+        return jsonify({"status": "error", "message": error_msg}), 400
+
+    try:
+        delay2_float = float(delay2)
+        if delay2_float < 0:
+            error_msg = "Delay for Client 2 must be non-negative"
+            print(error_msg)
+            return jsonify({"status": "error", "message": error_msg}), 400
+    except ValueError:
+        error_msg = "Invalid delay for Client 2: must be a number"
         print(error_msg)
         return jsonify({"status": "error", "message": error_msg}), 400
 
@@ -460,9 +475,14 @@ def run_iperf_two_clients():
     
     print("Starting client threads")
     thread1.start()
+
+    if delay2_float > 0:
+        print(f"Waiting {delay2_float} seconds before starting Client 2")
+        time.sleep(delay2_float)
+
     thread2.start()
 
-    timeout = max(float(duration1 or 10), float(duration2 or 10)) + 10
+    timeout = max(float(duration1 or 10), float(duration2 or 10)) + delay2_float + 10
     start_time = time.time()
     for thread in [thread1, thread2]:
         remaining = timeout - (time.time() - start_time)
@@ -492,8 +512,6 @@ def run_iperf_two_clients():
             print(f"Error retrieving result for {client_name} (IP: {client_ip}, Port: {port}): {e}")
             results.append({"client": client_name, "result": f"Error: {str(e)}"})
 
-
-
     if server_control == 'ssh' and ssh_client:
         for _, pid in server_process_list:
             try:
@@ -507,12 +525,12 @@ def run_iperf_two_clients():
     print("Stored results in session, redirecting to index33")
     return jsonify({"status": "success", "redirect_url": url_for('iperf.index33')})
 
-
 @iperf_bp.route('/run_iperf_three_clients', methods=['POST'])
 def run_iperf_three_clients():
     data = request.get_json()
     print(f"Received data: {data}")
 
+    # Extract form data
     server_ip = data.get('serverIp')
     client_ip1 = data.get('clientIp1')
     client_ip2 = data.get('clientIp2')
@@ -535,11 +553,14 @@ def run_iperf_three_clients():
     direction3 = data.get('direction3', 'uplink')
     taille3 = data.get('dataSize3')
     duration3 = data.get('duration3')
+    delay2 = data.get('delay2', '0')
+    delay3 = data.get('delay3', '0')
     server_control = data.get('serverControl', 'manual')
     remote_server_ip = data.get('remoteServerIp')
     ssh_username = data.get('sshUsername')
     ssh_password = data.get('sshPassword')
 
+    # Validate inputs
     if not server_ip or not client_ip1 or not client_ip2 or not client_ip3:
         error_msg = "Invalid input. Server and all Client IPs are required"
         print(error_msg)
@@ -562,6 +583,19 @@ def run_iperf_three_clients():
 
     if len(set([port1, port2, port3])) != 3:
         error_msg = "All ports must be different"
+        print(error_msg)
+        return jsonify({"status": "error", "message": error_msg}), 400
+
+    # Validate delays
+    try:
+        delay2_float = float(delay2)
+        delay3_float = float(delay3)
+        if delay2_float < 0 or delay3_float < 0:
+            error_msg = "Delays for Client 2 and Client 3 must be non-negative"
+            print(error_msg)
+            return jsonify({"status": "error", "message": error_msg}), 400
+    except ValueError:
+        error_msg = "Invalid delay values: must be numbers"
         print(error_msg)
         return jsonify({"status": "error", "message": error_msg}), 400
 
@@ -591,10 +625,10 @@ def run_iperf_three_clients():
             cmd.append("-R")
         if protocol == "udp":
             cmd.append("-u")
-            cmd.extend(["-b", "10M"])  
+            cmd.extend(["-b", "10M"])  # Default bandwidth for UDP
         if taille and taille.strip():
-            cmd.extend(["b", taille])
-        if duration:
+            cmd.extend(["-n", taille])  # Use -n for number of bytes to transmit
+        if duration and duration.strip():
             cmd.extend(["-t", str(duration)])
         cmd.extend(["-i", "1"])
         return cmd
@@ -656,11 +690,11 @@ def run_iperf_three_clients():
         server_thread1 = threading.Thread(target=start_server_thread, args=(port1, server_process_list, ssh_client))
         server_thread2 = threading.Thread(target=start_server_thread, args=(port2, server_process_list, ssh_client))
         server_thread3 = threading.Thread(target=start_server_thread, args=(port3, server_process_list, ssh_client))
-        
+
         server_thread1.start()
         server_thread2.start()
         server_thread3.start()
-        
+
         server_thread1.join()
         server_thread2.join()
         server_thread3.join()
@@ -695,13 +729,21 @@ def run_iperf_three_clients():
     thread1 = threading.Thread(target=run_iperf_command, args=(cmd1, result_queue1))
     thread2 = threading.Thread(target=run_iperf_command, args=(cmd2, result_queue2))
     thread3 = threading.Thread(target=run_iperf_command, args=(cmd3, result_queue3))
-    
+
     print("Starting client threads")
     thread1.start()
+
+    if delay2_float > 0:
+        print(f"Waiting {delay2_float} seconds before starting Client 2")
+        time.sleep(delay2_float)
     thread2.start()
+
+    if delay3_float > 0:
+        print(f"Waiting {delay3_float} seconds before starting Client 3")
+        time.sleep(delay3_float)
     thread3.start()
 
-    timeout = max(float(duration1 or 10), float(duration2 or 10), float(duration3 or 10)) + 10
+    timeout = max(float(duration1 or 10), float(duration2 or 10), float(duration3 or 10)) + max(delay2_float, delay3_float) + 10
     start_time = time.time()
     for thread in [thread1, thread2, thread3]:
         remaining = timeout - (time.time() - start_time)
@@ -711,6 +753,7 @@ def run_iperf_three_clients():
         thread.join(remaining)
     print("Client threads completed")
 
+    # Collect results
     results = []
     client_configs = [
         (result_queue1, client_ip1, port1, "client1"),
@@ -730,8 +773,6 @@ def run_iperf_three_clients():
         except Exception as e:
             print(f"Error retrieving result for {client_name} (IP: {client_ip}, Port: {port}): {e}")
             results.append({"client": client_name, "result": f"Error: {str(e)}"})
-
-
 
     # Cleanup
     if server_control == 'ssh' and ssh_client:

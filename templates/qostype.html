@@ -429,7 +429,7 @@
                 </div>
                 <p class="test-desc">Verify QoS implementation in Wi-Fi frames (WMM tagging and prioritization).</p>
                 <div class="test-actions">
-                    <button class="btn"><i class="fas fa-search"></i> Run Test</button>
+                    <a href="{{ url_for('vmm.wmm_config') }}" class="btn btn-custom">Run Test</a>
                     <i class="fas fa-ellipsis-v" style="opacity: 0.5; cursor: pointer;"></i>
                 </div>
             </div>
@@ -444,7 +444,7 @@
                         <span class="status-badge status-ready">Ready</span>
                     </div>
                 </div>
-                <p class="test-desc">Measure priority of control packets (ARP, DHCP, ICMP) under load.</p>
+                <p class="test-desc">Measure priority of control packets (DNS, DHCP, ICMP,NTP) under load.</p>
                 <div class="test-actions">
                   <a href="{{ url_for('control.control_packets') }}" class="btn btn-custom">Run Test</a>
                     <i class="fas fa-ellipsis-v" style="opacity: 0.5; cursor: pointer;"></i>

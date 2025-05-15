@@ -11,25 +11,34 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, #eeeaf2 0%, #2575fc 100%);
             margin: 0;
             padding: 0;
+            min-height: 100vh;
         }
 
         .navbar {
             background-color: #007bff;
+            padding: 15px 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .navbar .navbar-brand {
-            color: white !important;
-            font-size: 1.5rem;
-            font-weight: bold;
+            color: #ffffff !important;
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s ease;
         }
 
         .navbar .navbar-brand:hover {
@@ -39,93 +48,116 @@
         .logo-icon {
             width: 30px;
             height: 30px;
-            margin-right: 10px;
+            margin-right: 12px;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             color: #2c3e50;
-            margin-top: 40px;
+            margin-top: 50px;
             text-align: center;
-            font-weight: bold;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .description {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #555;
             text-align: center;
-            margin-top: 10px;
-            margin-bottom: 40px;
+            margin: 20px auto;
+            max-width: 800px;
+            line-height: 1.6;
         }
 
         .form-container {
-            background-color: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            max-width: 1200px;
-            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-width: 1300px;
+            margin: 40px auto;
+            transition: transform 0.3s ease;
+        }
+
+        .form-container:hover {
+            transform: translateY(-5px);
         }
 
         .server-ip-container {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
         }
 
         .client-form-container {
             display: flex;
-            gap: 30px;
+            gap: 40px;
             flex-wrap: wrap;
         }
 
         .client-form {
             flex: 1;
-            min-width: 280px;
+            min-width: 300px;
             background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
+            padding: 25px;
+            border-radius: 12px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .client-form:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .form-section {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         label {
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 500;
             display: block;
-            margin-bottom: 8px;
-            text-align: left;
+            margin-bottom: 10px;
+            color: #2c3e50;
         }
 
         input, select {
             width: 100%;
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid #ccc;
             font-size: 1rem;
-            transition: border-color 0.2s ease;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
         }
 
         input:focus, select:focus {
             border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
             outline: none;
-            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
         }
 
         button {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background-color: #007bff;
-            color: white;
+            color: #ffffff;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 1.2rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         button:hover {
             background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .optional-input {
@@ -134,15 +166,15 @@
         }
 
         @keyframes fadeIn {
-            from {opacity: 0; transform: translateY(-10px);}
-            to {opacity: 1; transform: translateY(0);}
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .ssh-fields {
             display: none;
             flex-direction: row;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .ssh-fields input {
@@ -153,28 +185,33 @@
         .form-header {
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .form-header i {
-            font-size: 1.3rem;
-            margin-right: 10px;
+            font-size: 1.4rem;
+            margin-right: 12px;
             color: #007bff;
         }
 
         .client-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
         }
 
         @media (max-width: 768px) {
             .client-form-container {
                 flex-direction: column;
+                gap: 20px;
             }
             h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
+            }
+            .form-container {
+                padding: 20px;
+                margin: 20px;
             }
             .ssh-fields {
                 flex-direction: column;
@@ -201,8 +238,7 @@
 
 <!-- Description -->
 <div class="description">
-    Please enter the details to set up and test the Quality of Service for your client and server.
-    Customize your settings for the test, including protocol, direction, and more...
+    Configure your Quality of Service test by entering the server and client details below. Customize protocols, directions, and advanced settings to optimize your test.
 </div>
 
 <!-- Form Container -->
@@ -221,7 +257,6 @@
             </select>
         </div>
         <div class="ssh-fields" id="sshFields">
-            <input type="text" id="remoteServerIp" name="remoteServerIp" placeholder="Enter Remote Server IP">
             <input type="text" id="sshUsername" name="sshUsername" placeholder="Enter SSH Username">
             <input type="password" id="sshPassword" name="sshPassword" placeholder="Enter SSH Password">
         </div>
@@ -336,6 +371,11 @@
                         <option value="downlink">Downlink</option>
                     </select>
                 </div>
+                <!-- Delay Timer -->
+                <div class="form-section">
+                    <label for="delay2">Delay Before Start (seconds):</label>
+                    <input type="number" id="delay2" name="delay2" placeholder="Enter delay (e.g., 5)" min="0" step="0.1">
+                </div>
                 <!-- Duration & Data Size -->
                 <div class="form-section">
                     <label for="setDuration2">
@@ -370,153 +410,156 @@
     <button type="submit" id="startTestButton">Start Test</button>
 </div>
 
-<!-- JS for Toggling Optional Fields -->
+<!-- JS for Toggling Optional Fields and Handling Form -->
 <script>
-    $(document).ready(function () {
-        $('#serverControl').change(function () {
-            $('#sshFields').toggle($(this).val() === 'ssh');
-        });
+$('#startTestButton').on('click', function(e) {
+    e.preventDefault();
 
-        // Toggle optional inputs per client
-        function setupToggle(setCheckboxId, inputContainerId) {
-            $('#' + setCheckboxId).change(function () {
-                $('#' + inputContainerId).toggle(this.checked);
-            });
+    const $button = $(this);
+    $button.text('Running Test...').prop('disabled', true);
+
+    var formData = {
+        serverIp: $('#serverIp').val(),
+        clientIp1: $('#clientIp1').val(),
+        clientIp2: $('#clientIp2').val(),
+        port1: $('#port1').val(),
+        port2: $('#port2').val(),
+        dscp1: $('#dscp1').val(),
+        dscp2: $('#dscp2').val(),
+        protocol1: $('#protocol1').val(),
+        protocol2: $('#protocol2').val(),
+        direction1: $('#direction1').val(),
+        direction2: $('#direction2').val(),
+        duration1: $('#setDuration1').prop('checked') ? $('#duration1').val() : '',
+        duration2: $('#setDuration2').prop('checked') ? $('#duration2').val() : '',
+        dataSize1: $('#setDataSize1').prop('checked') ? $('#dataSize1').val() : '',
+        dataSize2: $('#setDataSize2').prop('checked') ? $('#dataSize2').val() : '',
+        serverControl: $('#serverControl').val(),
+        remoteServerIp: $('#serverControl').val() === 'ssh' ? $('#serverIp').val() : '',
+        sshUsername: $('#sshUsername').val(),
+        sshPassword: $('#sshPassword').val(),
+        delay2: $('#delay2').val() || '0'
+    };
+
+    // Validation for server control
+    if (formData.serverControl === 'ssh') {
+        if (!formData.sshUsername || !formData.sshPassword) {
+            alert('Please fill in all SSH fields (SSH Username, SSH Password)!');
+            $button.text('Start Test').prop('disabled', false);
+            return;
         }
+    }
 
-        setupToggle('setDuration1', 'durationInput1');
-        setupToggle('setDataSize1', 'dataSizeInput1');
-        setupToggle('setDuration2', 'durationInput2');
-        setupToggle('setDataSize2', 'dataSizeInput2');
+    // Validation for optional fields
+    if ($('#setDuration1').prop('checked') && !formData.duration1) {
+        alert('Please enter a valid duration for Client 1!');
+        $button.text('Start Test').prop('disabled', false);
+        return;
+    }
+
+    if ($('#setDuration2').prop('checked') && !formData.duration2) {
+        alert('Please enter a valid duration for Client 2!');
+        $button.text('Start Test').prop('disabled', false);
+        return;
+    }
+
+    if ($('#setDataSize1').prop('checked') && !formData.dataSize1) {
+        alert('Please enter a valid data size for Client 1!');
+        $button.text('Start Test').prop('disabled', false);
+        return;
+    }
+
+    if ($('#setDataSize2').prop('checked') && !formData.dataSize2) {
+        alert('Please enter a valid data size for Client 2!');
+        $button.text('Start Test').prop('disabled', false);
+        return;
+    }
+
+    // Convert data size to bytes based on unit
+    if (formData.dataSize1 && $('#setDataSize1').prop('checked')) {
+        let unit = $('#dataUnit1').val();
+        let size = parseFloat(formData.dataSize1);
+        if (unit === 'KB') size *= 1024;
+        else if (unit === 'MB') size *= 1024 * 1024;
+        else if (unit === 'GB') size *= 1024 * 1024 * 1024;
+        else if (unit === 'TB') size *= 1024 * 1024 * 1024 * 1024;
+        formData.dataSize1 = Math.round(size).toString();
+    }
+
+    if (formData.dataSize2 && $('#setDataSize2').prop('checked')) {
+        let unit = $('#dataUnit2').val();
+        let size = parseFloat(formData.dataSize2);
+        if (unit === 'KB') size *= 1024;
+        else if (unit === 'MB') size *= 1024 * 1024;
+        else if (unit === 'GB') size *= 1024 * 1024 * 1024;
+        else if (unit === 'TB') size *= 1024 * 1024 * 1024 * 1024;
+        formData.dataSize2 = Math.round(size).toString();
+    }
+
+    console.log('Sending iperf request:', formData); // Debug log
+
+    // Run iperf test
+    $.ajax({
+        type: 'POST',
+        url: '/run_iperf_two_clients',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function(response) {
+            console.log('iperf response:', response);
+            if (response.status === 'success') {
+                // Store server IP and DSCP values in session
+                $.ajax({
+                    type: 'POST',
+                    url: '/store_sniffing_params',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        server_ip: formData.serverIp,
+                        dscp_values: [formData.dscp1, formData.dscp2]
+                    }),
+                    success: function() {
+                        console.log('Sniffing params stored');
+                        // Start sniffing
+                        $.ajax({
+                            type: 'POST',
+                            url: '/start_sniffing_two_clients',
+                            success: function(sniffResponse) {
+                                console.log('Sniffing response:', sniffResponse);
+                                if (sniffResponse.status === 'Sniffing started') {
+                                    window.location.href = response.redirect_url;
+                                } else {
+                                    alert('Failed to start packet sniffing: ' + sniffResponse.status);
+                                    $button.text('Start Test').prop('disabled', false);
+                                }
+                            },
+                            error: function(xhr) {
+                                console.error('Sniffing error:', xhr.responseText);
+                                alert('Error starting packet sniffing: ' + xhr.responseText);
+                                $button.text('Start Test').prop('disabled', false);
+                            }
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error('Store params error:', xhr.responseText);
+                        alert('Error storing sniffing parameters: ' + xhr.responseText);
+                        $button.text('Start Test').prop('disabled', false);
+                    }
+                });
+            } else {
+                alert(response.message);
+                $button.text('Start Test').prop('disabled', false);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('iperf error:', xhr.responseText);
+            alert('An error occurred: ' + xhr.responseText);
+            $button.text('Start Test').prop('disabled', false);
+        }
     });
+});
 </script>
 
-</body>
-</html>
-    <script>
-        // Toggle server control fields
-        $('#serverControl').on('change', function() {
-            if ($(this).val() === 'ssh') {
-                $('#sshFields').show();
-            } else {
-                $('#sshFields').hide();
-            }
-        });
-
-        // Toggle duration input visibility
-        $('#setDuration1').on('change', function() {
-            $('#durationInput1').toggle(this.checked);
-        });
-
-        $('#setDuration2').on('change', function() {
-            $('#durationInput2').toggle(this.checked);
-        });
-
-        // Toggle data size input visibility
-        $('#setDataSize1').on('change', function() {
-            $('#dataSizeInput1').toggle(this.checked);
-        });
-
-        $('#setDataSize2').on('change', function() {
-            $('#dataSizeInput2').toggle(this.checked);
-        });
-
-        $('#startTestButton').on('click', function(e) {
-            e.preventDefault();
-
-            var formData = {
-                serverIp: $('#serverIp').val(),
-                clientIp1: $('#clientIp1').val(),
-                clientIp2: $('#clientIp2').val(),
-                port1: $('#port1').val(),
-                port2: $('#port2').val(),
-                dscp1: $('#dscp1').val(),
-                dscp2: $('#dscp2').val(),
-                protocol1: $('#protocol1').val(),
-                protocol2: $('#protocol2').val(),
-                direction1: $('#direction1').val(),
-                direction2: $('#direction2').val(),
-                duration1: $('#setDuration1').prop('checked') ? $('#duration1').val() : '',
-                duration2: $('#setDuration2').prop('checked') ? $('#duration2').val() : '',
-                dataSize1: $('#setDataSize1').prop('checked') ? $('#dataSize1').val() : '',
-                dataSize2: $('#setDataSize2').prop('checked') ? $('#dataSize2').val() : '',
-                serverControl: $('#serverControl').val(),
-                remoteServerIp: $('#serverIp').val(), // Same as serverIp
-                sshUsername: $('#sshUsername').val(),
-                sshPassword: $('#sshPassword').val()
-            };
-
-            // Validation for server control
-            if (formData.serverControl === 'ssh') {
-                if (!formData.remoteServerIp || !formData.sshUsername || !formData.sshPassword) {
-                    alert('Please fill in all SSH fields (Remote Server IP, SSH Username, SSH Password)!');
-                    return;
-                }
-            }
-
-            // Validation for optional fields
-            if ($('#setDuration1').prop('checked') && !formData.duration1) {
-                alert('Please enter a valid duration for Client 1!');
-                return;
-            }
-
-            if ($('#setDuration2').prop('checked') && !formData.duration2) {
-                alert('Please enter a valid duration for Client 2!');
-                return;
-            }
-
-            if ($('#setDataSize1').prop('checked') && !formData.dataSize1) {
-                alert('Please enter a valid data size for Client 1!');
-                return;
-            }
-
-            if ($('#setDataSize2').prop('checked') && !formData.dataSize2) {
-                alert('Please enter a valid data size for Client 2!');
-                return;
-            }
-
-            // Convert data size to bytes based on unit
-            if (formData.dataSize1 && $('#setDataSize1').prop('checked')) {
-                let unit = $('#dataUnit1').val();
-                let size = parseFloat(formData.dataSize1);
-                if (unit === 'KB') size *= 1024;
-                else if (unit === 'MB') size *= 1024 * 1024;
-                else if (unit === 'GB') size *= 1024 * 1024 * 1024;
-                else if (unit === 'TB') size *= 1024 * 1024 * 1024 * 1024;
-                formData.dataSize1 = Math.round(size).toString();
-            }
-
-            if (formData.dataSize2 && $('#setDataSize2').prop('checked')) {
-                let unit = $('#dataUnit2').val();
-                let size = parseFloat(formData.dataSize2);
-                if (unit === 'KB') size *= 1024;
-                else if (unit === 'MB') size *= 1024 * 1024;
-                else if (unit === 'GB') size *= 1024 * 1024 * 1024;
-                else if (unit === 'TB') size *= 1024 * 1024 * 1024 * 1024;
-                formData.dataSize2 = Math.round(size).toString();
-            }
-
-            $.ajax({
-                type: 'POST',
-                url: '/run_iperf_two_clients',
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
-                success: function(response) {
-                    if (response.status === 'success') {
-                        window.location.href = response.redirect_url;
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert('An error occurred: ' + xhr.responseText);
-                }
-            });
-        });
-    </script>
-
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/popper.js/1.16.1/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
