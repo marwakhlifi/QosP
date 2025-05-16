@@ -4,6 +4,9 @@ from .extensions import mongo, mail
 import logging
 from flask_socketio import SocketIO
 
+# Define socketio globally
+socketio = SocketIO(cors_allowed_origins="*")  # Allow CORS for development
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object('config.Config')
@@ -15,7 +18,6 @@ def create_app():
     Session(app)
 
     # Initialize SocketIO
-    socketio = SocketIO()
     socketio.init_app(app)
 
     logging.basicConfig(level=logging.DEBUG)
@@ -35,8 +37,9 @@ def create_app():
     from .control import control_bp
     from .debug import debug_bp
     from .vmm import wmm_bp
-    from .sniffing import sniffing_bp
+    from .sniffing import sniffing_bp, init_app
 
+    # Register non-sniffing blueprints
     app.register_blueprint(auth_bp, url_prefix='/')
     app.register_blueprint(iperf_bp)
     app.register_blueprint(ssh_bp)
@@ -50,6 +53,9 @@ def create_app():
     app.register_blueprint(control_bp)
     app.register_blueprint(debug_bp)
     app.register_blueprint(wmm_bp)
-    app.register_blueprint(sniffing_bp)
+
+    # Initialize sniffing routes before registering the blueprint
+    init_app(app)
+    app.register_blueprint(sniffing_bp, url_prefix='/sniffing')
 
     return app

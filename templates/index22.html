@@ -17,6 +17,9 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <!-- Socket.IO -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.min.js"></script>
+
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -136,21 +139,26 @@
             outline: none;
         }
 
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
         button {
-            width: 100%;
-            padding: 16px;
-            background-color: #007bff;
-            color: #ffffff;
+            padding: 16px 32px;
             border: none;
             border-radius: 8px;
             font-size: 1.2rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
+            min-width: 200px;
         }
 
         button:hover {
-            background-color: #0056b3;
             transform: translateY(-2px);
         }
 
@@ -158,6 +166,42 @@
             background-color: #6c757d;
             cursor: not-allowed;
             transform: none;
+        }
+
+        #startSniffingButton {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+
+        #startSniffingButton:hover {
+            background-color: #218838;
+        }
+
+        #startIperfButton {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+
+        #startIperfButton:hover {
+            background-color: #0056b3;
+        }
+
+        #stopSniffingButton {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+        #stopSniffingButton:hover {
+            background-color: #c82333;
+        }
+
+        #proceedButton {
+            background-color: #6f42c1;
+            color: #ffffff;
+        }
+
+        #proceedButton:hover {
+            background-color: #5a32a3;
         }
 
         .optional-input {
@@ -201,6 +245,105 @@
             color: #2c3e50;
         }
 
+        .sniffing-section {
+            margin-top: 40px;
+            padding: 25px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .sniffing-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sniffing-section h3 i {
+            font-size: 1.4rem;
+            margin-right: 12px;
+            color: #28a745;
+        }
+
+        .sniffing-status {
+            margin-bottom: 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .sniffing-status.active {
+            color: #28a745;
+        }
+
+        .sniffing-status.inactive {
+            color: #6c757d;
+        }
+
+        .countdown-container {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #2c3e50;
+            display: none;
+        }
+
+        .packet-table-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .packet-table-container table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .packet-table-container th,
+        .packet-table-container td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            min-width: 120px;
+        }
+
+        .packet-table-container th {
+            background-color: #28a745;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .packet-table-container tr:hover {
+            background-color: #f1f3f5;
+        }
+
+        .proceed-button-container {
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .interface-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        #interfaceInfo {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
         @media (max-width: 768px) {
             .client-form-container {
                 flex-direction: column;
@@ -220,7 +363,32 @@
             .ssh-fields input {
                 margin-bottom: 15px;
             }
+            .packet-table-container table {
+                font-size: 0.9rem;
+            }
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
         }
+
+ .btn {
+  display: inline-block;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  color: white;
+  background-color: #007bff; /* blue */
+}
+
+.btn-custom {
+  background-color: #7028a7; /* green, for example */
+}
+       
     </style>
 </head>
 <body>
@@ -238,11 +406,26 @@
 
 <!-- Description -->
 <div class="description">
-    Configure your Quality of Service test by entering the server and client details below. Customize protocols, directions, and advanced settings to optimize your test.
+    Configure your Quality of Service test by entering the server and client details below. Start packet sniffing, launch iPerf tests, and monitor all Wi-Fi traffic in real-time.
 </div>
 
 <!-- Form Container -->
 <div class="form-container shadow-sm rounded">
+    <!-- Interface Selection -->
+    <div class="interface-section">
+        <div class="form-header">
+            <i class="fas fa-network-wired"></i>
+            <strong>Network Interface</strong>
+        </div>
+        <div class="form-section">
+            <label for="interfaceSelect">Select Interface:</label>
+            <select id="interfaceSelect">
+                <option value="">Select an interface</option>
+            </select>
+        </div>
+        <div id="interfaceInfo"></div>
+    </div>
+
     <!-- Server IP and Control -->
     <div class="server-ip-container">
         <div class="form-header">
@@ -274,7 +457,7 @@
             <form id="client1Form">
                 <div class="form-section">
                     <label for="clientIp1">Client 1 IP Address:</label>
-                    <input type="text" id="clientIp1" name="clientIp1" required placeholder="Enter the client IP">
+                    <input type="text" id="clientIp1" name="clientIp1" required placeholder="Enter the client IP (local: 192.168.1.222)">
                 </div>
                 <div class="form-section">
                     <label for="port1">Port:</label>
@@ -340,7 +523,7 @@
             <form id="client2Form">
                 <div class="form-section">
                     <label for="clientIp2">Client 2 IP Address:</label>
-                    <input type="text" id="clientIp2" name="clientIp2" required placeholder="Enter the client IP">
+                    <input type="text" id="clientIp2" name="clientIp2" required placeholder="Enter the client IP (local: 192.168.1.222)">
                 </div>
                 <div class="form-section">
                     <label for="port2">Port:</label>
@@ -406,17 +589,298 @@
         </div>
     </div>
 
-    <!-- Start Test Button -->
-    <button type="submit" id="startTestButton">Start Test</button>
+    <!-- Sniffing Section -->
+    <div class="sniffing-section">
+        <h3><i class="fas fa-traffic-light"></i> Real-Time Traffic Monitoring</h3>
+        <div class="sniffing-status inactive" id="sniffingStatus">Status: Not Sniffing</div>
+        <!-- Countdown Timer -->
+        <div class="countdown-container" id="countdownContainer">
+            Time Remaining: <span id="countdownTimer">0</span> seconds
+        </div>
+<!-- Packet Table -->
+<div class="packet-table-container" id="packetTableContainer">
+    <table id="packetTable">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Source</th>
+                <th>Destination</th>
+                <th>Protocol</th>
+                <th>DSCP</th>
+                <th>Length</th>
+            </tr>
+        </thead>
+        <tbody id="packetTableBody">
+            <tr><td colspan="6">No packets captured yet</td></tr>
+        </tbody>
+    </table>
+</div>
+        <!-- Control Buttons -->
+        <div class="button-container">
+            <button id="startSniffingButton">Start Sniffing</button>
+            <button id="startIperfButton" disabled>Start iPerf</button>
+            <button id="stopSniffingButton" disabled>Stop Sniffing</button>
+        </div>
+        <!-- Proceed Button -->
+        <div class="proceed-button-container" id="proceedButtonContainer">
+            <a href="{{ url_for('iperf.index33') }}" class="btn btn-custom">Proceed to Results</a>
+
+        </div>
+    </div>
 </div>
 
-<!-- JS for Toggling Optional Fields and Handling Form -->
+<!-- JS for Toggling Optional Fields, Handling Form, Countdown, and Real-Time Table -->
 <script>
-$('#startTestButton').on('click', function(e) {
-    e.preventDefault();
+// Initialize SocketIO with explicit namespace
+const socket = io('/', { transports: ['websocket', 'polling'] });
 
+// DOM elements
+const sniffingStatus = document.getElementById('sniffingStatus');
+const packetTableBody = document.getElementById('packetTableBody');
+const packetTableContainer = document.getElementById('packetTableContainer');
+const startSniffingButton = document.getElementById('startSniffingButton');
+const stopSniffingButton = document.getElementById('stopSniffingButton');
+const startIperfButton = document.getElementById('startIperfButton');
+
+// WebSocket debugging
+socket.on('connect', () => {
+    console.log('WebSocket connected');
+    sniffingStatus.textContent = 'Status: WebSocket Connected';
+    sniffingStatus.className = 'sniffing-status active';
+});
+
+socket.on('disconnect', () => {
+    console.log('WebSocket disconnected');
+    sniffingStatus.textContent = 'Status: WebSocket Disconnected';
+    sniffingStatus.className = 'sniffing-status inactive';
+});
+
+socket.on('test_message', (data) => {
+    console.log('Test message received:', data);
+    sniffingStatus.textContent = `Status: ${data.message}`;
+    sniffingStatus.className = 'sniffing-status active';
+});
+
+socket.on('packet_update', (data) => {
+    console.log('Packet received:', data);
+    // Clear initial message
+    if (packetTableBody.children.length === 1 && packetTableBody.children[0].textContent === 'No packets captured yet') {
+        packetTableBody.innerHTML = '';
+    }
+    // Validate packet data
+    if (!data.time || !data.src || !data.dest || !data.protocol || data.dscp === undefined || !data.length) {
+        console.warn('Invalid packet data:', data);
+        return;
+    }
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${data.time}</td>
+        <td>${data.src}</td>
+        <td>${data.dest}</td>
+        <td>${data.protocol}</td>
+        <td>${data.dscp}</td>
+        <td>${data.length}</td>
+    `;
+    packetTableBody.insertBefore(row, packetTableBody.firstChild);
+    if (packetTableBody.children.length > 100) {
+        packetTableBody.removeChild(packetTableBody.lastChild);
+    }
+    // Ensure table is visible
+    packetTableContainer.style.display = 'block';
+});
+
+socket.on('error', (data) => {
+    console.error('Error:', data.message);
+    sniffingStatus.textContent = `Status: Error: ${data.message}`;
+    sniffingStatus.className = 'sniffing-status inactive';
+    alert(data.message);
+});
+
+// Polling fallback
+let pollingInterval;
+function startPolling() {
+    pollingInterval = setInterval(() => {
+        if (startSniffingButton.disabled) {
+            fetch('/sniffing/get_packets')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.packets.length === 0) return;
+                    console.log('Polled packets:', data.packets);
+                    packetTableBody.innerHTML = '';
+                    data.packets.slice(-100).reverse().forEach(packet => {
+                        if (!packet.time || !packet.src || !packet.dest || !packet.protocol || packet.dscp === undefined || !packet.length) {
+                            console.warn('Invalid packet data:', packet);
+                            return;
+                        }
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${packet.time}</td>
+                            <td>${packet.src}</td>
+                            <td>${packet.dest}</td>
+                            <td>${packet.protocol}</td>
+                            <td>${packet.dscp}</td>
+                            <td>${packet.length}</td>
+                        `;
+                        packetTableBody.appendChild(row);
+                    });
+                    packetTableContainer.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Polling error:', error);
+                    sniffingStatus.textContent = `Status: Polling Error: ${error}`;
+                    sniffingStatus.className = 'sniffing-status inactive';
+                });
+        }
+    }, 1000);
+}
+function stopPolling() {
+    clearInterval(pollingInterval);
+}
+
+// Load interfaces on page load
+$(document).ready(function() {
+    $.ajax({
+        type: 'GET',
+        url: '/sniffing/get_interfaces',
+        success: function(data) {
+            console.log('Interfaces:', data);
+            const interfaceSelect = $('#interfaceSelect');
+            interfaceSelect.append('<option value="">Select an interface</option>');
+            data.interface_details.forEach(iface => {
+                if (iface.guid) {
+                    interfaceSelect.append(`<option value="${iface.guid}" ${iface.guid === data.recommended ? 'selected' : ''}>${iface.friendly_name}</option>`);
+                }
+            });
+            $('#interfaceInfo').text(`Recommended interface: ${data.recommended || 'None found'}`);
+            if (data.recommended) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/sniffing/set_interface',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ interface: data.recommended }),
+                    success: function(response) {
+                        console.log('Interface set:', response.status);
+                        startSniffingButton.disabled = false;
+                    },
+                    error: function(xhr) {
+                        console.error('Error setting interface:', xhr.responseText);
+                        $('#interfaceInfo').text(`Error setting interface: ${xhr.responseText}`);
+                    }
+                });
+            }
+        },
+        error: function(xhr) {
+            console.error('Error loading interfaces:', xhr.responseText);
+            $('#interfaceInfo').text(`Error loading interfaces: ${xhr.responseText}`);
+        }
+    });
+});
+
+// Toggle SSH fields
+$('#serverControl').on('change', function() {
+    if ($(this).val() === 'ssh') {
+        $('#sshFields').css('display', 'flex');
+    } else {
+        $('#sshFields').css('display', 'none');
+    }
+});
+
+// Toggle optional fields
+$('#setDuration1').on('change', function() {
+    $('#durationInput1').toggle(this.checked);
+});
+$('#setDuration2').on('change', function() {
+    $('#durationInput2').toggle(this.checked);
+});
+$('#setDataSize1').on('change', function() {
+    $('#dataSizeInput1').toggle(this.checked);
+});
+$('#setDataSize2').on('change', function() {
+    $('#dataSizeInput2').toggle(this.checked);
+});
+
+// Start Sniffing Button Handler
+$('#startSniffingButton').on('click', function(e) {
+    e.preventDefault();
     const $button = $(this);
-    $button.text('Running Test...').prop('disabled', true);
+    $button.text('Starting Sniffing...').prop('disabled', true);
+
+    const serverIp = $('#serverIp').val();
+    if (!serverIp) {
+        alert('Please enter a Server IP');
+        $button.text('Start Sniffing').prop('disabled', false);
+        sniffingStatus.textContent = 'Status: Not Sniffing';
+        sniffingStatus.className = 'sniffing-status inactive';
+        return;
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '/sniffing/start_sniffing',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({ serverIp: serverIp }),
+        dataType: 'json',
+        success: function(response) {
+            console.log('Sniffing response:', response);
+            if (response.status === 'Sniffing started') {
+                console.log('Sniffing started successfully');
+                $button.text('Sniffing Started').prop('disabled', true);
+                $('#startIperfButton').prop('disabled', false);
+                $('#stopSniffingButton').prop('disabled', false);
+                sniffingStatus.textContent = `Status: Sniffing Active (Interface: ${response.interface})`;
+                sniffingStatus.className = 'sniffing-status active';
+                packetTableContainer.style.display = 'block';
+                startPolling();
+            } else {
+                alert('Failed to start sniffing: ' + response.status);
+                $button.text('Start Sniffing').prop('disabled', false);
+                sniffingStatus.textContent = 'Status: Not Sniffing';
+                sniffingStatus.className = 'sniffing-status inactive';
+            }
+        },
+        error: function(xhr) {
+            console.error('Error starting sniffing:', xhr.responseText);
+            alert('Error starting sniffing: ' + xhr.responseText);
+            $button.text('Start Sniffing').prop('disabled', false);
+            sniffingStatus.textContent = 'Status: Not Sniffing';
+            sniffingStatus.className = 'sniffing-status inactive';
+        }
+    });
+});
+
+// Stop Sniffing Button Handler
+$('#stopSniffingButton').on('click', function(e) {
+    e.preventDefault();
+    const $button = $(this);
+    $button.text('Stopping Sniffing...').prop('disabled', true);
+
+    $.ajax({
+        type: 'POST',
+        url: '/sniffing/stop_sniffing',
+        success: function(response) {
+            console.log('Sniffing stopped:', response);
+            $button.text('Stop Sniffing').prop('disabled', true);
+            $('#startSniffingButton').text('Start Sniffing').prop('disabled', false);
+            $('#startIperfButton').prop('disabled', true);
+            sniffingStatus.textContent = 'Status: Not Sniffing';
+            sniffingStatus.className = 'sniffing-status inactive';
+            packetTableContainer.style.display = 'none';
+            packetTableBody.innerHTML = '<tr><td colspan="6">No packets captured yet</td></tr>';
+            stopPolling();
+        },
+        error: function(xhr) {
+            console.error('Error stopping sniffing:', xhr.responseText);
+            alert('Error stopping sniffing: ' + xhr.responseText);
+            $button.text('Stop Sniffing').prop('disabled', false);
+        }
+    });
+});
+
+// Start iPerf Button Handler
+$('#startIperfButton').on('click', function(e) {
+    e.preventDefault();
+    const $button = $(this);
+    $button.text('Running iPerf...').prop('disabled', true);
 
     var formData = {
         serverIp: $('#serverIp').val(),
@@ -441,41 +905,20 @@ $('#startTestButton').on('click', function(e) {
         delay2: $('#delay2').val() || '0'
     };
 
-    // Validation for server control
     if (formData.serverControl === 'ssh') {
         if (!formData.sshUsername || !formData.sshPassword) {
             alert('Please fill in all SSH fields (SSH Username, SSH Password)!');
-            $button.text('Start Test').prop('disabled', false);
+            $button.text('Start iPerf').prop('disabled', false);
             return;
         }
     }
 
-    // Validation for optional fields
-    if ($('#setDuration1').prop('checked') && !formData.duration1) {
-        alert('Please enter a valid duration for Client 1!');
-        $button.text('Start Test').prop('disabled', false);
+    if (!formData.serverIp || !formData.clientIp1 || !formData.clientIp2 || !formData.port1 || !formData.port2) {
+        alert('Please fill in all required fields (Server IP, Client 1 IP, Client 2 IP, Port 1, Port 2)!');
+        $button.text('Start iPerf').prop('disabled', false);
         return;
     }
 
-    if ($('#setDuration2').prop('checked') && !formData.duration2) {
-        alert('Please enter a valid duration for Client 2!');
-        $button.text('Start Test').prop('disabled', false);
-        return;
-    }
-
-    if ($('#setDataSize1').prop('checked') && !formData.dataSize1) {
-        alert('Please enter a valid data size for Client 1!');
-        $button.text('Start Test').prop('disabled', false);
-        return;
-    }
-
-    if ($('#setDataSize2').prop('checked') && !formData.dataSize2) {
-        alert('Please enter a valid data size for Client 2!');
-        $button.text('Start Test').prop('disabled', false);
-        return;
-    }
-
-    // Convert data size to bytes based on unit
     if (formData.dataSize1 && $('#setDataSize1').prop('checked')) {
         let unit = $('#dataUnit1').val();
         let size = parseFloat(formData.dataSize1);
@@ -496,63 +939,54 @@ $('#startTestButton').on('click', function(e) {
         formData.dataSize2 = Math.round(size).toString();
     }
 
-    console.log('Sending iperf request:', formData); // Debug log
+    const duration1 = formData.duration1 ? parseFloat(formData.duration1) : 0;
+    const duration2 = formData.duration2 ? parseFloat(formData.duration2) : 0;
+    const delay2 = parseFloat(formData.delay2) || 0;
+    const maxDuration = duration1 || duration2 ? Math.max(duration1, duration2 + delay2) : 10;
 
-    // Run iperf test
+    $('#countdownContainer').show();
+    let timeLeft = maxDuration;
+    $('#countdownTimer').text(timeLeft.toFixed(1));
+    const countdownInterval = setInterval(() => {
+        timeLeft -= 0.1;
+        $('#countdownTimer').text(timeLeft.toFixed(1));
+        if (timeLeft <= 0) {
+            clearInterval(countdownInterval);
+            $('#countdownTimer').text('0');
+            $('#proceedButtonContainer').show();
+            $button.text('Start iPerf').prop('disabled', false);
+        }
+    }, 100);
+
+    $('#proceedButton').on('click', () => {
+        window.location.href = 'index22';
+    });
+
+    console.log('Sending iperf request:', formData);
+
     $.ajax({
         type: 'POST',
-        url: '/run_iperf_two_clients',
+        url: 'run_iperf_two_clients',
         contentType: 'application/json',
         data: JSON.stringify(formData),
         success: function(response) {
-            console.log('iperf response:', response);
+            console.log('iPerf response:', response);
             if (response.status === 'success') {
-                // Store server IP and DSCP values in session
-                $.ajax({
-                    type: 'POST',
-                    url: '/store_sniffing_params',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        server_ip: formData.serverIp,
-                        dscp_values: [formData.dscp1, formData.dscp2]
-                    }),
-                    success: function() {
-                        console.log('Sniffing params stored');
-                        // Start sniffing
-                        $.ajax({
-                            type: 'POST',
-                            url: '/start_sniffing_two_clients',
-                            success: function(sniffResponse) {
-                                console.log('Sniffing response:', sniffResponse);
-                                if (sniffResponse.status === 'Sniffing started') {
-                                    window.location.href = response.redirect_url;
-                                } else {
-                                    alert('Failed to start packet sniffing: ' + sniffResponse.status);
-                                    $button.text('Start Test').prop('disabled', false);
-                                }
-                            },
-                            error: function(xhr) {
-                                console.error('Sniffing error:', xhr.responseText);
-                                alert('Error starting packet sniffing: ' + xhr.responseText);
-                                $button.text('Start Test').prop('disabled', false);
-                            }
-                        });
-                    },
-                    error: function(xhr) {
-                        console.error('Store params error:', xhr.responseText);
-                        alert('Error storing sniffing parameters: ' + xhr.responseText);
-                        $button.text('Start Test').prop('disabled', false);
-                    }
-                });
+                console.log('iPerf completed successfully');
+                $button.text('Start iPerf').prop('disabled', false);
             } else {
-                alert(response.message);
-                $button.text('Start Test').prop('disabled', false);
+                alert('iPerf failed: ' + response.message);
+                $button.text('Start iPerf').prop('disabled', false);
+                clearInterval(countdownInterval);
+                $('#countdownContainer').hide();
             }
         },
-        error: function(xhr, status, error) {
-            console.error('iperf error:', xhr.responseText);
-            alert('An error occurred: ' + xhr.responseText);
-            $button.text('Start Test').prop('disabled', false);
+        error: function(xhr) {
+            console.error('iPerf error:', xhr.responseText);
+            alert('iPerf error: ' + xhr.responseText);
+            $button.text('Start iPerf').prop('disabled', false);
+            clearInterval(countdownInterval);
+            $('#countdownContainer').hide();
         }
     });
 });
